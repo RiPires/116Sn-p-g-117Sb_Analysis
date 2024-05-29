@@ -1,0 +1,8 @@
+Enviorment for the detector's efficiency simulation.
+
+Particle gun: photons
+
+Macro that runs 1E6 primary particles in the energy range of 1 keV up to 1 MeV
+in 1 keV steps
+
+Recording total number of primary hits in the sensitive volume
