@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.mac": "cmake",
+        "Plot.C": "cpp"
+    }
+}

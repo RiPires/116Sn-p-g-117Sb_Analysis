@@ -9,7 +9,7 @@ MyPrimaryGenerator::MyPrimaryGenerator()
     G4String particleName="geantino"; // Sets prim .particle as GEANTINO
     G4ParticleDefinition *particle = particleTable->FindParticle("geantino"); 
     
-    G4ThreeVector pos(0.,0.,-19.5*mm+100*nm); //  Position for particle gun
+    G4ThreeVector pos(0.,0.,0.); //  Position for particle gun
     G4ThreeVector mom(0.,0.,1.);     //  Momentum direction vector for prim. particle
     
     fParticleGun->SetParticlePosition(pos);          // Particle Position
@@ -30,9 +30,9 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent)
     
     if(particle == G4Geantino::Geantino())
     {
-        // 152Eu source //
-        G4int Z = 63;
-        G4int A = 152;
+        // 117Sb source //
+        G4int Z = 51;
+        G4int A = 117;
         
         G4double charge = 0.;
         G4double energy = 0.;
