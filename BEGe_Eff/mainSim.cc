@@ -11,6 +11,7 @@
 #include "physics.hh"
 #include "action.hh"
 
+
 int main(int argc, char** argv)
 {
     // Program starts with no user's interface

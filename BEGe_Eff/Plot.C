@@ -90,7 +90,7 @@ void Plot(){
      ///////////////////////////////////////////////////////
 
     // Variables to hold the data
-    float xPos = 0, yPos = 0;
+    double xPos = 0., yPos = 0.;
     // Set the branches
     StepsTTree->SetBranchAddress("xPos", &xPos);
     StepsTTree->SetBranchAddress("yPos", &yPos);
@@ -98,18 +98,20 @@ void Plot(){
     // Create a canvas for plotting hit x vs y position
     TCanvas* canvas4 = new TCanvas("canvas4", "Hits position x vs y ", 800, 600);
     // Create a histogram
-    TH2F* hist4 = new TH2F("hist4", "Ge hits position x vs y ", 100, -5., 5., 100, -5., 5.);
+    TH2F* hist4 = new TH2F("hist4", "Ge hits position x vs y ", 100, -30., 30., 100, -30., 30.);
     
     // Fill the histogram
     Long64_t nEntries = StepsTTree->GetEntries();
+
     for (Long64_t i = 0; i < nEntries; ++i) {
         StepsTTree->GetEntry(i);
 
-        // Debug output to verify data
-        cout << "Entry " << i << ": xPos = " << xPos << ", yPos = " << yPos << endl;
-
         // Fill histogram only if xPos and yPos are not zero
         if (xPos != 0 || yPos != 0) {
+            
+            // Debug output to verify data
+            //cout << "Entry " << i << ": " << "xPos = " << xPos << " | yPos = " << yPos << endl;
+
             hist4->Fill(xPos, yPos);
         }
     }
