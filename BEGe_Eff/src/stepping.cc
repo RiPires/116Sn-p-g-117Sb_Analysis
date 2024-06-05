@@ -28,8 +28,4 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     //
     G4double edep = step->GetTotalEnergyDeposit(); // Else, we record the energy deposition,'edep', on the step     //
     EventAction->AddEdep(edep);                    // and add it to the total energy deposited in the event, 'Edep' //  
-
-    G4AnalysisManager *man = G4AnalysisManager::Instance();
-    man->FillNtupleDColumn(1, 0, edep);
-    man->AddNtupleRow(1);
 }

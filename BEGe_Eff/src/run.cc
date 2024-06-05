@@ -10,9 +10,10 @@ MyRunAction::MyRunAction()
     man->CreateNtupleDColumn("Edep");
     man->FinishNtuple(0);
 
-    // Tuples for stepp info.
-    man->CreateNtuple("Steps", "Steps");
-    man->CreateNtupleDColumn("edep");
+    // Tuples for hit position in the detector
+    man->CreateNtuple("Position", "Position");
+    man->CreateNtupleDColumn("xPos");
+    man->CreateNtupleDColumn("yPos");
     man->FinishNtuple(1);
 }
 
