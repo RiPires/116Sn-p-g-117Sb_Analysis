@@ -1,0 +1,4 @@
+/home/ripires/117Sb_Eff/BEGe_Eff/build/CMakeFiles/rebuild_cache.dir
+/home/ripires/117Sb_Eff/BEGe_Eff/build/CMakeFiles/edit_cache.dir
+/home/ripires/117Sb_Eff/BEGe_Eff/build/CMakeFiles/SimulationTest.dir
+/home/ripires/117Sb_Eff/BEGe_Eff/build/CMakeFiles/mainSim.dir
