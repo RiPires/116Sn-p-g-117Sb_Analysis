@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.mac": "cmake",
-        "Plot.C": "cpp"
+        "Plot.C": "cpp",
+        "hadd.C": "cpp"
     }
 }

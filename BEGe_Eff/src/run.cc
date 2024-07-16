@@ -14,6 +14,7 @@ MyRunAction::MyRunAction()
     man->CreateNtuple("Position", "Position");
     man->CreateNtupleDColumn("xPos");
     man->CreateNtupleDColumn("yPos");
+    man->CreateNtupleDColumn("zPos");
     man->FinishNtuple(1);
 }
 

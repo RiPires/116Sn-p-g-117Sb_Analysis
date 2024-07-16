@@ -1,7 +1,0 @@
-/gps/verbose 2
-/gps/particle gamma
-/gps/pos/type point
-/gps/pos/centre (0.,0.,-20.)
-/gps/ang/type iso
-/gps/ene/mono 158. keV
-

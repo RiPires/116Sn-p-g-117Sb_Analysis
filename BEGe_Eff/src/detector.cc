@@ -17,6 +17,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     man->FillNtupleDColumn(1, 0, hitPos[0]); // The x position
     man->FillNtupleDColumn(1, 1, hitPos[1]); // The y position
+    man->FillNtupleDColumn(1, 2, hitPos[2]); // The z position
     man->AddNtupleRow(1);
     
     return true; //Because it's a Boolean, ProcessHits function expects a return

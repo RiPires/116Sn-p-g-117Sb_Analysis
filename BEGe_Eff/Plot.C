@@ -8,7 +8,7 @@ using namespace std;
 void Plot(){
 
      // Open the ROOT file
-     TFile *InputTFile = new TFile("add.root", "READ");
+     TFile *InputTFile = new TFile("add1.root", "READ");
      // Check if the file is open successfully
      if (!InputTFile || InputTFile->IsZombie()){
           cout << "Error: Could not open ROOT file." << endl;
@@ -24,7 +24,7 @@ void Plot(){
      ////////////////////////////////////////////////////
      TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
      // Create a histogram
-     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 100, 0, 1.8);
+     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 100, 0, 0.1);
      // Project the variable into the histogram
      ScoringTTRee->Project("hist", "Scoring.Edep");
      // Set the histogram style and labels
@@ -40,7 +40,7 @@ void Plot(){
      canvas->Draw();
 
      ////////////////////////////////////////////////
-     // Access the Hist position tree in the file  //
+     // Access the Hits position tree in the file  //
      ////////////////////////////////////////////////
      TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
 
@@ -84,10 +84,30 @@ void Plot(){
      canvas3->SetLogy();
      canvas3->Draw();
 
+    //////////////////////////////////////////////////
+    // Create a canvas for plotting hit z position  //
+    //////////////////////////////////////////////////
+    TCanvas* canvasZ = new TCanvas("canvasZ", "Hits position z ", 800, 600);
+    // Create a histogram
+    TH1D* histZ = new TH1D("histZ", "Ge hits position z ", 100, 0., 100.);
+    // Project the variable into the histogram
+    StepsTTree->Project("histZ", "Position.zPos");
+    // Set the histogram style and labels
+    histZ->SetLineColor(kBlue);
+    histZ->SetLineWidth(2);
+    histZ->GetXaxis()->SetTitle("z (cm)");
+    histZ->GetYaxis()->SetTitle("Counts");
+    // Draw the histogram on the canvas
+    histZ->Draw();
 
-     ///////////////////////////////////////////////////////
-     // Create a canvas for plotting hit x vs y position  //
-     ///////////////////////////////////////////////////////
+    // Display the canvas
+    canvasZ->SetLogy();
+    canvasZ->Draw();
+
+
+    ///////////////////////////////////////////////////////
+    // Create a canvas for plotting hit x vs y position  //
+    ///////////////////////////////////////////////////////
 
     // Variables to hold the data
     double xPos = 0., yPos = 0.;
