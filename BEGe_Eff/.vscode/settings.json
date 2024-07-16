@@ -2,6 +2,8 @@
     "files.associations": {
         "*.mac": "cmake",
         "Plot.C": "cpp",
-        "hadd.C": "cpp"
+        "hadd.C": "cpp",
+        "PlotAll.C": "cpp",
+        "*.tcc": "cpp"
     }
 }
