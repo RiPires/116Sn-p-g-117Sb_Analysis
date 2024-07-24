@@ -4,6 +4,7 @@
         "Plot.C": "cpp",
         "hadd.C": "cpp",
         "PlotAll.C": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "FitPeak.C": "cpp"
     }
 }
