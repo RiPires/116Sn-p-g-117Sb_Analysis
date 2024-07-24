@@ -39,35 +39,10 @@ void Plot(const char* filename){
      canvas->Draw();
      gPad->Update();
 
-    // Perform the gaussian fit
-    double fitMin, fitMax;
-    fitMin = 0.002; // MeV
-    fitMax = 0.057; // MeV
-    //cout << "Enter the minimum energy for the fit: ";
-    //cin >> fitMin;
-    //cout << "Enter the maximum energy for the fit: ";
-    //cin >> fitMax;
-    TF1 *gausFit = new TF1("gausFit", "gaus", fitMin, fitMax);
-    hist1->Fit(gausFit, "R");
-    gausFit->SetLineColor(kRed);
-    gausFit->Draw("SAME");
-    gPad->Update();
-
-    // Calculate and print the area under the Gaussian fit
-    double area = gausFit->Integral(fitMin, fitMax);
-    cout << "Area under the Gaussian fit: " << area << endl;
-
-    cout << area * 1000 << endl;
-    // Calculate det efficiency at this energy
-    double detEff, nTot;
-    nTot = 1000000.;
-    detEff = area/nTot * 100 * 1000; // %
-    cout << "Detector efficiency = " << detEff << " %" << endl;
-
-     ////////////////////////////////////////////////
-     // Access the Hits position tree in the file  //
-     ////////////////////////////////////////////////
-     TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
+    ////////////////////////////////////////////////
+    // Access the Hits position tree in the file  //
+    ////////////////////////////////////////////////
+    TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
 
     //////////////////////////////////////////////////
     // Create a canvas for plotting hit z position  //
@@ -88,7 +63,6 @@ void Plot(const char* filename){
     canvasZ->SetLogy();
     canvasZ->Draw();
     gPad->Update();
-
 
     ///////////////////////////////////////////////////////
     // Create a canvas for plotting hit x vs y position  //

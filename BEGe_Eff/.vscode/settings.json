@@ -5,6 +5,10 @@
         "hadd.C": "cpp",
         "PlotAll.C": "cpp",
         "*.tcc": "cpp",
-        "FitPeak.C": "cpp"
+        "FitPeak.C": "cpp",
+        "Plot copy.C": "cpp",
+        "PlotFit.C": "cpp",
+        "PlotAndFit.C": "cpp",
+        "iostream": "cpp"
     }
 }
