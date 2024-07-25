@@ -1,14 +1,14 @@
 #include "detector.hh"
 
-// Sensitive detector constuctor and destructor   //
+// Sensitive detector constuctor and destructor  //
 MySensitiveDetector::MySensitiveDetector(G4String name) : G4VSensitiveDetector(name)
 {}
 
 MySensitiveDetector::~MySensitiveDetector()
 {}
 
-//   Creates a Hit when a step takes place in a definded sensitive logical detector
-// in a user sensitive detector function called ProcessHits(...)
+//  Creates a Hit when a step takes place in a definded sensitive logical detector
+//  in a user sensitive detector function called ProcessHits(...)
 G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist)
 { 
     G4StepPoint *preStepPoint = aStep->GetPreStepPoint();

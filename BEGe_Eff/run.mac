@@ -5,9 +5,9 @@
 /tracking/verbose 0
 /event/verbose 0
 /gps/verbose 0
+##
 /gps/particle gamma
 /gps/pos/centre 0. 0. -20. mm
 /gps/ang/type iso
-#/gps/ene/mono 158. keV
 ##
-/control/loop loop.mac eKin 5 50 5
+/control/loop loop.mac eKin 5 1050 5

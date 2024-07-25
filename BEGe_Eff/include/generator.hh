@@ -12,7 +12,7 @@
 
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction
 {
-// Primary particle generator constuctor and destructor   //
+//  Primary particle generator constuctor and destructor  //
 public:
     MyPrimaryGenerator();
     ~MyPrimaryGenerator();

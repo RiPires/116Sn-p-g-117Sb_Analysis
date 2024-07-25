@@ -39,24 +39,19 @@ double PlotAndFit(const char* filename, double fitMin, double fitMax){
      canvas->Draw();
      gPad->Update();
 
-    cout << "fitMin = " << fitMin << endl;
-    cout << "fitMax = " << fitMax << endl;
-
+    // ROI for photopeak area calculation
     int binMin = hist1->FindBin(fitMin);
     int binMax = hist1->FindBin(fitMax);
-
-    cout << "binMin = " << binMin << endl;
-    cout << "binMax = " << binMax << endl;
 
     // Calculate and print the area under the Photopeak
     double area = hist1->Integral(binMin,binMax);
     cout << "Area under the Photo-peak: " << area << endl;
-
     cout << area << endl;
+
     // Calculate det efficiency at this energy
     double detEff, nTot;
     nTot = 1000000.;
-    detEff = area/nTot * 100; // %
+    detEff = area/nTot * 100 * 2; // % x2 because only half of the primary gammas face the detector
     cout << "Detector efficiency = " << detEff << " %" << endl;
 
     return detEff;

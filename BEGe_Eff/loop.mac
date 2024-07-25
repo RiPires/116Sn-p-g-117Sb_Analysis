@@ -1,3 +1,2 @@
 /gps/ene/mono {eKin} keV
 /run/beamOn 1000000
-#/control/shell youroutput.dat output_{eKin}.dat

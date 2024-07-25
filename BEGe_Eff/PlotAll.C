@@ -8,7 +8,7 @@ using namespace std;
 
 void PlotAll(int index) {
 
-
+    // Vector to save detector efficiencies for each energy
     vector<double> detEffs;
 
     for (int i = 0; i<= index; ++i) {
@@ -22,16 +22,15 @@ void PlotAll(int index) {
         fitMin = (i*5+5-3)/1000.; // 5 is the minimum energy in keV, -1 to get i keV before, and /1000 to convert to MeV
         fitMax = (i*5+5+2)/1000.;
 
-        // Call the Plot function with the filename
+        // Call the PlotAndFit function with the filename
         double detEff; // variable for detector efficiency in each run
         detEff = PlotAndFit(filename.c_str(), fitMin, fitMax); // it's in %
         detEffs.push_back(detEff);
-
-        //cin.ignore();
     }
 
+    // Efficiency spectrum
     TCanvas* effCanvas = new TCanvas("effCanvas", "Absolute Efficiency", 800, 600);
-    effCanvas->cd();
+    effCanvas->cd(); // set as current canvas
     auto detEffGraph = new TGraph();
     for (int i = 0; i < index; i++){
         detEffGraph->AddPoint((i*5+5)/1000., detEffs[i]);

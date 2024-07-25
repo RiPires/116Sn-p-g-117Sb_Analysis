@@ -2,9 +2,9 @@
 
 MyPhysicsList::MyPhysicsList()
 {
-    //   ElectroMagnetic Standard Physiscs Lists
+    //  ElectroMagnetic Standard Physiscs Lists
     RegisterPhysics (new G4EmStandardPhysics()); 
-    //   Radioactive Decay Physics Lists
+    //  Radioactive Decay Physics Lists
     RegisterPhysics (new G4DecayPhysics());
     RegisterPhysics (new G4RadioactiveDecayPhysics());
 }

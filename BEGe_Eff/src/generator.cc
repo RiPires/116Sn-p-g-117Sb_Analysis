@@ -3,7 +3,7 @@
 #include "G4RandomDirection.hh"
 
 
-//   Primary particle generator constuctor and destructor   //
+//  Primary particle generator constuctor and destructor  //
 MyPrimaryGenerator::MyPrimaryGenerator()
 {
     fParticleGun = new G4GeneralParticleSource();
@@ -12,9 +12,9 @@ MyPrimaryGenerator::MyPrimaryGenerator()
     G4String particleName="geantino"; // Sets prim .particle as GEANTINO
     G4ParticleDefinition *particle = particleTable->FindParticle("geantino"); 
 
-    //G4ThreeVector pos(0.,0.,-20.);                  //  Position for particle gun
-    //fParticleGun->SetParticlePosition(pos);         // Particle Position
-    //fParticleGun->SetParticleMomentum(0.*MeV);      // Particle Momentum magnitude
+    G4ThreeVector pos(0.,0.,0.);                    // Position for particle gun
+    fParticleGun->SetParticlePosition(pos);         // Particle Position
+    //fParticleGun->SetParticleMomentum(0.*MeV);    // Particle Momentum magnitude
     fParticleGun->SetParticleDefinition(particle);  // Sets particle as GEANTINO prev. deffined
 }
 
@@ -23,7 +23,7 @@ MyPrimaryGenerator::~MyPrimaryGenerator()
     delete fParticleGun;
 }
 
-///   Generate primary particle as a radioactive punctual source   ///
+//  Generate primary particle as a radioactive punctual source  //
 void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent)
 {    
     G4ParticleDefinition *particle = fParticleGun->GetParticleDefinition();

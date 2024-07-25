@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     if(ui)
     {   UImanager->ApplyCommand("/control/execute vis.mac");        
         ui->SessionStart();    }
-    // runs commands writen in a file "fileName", or runs command "fileName" from console, if set off
+    // Runs commands writen in a file "fileName", or runs command "fileName" from console, if set off
     else
     {   G4String command = "/control/execute ";
         G4String fileName = argv[1];
