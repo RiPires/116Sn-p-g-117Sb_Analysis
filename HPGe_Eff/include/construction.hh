@@ -12,6 +12,7 @@
 #include "G4NistManager.hh"
 #include "G4GenericMessenger.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4RotationMatrix.hh"
 
 #include "detector.hh"
 
@@ -30,10 +31,11 @@ public:
 private:
     
     ///G4double *xWorld, *yWorld, *zWorld; 
-    G4Box *solidWorld, *solidFrame;
-    G4Tubs *solidHole, *solidHolder, *solidTarget, *solidWindow, *solidDetector, *solidCase;
-    G4LogicalVolume  *logicTarget, *logicSubtraction, *logicWorld, *logicWindow, *logicDetector, *logicCase;
-    G4VPhysicalVolume *physHolder, *physTarget, *physSubtraction, *physWorld, *physWindow, *physDetector, *physCase;
+    G4Box *solidWorld;
+    G4Tubs *solidHole, *solidGe, *solidWindow, *solidCase;
+    G4LogicalVolume *logicWorld, *logicWindow, *logicDetector, *logicCase;
+    G4VPhysicalVolume *physWorld, *physWindow, *physDetector, *physCase;
+    G4RotationMatrix *rotation;
     
     G4GenericMessenger *fMessenger;
     
