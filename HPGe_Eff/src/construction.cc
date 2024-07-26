@@ -56,9 +56,9 @@ void MyDetectorConstruction::DefineMaterial()
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
     //  Defines WORLD volume  //
-    G4double xWorld = 100*mm;//World half lenght
-    G4double yWorld = 100*mm;//World half height
-    G4double zWorld = 100*mm;//World half depth       
+    G4double xWorld = 110*mm;//World half lenght
+    G4double yWorld = 110*mm;//World half height
+    G4double zWorld = 110*mm;//World half depth       
     solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); 
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
@@ -99,7 +99,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double thick_mylar = 0.015*mm;
     solidMylar = new G4Tubs("SolidMylar", Rin_mylar, Rout_mylar, thick_mylar, 0., 2*pi);
     logicMylar = new G4LogicalVolume(solidMylar, mylar, "LogicMylar");
-    physMylar = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.84*mm), logicMylar, "PhysMylar", logicWorld, false, 0., true);
+    physMylar = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.87*mm), logicMylar, "PhysMylar", logicWorld, false, 0., true);
     
     ScoringVolume = logicDetector;
         

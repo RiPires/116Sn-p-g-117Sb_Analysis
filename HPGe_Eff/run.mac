@@ -7,7 +7,7 @@
 /gps/verbose 0
 ##
 /gps/particle gamma
-/gps/pos/centre 0. 0. -40. mm
+/gps/pos/centre 0. 0. -22. mm
 /gps/ang/type iso
 ##
 /control/loop loop.mac eKin 5 500 5

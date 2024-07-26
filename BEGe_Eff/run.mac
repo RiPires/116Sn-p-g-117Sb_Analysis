@@ -10,4 +10,4 @@
 /gps/pos/centre 0. 0. -20. mm
 /gps/ang/type iso
 ##
-/control/loop loop.mac eKin 5 1050 5
+/control/loop loop.mac eKin 10 1050 10
