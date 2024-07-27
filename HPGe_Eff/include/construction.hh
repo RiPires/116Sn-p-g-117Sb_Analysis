@@ -35,7 +35,7 @@ private:
     G4Tubs *solidHole, *solidGe, *solidWindow, *solidMylar, *solidCase;
     G4LogicalVolume *logicWorld, *logicWindow, *logicMylar, *logicDetector, *logicCase;
     G4VPhysicalVolume *physWorld, *physWindow, *physMylar, *physDetector, *physCase;
-    G4RotationMatrix *rotation;
+    G4RotationMatrix *rotation = new G4RotationMatrix();
     
     G4GenericMessenger *fMessenger;
     
