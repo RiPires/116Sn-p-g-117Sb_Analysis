@@ -3,7 +3,8 @@
 
 #include "G4UImessenger.hh"
 #include "G4UIcmdWithAString.hh"
-#include "generator.hh"
+
+class MyPrimaryGenerator;
 
 class MyPrimaryGeneratorMessenger : public G4UImessenger
 {
@@ -12,26 +13,10 @@ private:
     G4UIcmdWithAString* fSetGeneratorTypeCmd;
 
 public:
-    MyPrimaryGeneratorMessenger(MyPrimaryGenerator *generator):fGenerator(generator)
-    {
-        fSetGeneratorTypeCmd = new G4UIcmdWithAString("/generator/setGeneratorType", this);
-        fSetGeneratorTypeCmd->SetGuidance("Set generator type (gamma or ion)");
-        fSetGeneratorTypeCmd->SetParameterName("generatorType", false);
-        fSetGeneratorTypeCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
-    }
+    MyPrimaryGeneratorMessenger(MyPrimaryGenerator *generator);
+    ~MyPrimaryGeneratorMessenger();
 
-    ~MyPrimaryGeneratorMessenger()
-    {
-        delete fSetGeneratorTypeCmd;
-    }
-
-    virtual void SetNewValue(G4UIcommand* command, G4String newValue)
-    {
-        if (command == fSetGeneratorTypeCmd)
-        {
-            fGenerator->SetGeneratorType(newValue);
-        }
-    }
+    virtual void SetNewValue(G4UIcommand* command, G4String newValue);
 
 };
 #endif
