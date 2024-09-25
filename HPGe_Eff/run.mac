@@ -1,15 +1,20 @@
+## Set nr. of threads and initialize the kernel ##
 /run/numberOfThreads 4
 /run/initialize
-##
+
+## Set verbosity levels ## 
 /control/verbose 0
 /tracking/verbose 0
 /event/verbose 0
 /gps/verbose 0
-##
-/generator/setGeneratorType gamma
-##
-/gps/particle gamma
+
+## Set GunParticleSource properties ##
+/gps/particle ion                   ## particle type: gamma, ion
+/gps/ion 63 152                     ## if ion: Z, A
+#/gps/ene/mono 200. keV
 /gps/pos/centre 0. 0. -22. mm
-/gps/ang/type iso
-##
-/control/loop loop.mac eKin 10 100 10
+#/gps/ang/type iso
+
+## Run loop macro or just beamOn ##
+#/control/loop loop.mac eKin 10 100 10
+/run/beamOn 1000000
