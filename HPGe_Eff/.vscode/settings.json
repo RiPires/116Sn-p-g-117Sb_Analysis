@@ -9,6 +9,7 @@
         "Plot copy.C": "cpp",
         "PlotFit.C": "cpp",
         "PlotAndFit.C": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "PlotExp.C": "cpp"
     }
 }

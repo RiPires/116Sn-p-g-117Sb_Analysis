@@ -2,6 +2,7 @@
     "files.associations": {
         "*.mac": "cmake",
         "Plot.C": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "PlotExp.C": "cpp"
     }
 }
