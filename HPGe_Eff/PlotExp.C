@@ -8,7 +8,7 @@
 using namespace std;
 void PlotSpectrumAndOverlay() {
     // Open the data file
-    std::ifstream infile("Run03_152Eu_detGe_50mm.mca");  // Replace "datafile.txt" with your actual file name
+    std::ifstream infile("Run03_152Eu_detGe_50mm.mca");
 
     if (!infile.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
@@ -17,7 +17,7 @@ void PlotSpectrumAndOverlay() {
 
     // Read the file and skip the first 15 lines
     std::string line;
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 14; i++) {
         std::getline(infile, line);
     }
 
@@ -36,13 +36,17 @@ void PlotSpectrumAndOverlay() {
 
     infile.close();  // Close the file after reading
 
+    // Energy calbration factor
+    double slope = 0.0003225; // MeV/ch
+
     // Create a histogram for the data from the file
     int numBins = dataValues.size();
-    TH1D* hist2 = new TH1D("hist2", "Spectrum from File", numBins, 0, numBins);
+    TH1D* hist2 = new TH1D("hist2", "Spectrum from File", numBins, 0, numBins*slope);
 
     // Fill the histogram with the NORMALIZED data values
     for (int i = 0; i < numBins; i++) {
-        hist2->SetBinContent(i + 1, dataValues[i]/maxYield);  // ROOT histograms are 1-indexed
+        double energy = (i+0.5) * slope;
+        hist2->SetBinContent(hist2->FindBin(energy), dataValues[i]/maxYield);  // ROOT histograms are 1-indexed
     }
 
     // Set histogram style for hist2

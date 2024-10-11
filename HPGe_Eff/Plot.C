@@ -24,7 +24,7 @@ void Plot(const char* filename){
      ////////////////////////////////////////////////////
      TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
      // Create a histogram
-     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 100, 0, 0.1);
+     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 4096, 0, 1.320);
      // Project the variable into the histogram
      ScoringTTRee->Project("hist", "Scoring.Edep");
      // Set the histogram style and labels

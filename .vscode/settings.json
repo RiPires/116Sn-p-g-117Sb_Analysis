@@ -3,6 +3,9 @@
         "*.mac": "cmake",
         "Plot.C": "cpp",
         "iostream": "cpp",
-        "PlotExp.C": "cpp"
+        "PlotExp.C": "cpp",
+        "PlotAll.C": "cpp",
+        "PlotAndFit.C": "cpp",
+        "PlotBoth.C": "cpp"
     }
 }
