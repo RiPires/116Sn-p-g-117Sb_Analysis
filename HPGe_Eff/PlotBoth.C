@@ -37,9 +37,6 @@ void PlotBoth(const char *filename) {
         histNorm->SetBinContent(i - 2, binContent);  // Shift by 2 to adjust bin indices
     }
 
-    cout << "Sim hist nr. bins: " << hist->GetNbinsX() << endl;
-    cout << "Sim norm hist nr. bins: " << histNorm->GetNbinsX() << endl;
-
     // Find the maximum yield (ignoring the first two bins)
     double maxYieldSim = histNorm->GetMaximum();
     std::cout << "Maximum yield (excluding first 2 bins): " << maxYieldSim << std::endl;
@@ -91,9 +88,7 @@ void PlotBoth(const char *filename) {
         double energy = (i+0.5) * slope - 0.000149;
         hist2->SetBinContent(hist2->FindBin(energy), dataValues[i]/max);  // ROOT histograms are 1-indexed
     }
-
-    cout << "Exp hist nr. bins: " << hist2->GetNbinsX() << endl;
-
+    
     // Create a canvas to plot both histograms
     TCanvas* canvas = new TCanvas("canvas", "Overlay of Histograms", 800, 600);
 
