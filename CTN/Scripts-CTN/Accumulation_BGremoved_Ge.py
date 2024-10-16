@@ -31,14 +31,14 @@ roiUp_g = int(164)
 ############################
 ## Calculation of bg rate ##
 ############################
-bgFile = 'DataFilesGe/Background/415114G2.TXT'
+bgFile = '2_Decay/DataFilesGe/Background/415114G2.TXT'
 bgYield = Ge2Lists(bgFile)[0] # counts
 bgSpan = 3849. # seconds = 64 min 9 sec
 bgRate = [counts/bgSpan for counts in bgYield]
 
 ## Loop over Ge data
 decayTime = 900. #s = 15 min
-gePath = 'DataFilesGe/Decay/'
+gePath = '2_Decay/DataFilesGe/Decay/'
 for file in os.listdir(gePath):
     y, ch = Ge2Lists(str(gePath+file))
     ## Add Ka rate

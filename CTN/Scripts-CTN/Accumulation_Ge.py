@@ -31,7 +31,7 @@ roiDown_g = int(160)
 roiUp_g = int(166)
 
 ## Loop over Ge data
-gePath = 'DataFilesGe/Decay/'
+gePath = '2_Decay/DataFilesGe/Decay/'
 for file in os.listdir(gePath):
     y, ch = Ge2Lists(str(gePath+file))
     ## Add Ka counts
