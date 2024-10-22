@@ -30,6 +30,6 @@ def PlotMCA(File):
 #################
 
 ## Decay runs
-path = 'DataFiles_SDD/'
+path = '../DataFiles_SDD/'
 for file in os.listdir(path):
     PlotMCA(str(path+file))

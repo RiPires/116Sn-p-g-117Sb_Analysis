@@ -27,6 +27,6 @@ def Plot(File):
 #################
 
 ## Decay runs
-path = 'Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/'
+path = '../Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/'
 for file in os.listdir(path):
     Plot(str(path+file))
