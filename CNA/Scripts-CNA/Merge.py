@@ -38,3 +38,28 @@ def Merge(dir, det):
         mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
 
     return mergeYield
+
+def MergeAndRate(dir, totTime):
+    """
+    Merges data from different runs of the Ge detector 
+    into a single yield, dividing by the total acquisition 
+    time to get accumulated rate
+
+    INPUTS:
+            dir: path to the directory containing the data files to merge
+            totTime: total acquisition time
+    OUPUTS:
+            array of merged rate
+    """
+
+    ## set up array of zeros for merge rate
+    mergeYield = [0 for i in range(4096)]
+
+    ## loop over the datafiles and merge yield
+    for file in os.listdir(dir):
+        y = Ge2Lists(str(dir+file))[0]
+        mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
+
+    mergeRate = [mergeYield[i]/totTime for i in range(len(mergeYield))] ## s-1
+    
+    return mergeRate
