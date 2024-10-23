@@ -70,8 +70,8 @@ Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
 ## Save calibration rate with background removed values to file ##
 ##################################################################
 
-with open('152Eu_8mm_BgRemovedRate.mca', 'w') as file:
+with open('152Eu_8mm_BgRemoved.mca', 'w') as file:
     for value in calibRateBgRem:
 
-        file.write(str(value)+'\n')
+        file.write(str(int(value*900))+'\n') ## value back to counts instead of count rate
 file.close()
