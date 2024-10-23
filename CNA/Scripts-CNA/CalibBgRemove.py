@@ -65,3 +65,13 @@ rateLab = '152Eu BG removed'
 ## Plot both calib, bg rate and calib with bg removed ##
 ########################################################
 Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
+
+##################################################################
+## Save calibration rate with background removed values to file ##
+##################################################################
+
+with open('152Eu_8mm_BgRemovedRate.mca', 'w') as file:
+    for value in calibRateBgRem:
+
+        file.write(str(value)+'\n')
+file.close()
