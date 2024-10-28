@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "TH1D.h"
 #include "TCanvas.h"
+#include "TRandom3.h"
 
 using namespace std;
 
@@ -31,7 +32,66 @@ void PlotBoth(const char *filename) {
     
     // Project the variable into the histogram
     ScoringTTRee->Project("hist", "Scoring.Edep");
-    
+
+    // Detector resolution parameters
+    double a = 0.001;
+    double b = -0.002093;
+    double c = 0.002541;
+
+    // New histgram for resolution broadened spectrum
+    TH1D *histRes = (TH1D*)hist->Clone("histRes");
+    histRes->Reset();
+
+    // Initialize random number generator
+    TRandom3 rng(0);
+
+    // Loop over each bin in the original histo
+    for (int i = 1; i <= hist->GetNbinsX(); ++i){
+        
+        double E = hist->GetBinCenter(i);           // Energy
+        double content = hist->GetBinContent(i);    // Counts
+
+        if (content == 0) continue;                 // Skip empty bins
+
+        // Calculate FWHM at energy E
+        double dE = a + b * sqrt(E) + c * E;
+        double sigma_E = dE / 2.355;
+
+        // Redistribute bin content using Gaussian
+
+        for (int k = 0; k < content; ++k){
+            
+            // Sampling new energy
+            double newE = rng.Gaus(E, sigma_E);
+
+            // Find the bin corresponding to this new energy
+            int bin = histRes->FindBin(newE);
+
+            // Only add counts within the histogram range
+            if (bin >= 1 && bin <= histRes->GetNbinsX()){
+                histRes->AddBinContent(bin, 1);
+            }
+        }
+    }
+
+    TCanvas *canvaRes = new TCanvas("canvaRes", "Resolution effect comparission", 800, 600);
+    hist->SetLineColor(kBlue);
+    histRes->SetLineColor(kRed);
+    hist->Draw("HIST");
+    histRes->Draw("HIST SAME");
+
+    // Histogram legend
+    auto legendRes = new TLegend(0.6,0.7,0.9,0.9);
+    legendRes->AddEntry(hist, "Raw");
+    legendRes->AddEntry(histRes, "Resolution");
+    legendRes->Draw();
+
+    // Update the canvas to display the plot
+    canvaRes->SetLogy();
+    canvaRes->Update();
+    gPad->Update();
+
+
     // Open the experimental data file
     std::ifstream infile("152Eu_8mm_BgRemovedRate.mca");
 
@@ -52,7 +112,7 @@ void PlotBoth(const char *filename) {
     // Now read the spectrum data starting from line 15
     double value;
     while (infile >> value) {
-        dataValues.push_back(value);
+        dataValues.push_back(value*900);
     }
 
     infile.close();  // Close the file after reading
