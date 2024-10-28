@@ -70,8 +70,12 @@ Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
 ## Save calibration rate with background removed values to file ##
 ##################################################################
 
+## And check total nr of measured events without background
+totEvnt = 0
 with open('152Eu_8mm_BgRemoved.mca', 'w') as file:
     for value in calibRateBgRem:
-
+        totEvnt += int(value*900)
         file.write(str(int(value*900))+'\n') ## value back to counts instead of count rate
 file.close()
+
+print("Total nr of events = ", totEvnt)
