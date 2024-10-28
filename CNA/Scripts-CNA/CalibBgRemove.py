@@ -4,9 +4,9 @@
 ####################################################
 
 ## ---------------------------- ##
-from PlotData import *
-from ReadData import *
-from Merge import *
+from include.PlotData import *
+from include.ReadData import *
+from include.Merge import *
 ## ---------------------------- ##
 
 ##############################
