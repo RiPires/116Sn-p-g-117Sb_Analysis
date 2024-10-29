@@ -76,7 +76,13 @@ def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
     xlabel('Energy (keV)',fontsize=22)
     xlim(left=0.)
     ylabel('Rate ($s^{-1}$)', fontsize=22)
+    figManager = plt.get_current_fig_manager()
+    figManager.window.showMaximized()
+    figure=gcf()
+    figure.set_size_inches(16,9)
+    savefig(fname=str(lab3+'.svg'), dpi=200, format='svg')
     show()
+    
 
     return '-------------------'
 

@@ -37,7 +37,7 @@ bgPath = '../Calibrations/HPGe/Background/'
 ## Merge background yield
 mergeBgYield = Merge(bgPath, 'ge')
 ## Background acquisition time
-bgTime = 35*1800 + 777 ## seconds: 35 runs * 1800 sec each + 777 sec last run
+bgTime = 35*1800 + 777 ## seconds: 35 full runs * 1800 sec each + 777 sec last run
 ## Background rate
 bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
 ## Set label
@@ -56,7 +56,7 @@ bgLab = 'Background'
 
 calibRateBgRem = [(calibRate[i] - bgRate[i]) for i in range(len(calibRate))]
 ## Set label
-rateLab = '152Eu BG removed'
+rateLab = 'Run10_152Eu-8mm-BG removed'
 ## Plot calib rate bg removed
 #PlotRateLogy(ch_hpge, calibRateBgRem,rateLab)
 
@@ -69,13 +69,7 @@ Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
 ##################################################################
 ## Save calibration rate with background removed values to file ##
 ##################################################################
-
-## And check total nr of measured events without background
-totEvnt = 0
-with open('152Eu_8mm_BgRemoved.mca', 'w') as file:
+with open('Run10_152Eu_8mm_BgRemoved.mca', 'w') as file:
     for value in calibRateBgRem:
-        totEvnt += int(value*900)
         file.write(str(int(value*900))+'\n') ## value back to counts instead of count rate
 file.close()
-
-print("Total nr of events = ", totEvnt)
