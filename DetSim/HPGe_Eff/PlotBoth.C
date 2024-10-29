@@ -70,9 +70,10 @@ void PlotBoth(const char *filename) {
     }
 
     TCanvas *canvaRes = new TCanvas("canvaRes", "Resolution effect comparission", 800, 600);
-    hist->SetLineColor(kBlue);
-    histRes->SetLineColor(kRed);
+    hist->SetLineColor(kRed);
+    histRes->SetLineColor(kBlue);
     hist->Draw("HIST");
+    hist->SetStats(0);
     histRes->Draw("HIST SAME");
 
     // Histogram legend

@@ -50,6 +50,10 @@ void MyDetectorConstruction::DefineMaterial()
     //  Defines detector material as Ge  //
     detMat =  new G4Material("Germanium", 5.323*g/cm3, 1);
     detMat->AddElement(Ge, 1.);
+
+    // Defines carbon fiber window material
+    cw = new G4Material("CarbonFiber", 1.75*g/cm3, 1);
+    cw->AddElement(C, 1.);
     
 }
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
@@ -88,9 +92,9 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //  Defines Carbon Fiber window  //
     G4double Rin_Win = 0.*mm;
     G4double Rout_Win = 38*mm;
-    G4double Thick_Win = 0.45*mm;
+    G4double Thick_Win = 0.375*mm;
     solidWindow = new G4Tubs("SolidWindow", Rin_Win, Rout_Win, Thick_Win, 0., 2*pi);
-    logicWindow = new G4LogicalVolume(solidWindow, Epoxy, "LogicWindow");
+    logicWindow = new G4LogicalVolume(solidWindow, cw, "LogicWindow");
     physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -4.85*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
     
     //  Defines mylar  window  //
