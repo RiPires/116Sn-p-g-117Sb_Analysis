@@ -60,7 +60,8 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "PlotCalib.C": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/Lenovo/OneDrive - Universidade de Lisboa/NUCRIA/TESE/Activations/116Sn(p,g)117Sb_Analysis/DetSim/117Sb_Source"
 }

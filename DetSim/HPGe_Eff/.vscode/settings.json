@@ -11,6 +11,9 @@
         "PlotAndFit.C": "cpp",
         "iostream": "cpp",
         "PlotExp.C": "cpp",
-        "MergeBg.C": "cpp"
+        "MergeBg.C": "cpp",
+        "PlotBoth.C": "cpp",
+        "PlotBoth copy.C": "cpp",
+        "PlotCalib.C": "cpp"
     }
 }
