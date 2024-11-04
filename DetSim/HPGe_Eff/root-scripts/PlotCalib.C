@@ -19,6 +19,12 @@ void PlotCalib(const char *simFile, const char *expFile) {
     double slope = 0.0003225; // MeV/ch
     double intercept = -0.000149; // MeV
     int nrCh = 4096; 
+
+    // Build costume label for saved figure and hits name
+    string lab = simFile;
+    lab.erase(lab.begin(), lab.begin()+21);
+    lab.erase(lab.end()-5, lab.end());
+    const char *histLab = lab.c_str();
     
     // Open the simulated ROOT file
     TFile *InputTFile = new TFile(simFile, "READ");
@@ -30,7 +36,7 @@ void PlotCalib(const char *simFile, const char *expFile) {
     // Access the Energy Scoring tree in the file  
     TTree *ScoringTTRee = (TTree*)InputTFile->Get("Scoring"); 
     // Create a histogram
-    TH1D* hist = new TH1D("hist", simFile, nrCh, intercept, nrCh*slope);
+    TH1D* hist = new TH1D("hist", histLab, nrCh, intercept, nrCh*slope);
     // Project the variable into the histogram
     ScoringTTRee->Project("hist", "Scoring.Edep");
 
@@ -105,7 +111,9 @@ void PlotCalib(const char *simFile, const char *expFile) {
     }
     
     // Create a canvas to plot both histograms
-    TCanvas* canvas = new TCanvas("canvas", "Overlay of Histograms", 800, 600);
+    string canvasTitle = "Exp vs Sim "+lab;
+    const char *cTitle = canvasTitle.c_str();
+    TCanvas* canvas = new TCanvas("canvas", cTitle, 1200, 900);
 
     histRes->SetLineColor(kBlue);
     histRes->SetLineWidth(1);
@@ -130,10 +138,13 @@ void PlotCalib(const char *simFile, const char *expFile) {
     // Update the canvas to display the plot
     canvas->SetLogy();
     canvas->Update();
-    canvas->SaveAs("HPGe_152Eu_8mm_900s-activity_bgrm_res.svg");
+    // Save figure
+    string s = "HPGe_"+lab+"_900s-activity_bgrm_res.png";
+    const char *figName = s.c_str();
+    canvas->SaveAs(figName);
     gPad->Update();
 
-    cin.get();
+    //cin.get();
 }
 
 void Run(){

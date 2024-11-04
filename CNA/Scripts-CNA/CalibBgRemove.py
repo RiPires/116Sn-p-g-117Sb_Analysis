@@ -24,7 +24,7 @@ calibRate = [calibYield[i]/calibTime for i in range(len(calibYield))]
 ## Set channel axes
 ch_hpge = [((i+1)*0.3225-0.149) for i in range(4096)]
 ## Set label
-lab = '152Eu - 8 mm'
+lab = 'Run152Eu - 8 mm'
 ## Plot calib rate
 #PlotRateLogy(ch_hpge, calibRate, lab)
 
