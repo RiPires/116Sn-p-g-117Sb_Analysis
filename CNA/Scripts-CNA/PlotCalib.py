@@ -14,16 +14,16 @@ from include.ReadData import *
 ##y, ch = Ge2Lists(calibHPGeFile)
 ##PlotLogy(ch, y, calibHPGeFile.replace('../Calibrations/HPGe/CalibrationRuns_PosExp/',''))
 
-## HPGe detector path
+"""## HPGe detector path
 calibPathHPGe = '../Calibrations/HPGe/CalibrationRuns_PosExp/'
 ## Loop over HPGe calibration runs
 for file in os.listdir(calibPathHPGe):
     y, ch = Ge2Lists(str(calibPathHPGe+file))
-    PlotLogy(ch, y, str(file).replace('.mca', ''))
+    PlotLogy(ch, y, str(file).replace('.mca', ''))"""
 
-""" ## SDD detector path
+## SDD detector path
 calibPathSDD = '../Calibrations/SDD/CalibrationRuns_PosExp/'
 ## Loop over SDD calibration runs
 for file in os.listdir(calibPathSDD):
     y, ch = MCA2Lists(str(calibPathSDD+file))
-    Plot(ch, y, str(file).replace('.mca', '')) """
+    Plot(ch, y, str(file).replace('.mca', ''))

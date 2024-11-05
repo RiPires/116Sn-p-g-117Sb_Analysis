@@ -21,7 +21,7 @@ def MCA2Lists(File):
     HOW TO USE:
         MyYield, MyChannel = MCA2Lists("MyFile.mca")
     """
-    with open(File, 'r') as file:
+    with open(File, 'r',encoding='iso8859-4') as file:
         reader = csv.reader(file, delimiter="\n", skipinitialspace=True)
         data = list(reader)
     ch = []

@@ -1,5 +1,7 @@
 #include "construction.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4Region.hh"
+#include "G4ProductionCuts.hh"
 
 
 MyDetectorConstruction::MyDetectorConstruction()

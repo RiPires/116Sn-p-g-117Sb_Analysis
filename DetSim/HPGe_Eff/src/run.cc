@@ -8,6 +8,7 @@ MyRunAction::MyRunAction()
     // Creates Tuple for Energy Scoring info.
     man->CreateNtuple("Scoring", "Scoring");
     man->CreateNtupleDColumn("Edep");
+    man->CreateNtupleDColumn("edep");
     man->FinishNtuple(0);
 
     // Tuples for hit position in the detector
