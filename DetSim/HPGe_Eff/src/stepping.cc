@@ -1,5 +1,4 @@
 #include "stepping.hh"
-#include "G4SystemOfUnits.hh"
 
 MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
@@ -26,22 +25,16 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     if(volume != ScoringVolume) 
         return; // do nothing                                  
 
-    // Define energy deposit threshold
-    G4double edepThreshold = 10. * keV;
-
     // Get the energy deposit of this step
     G4double edep = step->GetTotalEnergyDeposit(); 
+    // Adds it to the total energy deposited in the event
+    EventAction->AddEdep(edep);
 
     // Inicializes an instance of the AnalysisManager
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-    // Add the energy deposit if it exceeds the threshold
-    if (edep > edepThreshold)
-    {
-        EventAction->AddEdep(edep);
-            
-        // Fills tuple for energy deposition in the step
-        man->FillNtupleDColumn(0, 1, edep);
-        man->AddNtupleRow(1); 
-    }
+    // Fills tuple for energy deposition in the step
+    man->FillNtupleDColumn(0, 1, edep);
+    man->AddNtupleRow(1); 
+    
 }
