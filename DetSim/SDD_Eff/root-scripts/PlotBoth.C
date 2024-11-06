@@ -16,9 +16,9 @@ void PlotBoth(const char *filename) {
     TRandom3 rng(0);
 
     // Energy conversion factor
-    double slope = 0.0003225; // MeV/ch
-    double intercept = -0.000149; // MeV
-    int nrCh = 4096; 
+    double slope = 0.000031067; // MeV/ch
+    double intercept = -0.000005703; // MeV
+    int nrCh = 2048; 
     
     // Open the ROOT file
     TFile *InputTFile = new TFile(filename, "READ");
@@ -30,7 +30,7 @@ void PlotBoth(const char *filename) {
     // Access the Energy Scoring tree in the file  
     TTree *ScoringTTRee = (TTree*)InputTFile->Get("Scoring"); 
     // Create a histogram
-    TH1D* hist = new TH1D("hist", "HPGe 152Eu @ 8 mm", nrCh, intercept, nrCh*slope);
+    TH1D* hist = new TH1D("hist", "SDD 152Eu @ 16 mm", nrCh, intercept, nrCh*slope);
     // Project the variable into the histogram
     ScoringTTRee->Project("hist", "Scoring.Edep");
 
@@ -124,15 +124,7 @@ void PlotBoth(const char *filename) {
     }
     
     // Create a canvas to plot both histograms
-    TCanvas* canvas = new TCanvas("canvas", "Overlay of Histograms", 800, 600);
-
-    // Draw the original normalized histogram (histNorm) first
-    // hist->SetLineColor(kBlue);  // Set different color for the normalized histogram
-    // hist->SetLineWidth(2);
-    // hist->Draw("HIST");        // "HIST" option to draw as histogram
-    // hist->GetXaxis()->SetTitle("Energy (MeV)");
-    // hist->GetYaxis()->SetTitle("Count Rate (s^{-1})");
-    // hist->SetStats(0);
+    TCanvas* canvas = new TCanvas("canvas", "Overlay of Histograms", 1200, 900);
 
     histRes->SetLineColor(kBlue);
     histRes->SetLineWidth(1);
@@ -157,6 +149,6 @@ void PlotBoth(const char *filename) {
     // Update the canvas to display the plot
     canvas->SetLogy();
     canvas->Update();
-    canvas->SaveAs("HPGe_152Eu_8mm_900s-activity_bgrm_res.svg");
+    //canvas->SaveAs("HPGe_152Eu_8mm_900s-activity_bgrm_res.svg");
     gPad->Update();
 }
