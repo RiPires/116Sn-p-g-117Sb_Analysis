@@ -34,13 +34,13 @@ calibYield137Cs = MCA2Lists(calibFile137Cs)[0]
 calibYield133Ba = MCA2Lists(calibFile133Ba)[0]
 
 ## Energies for calibration
-calibEnergies152Eu = [121.78, 244.70, 344.28, 411.12, 443.96, 778.9, 867.38, 964.06, 1085.84, 1112.08]
+calibEnergies152Eu = [5.633, 6.205, 6.587, 7.178, 39.522, 40.117, 45.370, 46.578]
 calibEnergies133Ba = [4.285, 4.619, 4.936, 5.28, 30.625, 30.973, 34.964, 35.822]
 calibEnergies137Cs = [661.66]
 
 ## Regions of interest, in channel, for each photo-peak
-ROId152Eu = [366, 747, 1057, 1267, 1369, 2399, 2679, 2978, 3358, 3432]
-ROIu152Eu = [393, 771, 1081, 1282, 1385, 2431, 2699, 3001, 3373, 3458]
+ROId152Eu = [175, 194, 207, 225, 1261, 1282, 1448, 1491]
+ROIu152Eu = [188, 206, 218, 235, 1281, 1308, 1472, 1505]
 
 ROId133Ba = [132, 144, 156, 168, 981, 991, 1116, 1142]
 ROIu133Ba = [144, 155, 162, 173, 989, 1008, 1136, 1164]
@@ -49,17 +49,17 @@ ROId137Cs = [2037]
 ROIu137Cs = [2071]
 
 ## Analyse calibration run
-calibCents, calibErrs, calibSigmas, calibFWHM = Analyze(calibYield133Ba, ROId133Ba, ROIu133Ba)
+calibCents, calibErrs, calibSigmas, calibFWHM = Analyze(calibYield152Eu, ROId152Eu, ROIu152Eu)
 
 ## Write analysis to output file
-with open("AnalyseCalibSpectra_133Ba.txt", "w") as file:
+with open("AnalyseCalibSpectra_152Eu.txt", "w") as file:
     header = "Peak nr. \t Energy (keV) \t ROId \t ROIu \t Centroid \t Sigma \t FWHM \n"
     file.write(header)
-    for i in range(len(calibEnergies133Ba)):
+    for i in range(len(calibEnergies152Eu)):
         file.write(str(i+1)+'\t'+
-                   str(calibEnergies133Ba[i])+'\t'+
-                   str(ROId133Ba[i])+'\t'+
-                   str(ROIu133Ba[i])+'\t'+
+                   str(calibEnergies152Eu[i])+'\t'+
+                   str(ROId152Eu[i])+'\t'+
+                   str(ROIu152Eu[i])+'\t'+
                    str(calibCents[i])+'\t'+
                    str(calibSigmas[i])+'\t'+
                    str(calibFWHM[i])+'\n')    
@@ -67,12 +67,12 @@ with open("AnalyseCalibSpectra_133Ba.txt", "w") as file:
     file.close()
 
 ## Perform calibration
-m, b, dm, db = Calib(calibEnergies133Ba, calibCents, calibErrs)
+m, b, dm, db = Calib(calibEnergies152Eu, calibCents, calibErrs)
 
 ## Calculate Resolution: R = FWHM/E
-Res = [(calibFWHM[i]/calibEnergies133Ba[i] * 100) for i in range(len(calibEnergies133Ba))] ## in percentage
+Res = [(calibFWHM[i]/calibEnergies152Eu[i] * 100) for i in range(len(calibEnergies152Eu))] ## in percentage
 
-oneOverSqrtE = [(1/np.sqrt(calibEnergies133Ba[i])) for i in range(len(calibEnergies133Ba))]
+oneOverSqrtE = [(1/np.sqrt(calibEnergies152Eu[i])) for i in range(len(calibEnergies152Eu))]
 
 ## Perform the linear regression for resolution
 
