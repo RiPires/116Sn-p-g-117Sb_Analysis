@@ -27,10 +27,10 @@ void MyDetectorConstruction::DefineMaterial()
     Cr = nist->FindOrBuildElement("Cr");
     W = nist->FindOrBuildElement("W");
 
-    //  Defines world material as Air  //
+    // Defines world material as Air  //
     worldMat = nist->FindOrBuildMaterial("G4_AIR");
     
-    //  Defines detector material as Si  //
+    // Defines detector material as Si  //
     detMat =  new G4Material("Silicon", 2.329*g/cm3, 1);
     detMat->AddElement(Si, 1.);
 
@@ -68,7 +68,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double Rin_Si = 0*mm;
     G4double Rout_Si = 2.8209*mm;
     G4double depth_Si = 500*um;
-    solidSi = new G4Tubs("SolidSi", Rin_Si, Rout_Si, depth_Si, 0., 2*pi);
+    solidSi = new G4Tubs("SolidSi", Rin_Si, Rout_Si, depth_Si/2, 0., 2*pi);
     logicSi = new G4LogicalVolume(solidSi, detMat, "LogicSi");
     physSi = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.65*mm), logicSi, "PhysSi", logicWorld, false, 0., true);
 
@@ -76,33 +76,33 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double Rin_Win = 0.*mm;
     G4double Rout_Win = 3.5*mm;
     G4double Thick_Win = 12*um;
-    solidWindow = new G4Tubs("SolidWindow", Rin_Win, Rout_Win, Thick_Win, 0., 2*pi);
+    solidWindow = new G4Tubs("SolidWindow", Rin_Win, Rout_Win, Thick_Win/2, 0., 2*pi);
     logicWindow = new G4LogicalVolume(solidWindow, beWinMat, "LogicWindow");
-    physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.06*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
+    physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.006*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
     
     // Defines Multi Layer Collimator layers
     // W layer
     G4double R_Coll = 2.615*mm;
     G4double thick_W = 100*um;
-    solidW = new G4Tubs("SolidTungsten", R_Coll, Rout_Si, thick_W, 0., 2*pi);
-    logicW = new G4LogicalVolume(solidW, collMatW, "LogicTungseten");
+    solidW = new G4Tubs("SolidTungsten", R_Coll, Rout_Si, thick_W/2, 0., 2*pi);
+    logicW = new G4LogicalVolume(solidW, collMatW, "LogicTungsten");
     physW = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.95*mm), logicW, "PhysTungsten", logicWorld, false, 0., true);
 
     // Cr layer
     G4double thick_Cr = 35*um;
-    solidCr = new G4Tubs("SolidChromium", R_Coll, Rout_Si, thick_Cr, 0., 2*pi);
+    solidCr = new G4Tubs("SolidChromium", R_Coll, Rout_Si, thick_Cr/2, 0., 2*pi);
     logicCr = new G4LogicalVolume(solidCr, collMatCr, "LogicChromium");
     physCr = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.0175*mm), logicCr, "PhysChromium", logicWorld, false, 0., true);
 
     // Ti layer
     G4double thick_Ti = 15*um;
-    solidTi = new G4Tubs("SolidTitanium", R_Coll, Rout_Si, thick_Ti, 0., 2*pi);
+    solidTi = new G4Tubs("SolidTitanium", R_Coll, Rout_Si, thick_Ti/2, 0., 2*pi);
     logicTi = new G4LogicalVolume(solidTi, collMatTi, "LogicTitanium");
     physTi = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.0425*mm), logicTi, "PhysTitanium", logicWorld, false, 0., true);
 
     // Al layer
-    G4double thick_Al = 100*um;
-    solidAl = new G4Tubs("SolidAluminium", R_Coll, Rout_Si, thick_Al, 0., 2*pi);
+    G4double thick_Al = 75*um;
+    solidAl = new G4Tubs("SolidAluminium", R_Coll, Rout_Si, thick_Al/2, 0., 2*pi);
     logicAl = new G4LogicalVolume(solidAl, collMatAl, "LogicAluminium");
     physAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.0875*mm), logicAl, "PhysAluminium", logicWorld, false, 0., true);
 
