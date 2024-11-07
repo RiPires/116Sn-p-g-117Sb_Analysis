@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void PlotBoth(const char *filename) {
+void PlotBoth(const char *simFilename, const char *expFilename) {
     
     // Initialize random number generator
     TRandom3 rng(0);
@@ -19,9 +19,16 @@ void PlotBoth(const char *filename) {
     double slope = 0.000031067; // MeV/ch
     double intercept = -0.000005703; // MeV
     int nrCh = 2048; 
+
+    // Build costume label for figures
+    string lab = simFilename;
+    lab.erase(lab.begin(), lab.begin()+21);
+    lab.erase(lab.end()-5, lab.end());
+    lab.append(" SDD");
+    const char *histLab = lab.c_str();
     
     // Open the ROOT file
-    TFile *InputTFile = new TFile(filename, "READ");
+    TFile *InputTFile = new TFile(simFilename, "READ");
     // Check if the file is open successfully
     if (!InputTFile || InputTFile->IsZombie()){
         cout << "Error: Could not open ROOT file." << endl;
@@ -30,14 +37,14 @@ void PlotBoth(const char *filename) {
     // Access the Energy Scoring tree in the file  
     TTree *ScoringTTRee = (TTree*)InputTFile->Get("Scoring"); 
     // Create a histogram
-    TH1D* hist = new TH1D("hist", "SDD 152Eu @ 16 mm", nrCh, intercept, nrCh*slope);
+    TH1D* hist = new TH1D("hist", histLab, nrCh, intercept, nrCh*slope);
     // Project the variable into the histogram
     ScoringTTRee->Project("hist", "Scoring.Edep");
 
     // Detector resolution parameters
-    double a = 0.002162;
-    double b = -0.002756;
-    double c = 0.003346;
+    double a = 0.000111;
+    double b = -0.00043;
+    double c = 0.006576;
 
     // New histgram for resolution broadened spectrum
     TH1D *histRes = (TH1D*)hist->Clone("histRes");
@@ -69,7 +76,7 @@ void PlotBoth(const char *filename) {
         }
     }
 
-    TCanvas *canvaRes = new TCanvas("canvaRes", "Resolution effect comparission", 800, 600);
+    TCanvas *canvaRes = new TCanvas("canvaRes", histLab, 800, 600);
     hist->SetLineColor(kRed);
     histRes->SetLineColor(kBlue);
     hist->Draw("HIST");
@@ -83,22 +90,22 @@ void PlotBoth(const char *filename) {
     legendRes->Draw();
 
     // Update the canvas to display the plot
-    canvaRes->SetLogy();
+    //canvaRes->SetLogy();
     canvaRes->Update();
     gPad->Update();
 
 
     // Open the experimental data file
-    std::ifstream infile("152Eu_8mm_BgRemovedRate.mca");
+    std::ifstream infile(expFilename);
 
     if (!infile.is_open()) {
         std::cerr << "Error: Could not open the file!" << std::endl;
         return;
     }
 
-    // Read the file and skip the first 15 lines
+    // Read the file and skip the first 12 lines
     std::string line;
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 12; i++) {
         std::getline(infile, line);
     }
 
@@ -108,23 +115,23 @@ void PlotBoth(const char *filename) {
     // Now read the spectrum data starting from line 15
     double value;
     while (infile >> value) {
-        dataValues.push_back(value*900);
+        dataValues.push_back(value);
     }
 
     infile.close();  // Close the file after reading
 
     // Create a histogram for the data from the file, in channel units
     int numBins = dataValues.size();
-    TH1D* hist2 = new TH1D("hist2", "Spectrum from File", numBins, 0, numBins*slope);
+    TH1D* histExp = new TH1D("histExp", "Spectrum from File", nrCh, intercept, nrCh*slope);
 
     // Fill the histogram with channels converted to energy
     for (int i = 0; i < numBins; i++) {
         double energy = (i+0.5) * slope + intercept;
-        hist2->SetBinContent(hist2->FindBin(energy), dataValues[i]);  // ROOT histograms are 1-indexed
+        histExp->SetBinContent(histExp->FindBin(energy), dataValues[i]);  // ROOT histograms are 1-indexed
     }
     
     // Create a canvas to plot both histograms
-    TCanvas* canvas = new TCanvas("canvas", "Overlay of Histograms", 1200, 900);
+    TCanvas* canvas = new TCanvas("canvas", "Exp vs Sim SDD Calib", 1200, 900);
 
     histRes->SetLineColor(kBlue);
     histRes->SetLineWidth(1);
@@ -133,17 +140,17 @@ void PlotBoth(const char *filename) {
     histRes->GetYaxis()->SetTitle("Yield");
     histRes->SetStats(0);
 
-    // Draw the new histogram (hist2) with energy x-axis on the same canvas
-    // Set histogram style for hist2
-    hist2->SetLineColor(kRed);
-    hist2->SetLineWidth(1);
-    hist2->Draw("HIST SAME");  // "SAME" option to overlay histograms
+    // Draw the new histogram (histExp) with energy x-axis on the same canvas
+    // Set histogram style for histExp
+    histExp->SetLineColor(kRed);
+    histExp->SetLineWidth(1);
+    histExp->Draw("HIST SAME");  // "SAME" option to overlay histograms
 
     // Histogram legend
     auto legend = new TLegend(0.6,0.7,0.9,0.9);
     //legend->AddEntry(hist, "Simulated Raw");
     legend->AddEntry(histRes, "Simulated Resolution corrected");
-    legend->AddEntry(hist2, "Experimental Bg removed");
+    legend->AddEntry(histExp, "Experimental");
     legend->Draw();
 
     // Update the canvas to display the plot

@@ -32,15 +32,15 @@ private:
     
     ///G4double *xWorld, *yWorld, *zWorld; 
     G4Box *solidWorld;
-    G4Tubs *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi;
-    G4LogicalVolume *logicWorld, *logicWindow, *logicW, *logicCr, *logicTi, *logicAl, *logicSi;
-    G4VPhysicalVolume *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi;
+    G4Tubs *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi, *solidCover;
+    G4LogicalVolume *logicWorld, *logicWindow, *logicW, *logicCr, *logicTi, *logicAl, *logicSi, *logicCover;
+    G4VPhysicalVolume *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi, *physCover;
     G4RotationMatrix *rotation = new G4RotationMatrix();
     
     G4GenericMessenger *fMessenger;
     
-    G4Material *collMatAl, *collMatTi, *collMatCr, *collMatW, *worldMat, *detMat, *silicon, *beWinMat;
-    G4Element *Be, *Al, *Si, *Ti, *Cr, *W;
+    G4Material *collMatAl, *collMatTi, *collMatCr, *collMatW, *worldMat, *detMat, *silicon, *beWinMat, *coverMat;
+    G4Element *Be, *Al, *Si, *Ti, *Cr, *Ni, *W;
     
     void DefineMaterial();
     

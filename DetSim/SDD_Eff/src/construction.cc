@@ -25,6 +25,7 @@ void MyDetectorConstruction::DefineMaterial()
     Si = nist->FindOrBuildElement("Si");
     Ti = nist->FindOrBuildElement("Ti");
     Cr = nist->FindOrBuildElement("Cr");
+    Ni = nist->FindOrBuildElement("Ni");
     W = nist->FindOrBuildElement("W");
 
     // Defines world material as Air  //
@@ -51,15 +52,19 @@ void MyDetectorConstruction::DefineMaterial()
     collMatW = new G4Material("Tungsten", 19.254*g/cm3, 1);
     collMatW->AddElement(W, 1.);
 
+    // Defines detector cover material as Ni
+    coverMat = new G4Material("Nickel", 8.907*g/cm3, 1);
+    coverMat->AddElement(Ni, 1);
+
     
 }
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
     //  Defines WORLD volume  //
-    G4double xWorld = 110*mm;//World half lenght
-    G4double yWorld = 110*mm;//World half height
-    G4double zWorld = 110*mm;//World half depth       
+    G4double xWorld = 50*mm;//World half lenght
+    G4double yWorld = 50*mm;//World half height
+    G4double zWorld = 50*mm;//World half depth       
     solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); 
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
@@ -105,6 +110,14 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     solidAl = new G4Tubs("SolidAluminium", R_Coll, Rout_Si, thick_Al/2, 0., 2*pi);
     logicAl = new G4LogicalVolume(solidAl, collMatAl, "LogicAluminium");
     physAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.0875*mm), logicAl, "PhysAluminium", logicWorld, false, 0., true);
+
+    //  Defines Ni cover  //
+    G4double Din_Ni = 13.97*mm;
+    G4double Dout_Ni = 15.24*mm;
+    G4double Thick_Ni = 2*mm;
+    solidCover = new G4Tubs("SolidWindow", Din_Ni/2, Dout_Ni/2, Thick_Ni/2, 0., 2*pi);
+    logicCover = new G4LogicalVolume(solidCover, coverMat, "LogicCover");
+    physCover = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*mm), logicCover, "PhysCover", logicWorld, false, 0., true);
 
     ScoringVolume = logicSi;
         

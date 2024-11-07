@@ -16,14 +16,15 @@ void PlotCalib(const char *simFile, const char *expFile) {
     TRandom3 rng(0);
 
     // Energy conversion factor
-    double slope = 0.0003225; // MeV/ch
-    double intercept = -0.000149; // MeV
-    int nrCh = 4096; 
+    double slope = 0.000031067; // MeV/ch
+    double intercept = -0.000005703; // MeV
+    int nrCh = 2048;
 
     // Build costume label for saved figure and hits name
     string lab = simFile;
     lab.erase(lab.begin(), lab.begin()+21);
     lab.erase(lab.end()-5, lab.end());
+    lab.append(" SDD");
     const char *histLab = lab.c_str();
     
     // Open the simulated ROOT file
@@ -40,10 +41,10 @@ void PlotCalib(const char *simFile, const char *expFile) {
     // Project the variable into the histogram
     ScoringTTRee->Project("hist", "Scoring.Edep");
 
-    // Detector resolution parameters
-    double a = 0.002162;
-    double b = -0.002756;
-    double c = 0.003346;
+    // Detector resolution parameters (energy in MeV)
+    double a = 0.000111;
+    double b = -0.00043;
+    double c = 0.006576;
 
     // New histgram for resolution broadened spectrum
     TH1D *histRes = (TH1D*)hist->Clone("histRes");
@@ -85,7 +86,7 @@ void PlotCalib(const char *simFile, const char *expFile) {
 
     // Read the file and skip the first 15 lines
     std::string line;
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 12; i++) {
         std::getline(infile, line);
     }
 
@@ -102,12 +103,12 @@ void PlotCalib(const char *simFile, const char *expFile) {
 
     // Create a histogram for the data from the file, in channel units
     int numBins = dataValues.size();
-    TH1D* hist2 = new TH1D("hist2", expFile, numBins, 0, numBins*slope);
+    TH1D* histExp = new TH1D("histExp", expFile, nrCh, intercept, nrCh*slope);
 
     // Fill the histogram with channels converted to energy
     for (int i = 0; i < numBins; i++) {
         double energy = (i+0.5) * slope + intercept;
-        hist2->SetBinContent(hist2->FindBin(energy), dataValues[i]);  // ROOT histograms are 1-indexed
+        histExp->SetBinContent(histExp->FindBin(energy), dataValues[i]);  // ROOT histograms are 1-indexed
     }
     
     // Create a canvas to plot both histograms
@@ -122,40 +123,35 @@ void PlotCalib(const char *simFile, const char *expFile) {
     histRes->GetYaxis()->SetTitle("Yield");
     histRes->SetStats(0);
 
-    // Draw the new histogram (hist2) with energy x-axis on the same canvas
-    // Set histogram style for hist2
-    hist2->SetLineColor(kRed);
-    hist2->SetLineWidth(1);
-    hist2->Draw("HIST SAME");  // "SAME" option to overlay histograms
+    // Draw the new histogram (histExp) with energy x-axis on the same canvas
+    // Set histogram style for histExp
+    histExp->SetLineColor(kRed);
+    histExp->SetLineWidth(1);
+    histExp->Draw("HIST SAME");  // "SAME" option to overlay histograms
 
     // Histogram legend
     auto legend = new TLegend(0.6,0.7,0.9,0.9);
     //legend->AddEntry(hist, "Simulated Raw");
     legend->AddEntry(histRes, "Simulated Resolution corrected");
-    legend->AddEntry(hist2, "Experimental Bg removed");
+    legend->AddEntry(histExp, "Experimental");
     legend->Draw();
 
     // Update the canvas to display the plot
     canvas->SetLogy();
     canvas->Update();
     // Save figure
-    string s = "HPGe_"+lab+"_900s-activity_bgrm_res.png";
-    const char *figName = s.c_str();
-    canvas->SaveAs(figName);
+    //string s = lab+"_res.png";
+    //const char *figName = s.c_str();
+    //canvas->SaveAs(figName);
     gPad->Update();
 
-    //cin.get();
+    cin.get();
 }
 
 void Run(){
-    PlotCalib("../data-files/output_Run01-137Cs-8mm.root", "../data-files/Run01_137Cs_8mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run02-137Cs-50mm.root", "../data-files/Run02_137Cs_50mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run03-152Eu-50mm.root", "../data-files/Run03_152Eu_50mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run04-133Ba-50mm.root", "../data-files/Run04_133Ba_50mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run05-60Co-50mm.root", "../data-files/Run05_60Co_50mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run06-137Cs-100mm.root", "../data-files/Run06_137Cs_100mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run07-152Eu-100mm.root", "../data-files/Run07_152Eu_100mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run08-133Ba-100mm.root", "../data-files/Run08_133Ba_100mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run09-133Ba-8mm.root", "../data-files/Run09_133Ba_8mm_BgRemoved.mca");
-    PlotCalib("../data-files/output_Run10-152Eu-8mm.root", "../data-files/Run10_152Eu_8mm_BgRemoved.mca");
+    PlotCalib("../data-files/output_Run11_152Eu_16mm.root", "../data-files/Run11_152Eu_detSDD_16mm.mca");
+    PlotCalib("../data-files/output_Run12_137Cs_16mm.root", "../data-files/Run12_137Cs_detSDD_16mm.mca");
+    PlotCalib("../data-files/output_Run13_133Ba_16mm.root", "../data-files/Run13_133Ba_detSDD_16mm.mca");
+    PlotCalib("../data-files/output_Run14_152Eu_2mm.root", "../data-files/Run14_152Eu_detSDD_2mm.mca");
+    PlotCalib("../data-files/output_Run15_133Ba_2mm.root", "../data-files/Run15_133Ba_detSDD_2mm.mca");
 }
