@@ -55,9 +55,8 @@ void MyDetectorConstruction::DefineMaterial()
     // Defines detector cover material as Ni
     coverMat = new G4Material("Nickel", 8.907*g/cm3, 1);
     coverMat->AddElement(Ni, 1);
-
-    
 }
+
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {

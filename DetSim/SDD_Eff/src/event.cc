@@ -18,7 +18,7 @@ void MyEventAction::EndOfEventAction(const G4Event*)
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     
     // Sets event energy threshold
-    G4double EdepThreshold = 10. * keV;
+    G4double EdepThreshold = 400. * eV;
 
     // Check if energy in the event is above threshold
     if (Edep > EdepThreshold)
