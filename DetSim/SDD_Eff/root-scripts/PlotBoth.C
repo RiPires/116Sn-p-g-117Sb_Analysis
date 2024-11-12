@@ -22,7 +22,7 @@ void PlotBoth(const char *simFilename, const char *expFilename) {
 
     // Build costume label for figures
     string lab = simFilename;
-    lab.erase(lab.begin(), lab.begin()+21);
+    lab.erase(lab.begin(), lab.begin()+25);
     lab.erase(lab.end()-5, lab.end());
     lab.append(" SDD");
     const char *histLab = lab.c_str();
@@ -157,5 +157,26 @@ void PlotBoth(const char *simFilename, const char *expFilename) {
     canvas->SetLogy();
     canvas->Update();
     //canvas->SaveAs("HPGe_152Eu_8mm_900s-activity_bgrm_res.svg");
+    gPad->Update();
+
+    // Histogram for exp/sim ratio
+    TH1D *histRatio = (TH1D*)histExp->Clone("histRatio");
+    histRatio->SetTitle("Ratio of exp. to sim. data");
+    histRatio->Divide(histRes);
+
+    // Configure the ratio histogram's appearance
+    histRatio->GetXaxis()->SetTitle("Energy (MeV)");
+    histRatio->GetYaxis()->SetTitle("Ratio (Exp / Sim)");
+    histRatio->SetLineColor(kBlack);
+    histRatio->SetLineWidth(1);
+    histRatio->SetStats(0);
+
+    // Create a new canvas for the ratio plot
+    TCanvas* canvasRatio = new TCanvas("canvasRatio", "Ratio Exp/Sim", 1200, 900);
+    histRatio->Draw("HIST");  // Draw the ratio histogram
+
+    // Update the canvas to display the plot
+    canvasRatio->SetLogy();
+    canvasRatio->Update();
     gPad->Update();
 }
