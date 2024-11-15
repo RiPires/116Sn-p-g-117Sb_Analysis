@@ -69,13 +69,13 @@ void Plot(const char* filename){
     //////////////////////////////////////////////////
     TCanvas* canvasZ = new TCanvas("canvasZ", "Hits position z ", 800, 600);
     // Create a histogram
-    TH1D* histZ = new TH1D("histZ", "Ge hits position z ", 100, 0., 100.);
+    TH1D* histZ = new TH1D("histZ", "SDD hits position z ", 100, -2.0, -1.3);
     // Project the variable into the histogram
     StepsTTree->Project("histZ", "Position.zPos");
     // Set the histogram style and labels
     histZ->SetLineColor(kBlue);
     histZ->SetLineWidth(2);
-    histZ->GetXaxis()->SetTitle("z (cm)");
+    histZ->GetXaxis()->SetTitle("z (mm)");
     histZ->GetYaxis()->SetTitle("Counts");
     // Draw the histogram on the canvas
     histZ->Draw();
@@ -95,7 +95,7 @@ void Plot(const char* filename){
     // Create a canvas for plotting hit x vs y position
     TCanvas* canvas4 = new TCanvas("canvas4", "Hits position x vs y ", 800, 600);
     // Create a histogram
-    TH2F* hist4 = new TH2F("hist4", "Ge hits position x vs y ", 100, -30., 30., 100, -30., 30.);
+    TH2F* hist4 = new TH2F("hist4", "SDD hits position x vs y ", 100, -3., 3., 100, -3., 3.);
     // Fill the histogram
     Long64_t nEntries = StepsTTree->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
@@ -108,8 +108,8 @@ void Plot(const char* filename){
         }
     }   
     // Set the histogram style and labels
-    hist4->GetXaxis()->SetTitle("x (cm)");
-    hist4->GetYaxis()->SetTitle("y (cm)");
+    hist4->GetXaxis()->SetTitle("x (mm)");
+    hist4->GetYaxis()->SetTitle("y (mm)");
     hist4->Draw("COLZ");
     // Display the canvas
     canvas4->Draw();

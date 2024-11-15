@@ -32,7 +32,7 @@ private:
     
     ///G4double *xWorld, *yWorld, *zWorld; 
     G4Box *solidWorld;
-    G4Tubs *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi, *solidCover;
+    G4Tubs *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi, *solidNi, *solidHole;
     G4LogicalVolume *logicWorld, *logicWindow, *logicW, *logicCr, *logicTi, *logicAl, *logicSi, *logicCover;
     G4VPhysicalVolume *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi, *physCover;
     G4RotationMatrix *rotation = new G4RotationMatrix();

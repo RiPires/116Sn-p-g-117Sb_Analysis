@@ -79,7 +79,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     solidGe = new G4Tubs("SolidGeBack", 0.*mm, 27.95*mm, 31.85*mm, 0., 2*pi); // 55.9 mm diameter
 
     //  Subtracts inner hole from the Ge crystal  //
-    G4VSolid *solidDetector = new G4SubtractionSolid("RealTargetFrame", solidGe, solidHole, rotation, G4ThreeVector(0., 0., 8.3*mm));
+    G4VSolid *solidDetector = new G4SubtractionSolid("SolidDetector", solidGe, solidHole, rotation, G4ThreeVector(0., 0., 8.3*mm));
     logicDetector = new G4LogicalVolume(solidDetector, detMat, "LogicDetector");
     physDetector = new G4PVPlacement(0, G4ThreeVector(0., 0., 30.*mm), logicDetector, "PhysDetector", logicWorld, false, 0., true);
     

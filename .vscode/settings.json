@@ -63,7 +63,10 @@
         "typeinfo": "cpp",
         "PlotCalib.C": "cpp",
         "FitPeak.C": "cpp",
-        "hadd.C": "cpp"
+        "hadd.C": "cpp",
+        "PlotBoth copy.C": "cpp",
+        "PlotBothNorm.C": "cpp",
+        "PlotDistance.C": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/Lenovo/OneDrive - Universidade de Lisboa/NUCRIA/TESE/Activations/116Sn(p,g)117Sb_Analysis/DetSim/117Sb_Source"
 }

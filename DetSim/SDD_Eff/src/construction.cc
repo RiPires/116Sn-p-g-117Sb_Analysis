@@ -61,9 +61,9 @@ void MyDetectorConstruction::DefineMaterial()
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
     //  Defines WORLD volume  //
-    G4double xWorld = 50*mm;//World half lenght
-    G4double yWorld = 50*mm;//World half height
-    G4double zWorld = 50*mm;//World half depth       
+    G4double xWorld = 20*mm;//World half lenght
+    G4double yWorld = 20*mm;//World half height
+    G4double zWorld = 20*mm;//World half depth       
     solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); 
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
@@ -79,10 +79,10 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //  Defines Be window  //
     G4double Rin_Win = 0.*mm;
     G4double Rout_Win = 3.5*mm;
-    G4double Thick_Win = 12*um;
+    G4double Thick_Win = 12.5*um;
     solidWindow = new G4Tubs("SolidWindow", Rin_Win, Rout_Win, Thick_Win/2, 0., 2*pi);
     logicWindow = new G4LogicalVolume(solidWindow, beWinMat, "LogicWindow");
-    physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.006*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
+    physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.00625*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
     
     // Defines Multi Layer Collimator layers
     // W layer
@@ -110,11 +110,17 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     logicAl = new G4LogicalVolume(solidAl, collMatAl, "LogicAluminium");
     physAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.0875*mm), logicAl, "PhysAluminium", logicWorld, false, 0., true);
 
-    //  Defines Ni cover  //
-    G4double Din_Ni = 13.97*mm;
+    //  Defines Ni cover unholed 
     G4double Dout_Ni = 15.24*mm;
     G4double Thick_Ni = 2*mm;
-    solidCover = new G4Tubs("SolidWindow", Din_Ni/2, Dout_Ni/2, Thick_Ni/2, 0., 2*pi);
+    solidNi = new G4Tubs("SolidNi", Rout_Win, Dout_Ni/2, Thick_Ni/2, 0., 2*pi);
+
+    // Defines cylinder for cover hole
+    G4double thickHole = Thick_Ni;
+    solidHole = new G4Tubs("SolidHole", Rout_Win-0.1*mm, Dout_Ni/2-0.127*mm, thickHole/2, 0., 2*pi);
+
+    // Subtract inner hole from the Ni cover
+    G4VSolid *solidCover = new G4SubtractionSolid("SolidCover", solidNi, solidHole, rotation, G4ThreeVector(0., 0., -0.127*mm));
     logicCover = new G4LogicalVolume(solidCover, coverMat, "LogicCover");
     physCover = new G4PVPlacement(0, G4ThreeVector(0., 0., -1.*mm), logicCover, "PhysCover", logicWorld, false, 0., true);
 
