@@ -237,9 +237,9 @@ void PlotDistance(const char *simFile1, const char *simFile2, const char *simFil
     // Histogram legend
     auto legend = new TLegend(0.6,0.7,0.9,0.9);
     //legend->AddEntry(hist, "Simulated Raw");
-    legend->AddEntry(histRes1, "New Cover 2 mm");
-    legend->AddEntry(histRes2, "Old Cover 2 mm");
-    legend->AddEntry(histRes3, "No Cover 2 mm");
+    legend->AddEntry(histRes1, "No cut 2 mm");
+    legend->AddEntry(histRes2, "50 keV event 2 mm");
+    legend->AddEntry(histRes3, "50 keV StopAndKill mm");
     legend->AddEntry(histExp, "Experimental: 2 mm");
     legend->Draw();
 
@@ -256,8 +256,8 @@ void PlotDistance(const char *simFile1, const char *simFile2, const char *simFil
 }
 
 void Run(){
-    PlotDistance("../data-files_SDD/output_Run14_152Eu_2mm_NewCover.root",
-                 "../data-files_SDD/output_Run14_152Eu_2mm_Ni-Cover.root",
-                 "../data-files_SDD/output_Run14_152Eu_2mm_NoCover.root",
+    PlotDistance("../data-files_SDD/output_Run14_152Eu_2mm_Ni-Cover.root",
+                 "../data-files_SDD/output_Run14_152Eu_2mm_Ecut50keVHigh.root",
+                 "../data-files_SDD/output_Run14_152Eu_2mm_GPS.root",
                  "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca");
 }

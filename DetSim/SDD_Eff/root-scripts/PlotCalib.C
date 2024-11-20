@@ -149,9 +149,9 @@ void PlotCalib(const char *simFile, const char *expFile) {
     canvas->SetLogy();
     canvas->Update();
     // Save figure
-    string s = lab+".root";
-    const char *figName = s.c_str();
-    canvas->SaveAs(figName);
+    //string s = lab+".root";
+    //const char *figName = s.c_str();
+    //canvas->SaveAs(figName);
     gPad->Update();
 
     //cin.get();

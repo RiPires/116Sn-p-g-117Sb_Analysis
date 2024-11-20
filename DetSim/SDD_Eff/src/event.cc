@@ -12,15 +12,13 @@ void MyEventAction::BeginOfEventAction(const G4Event*)
 
 void MyEventAction::EndOfEventAction(const G4Event*)
 {
-    ///G4cout << "Energy deposition: " << Edep << " MeV" << G4endl;
-    
     // Inicializes an instance of the AnalysisManager
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     
     // Sets event energy threshold
     G4double EdepThreshold = 400. * eV;
 
-    // Check if energy in the event is above threshold
+    // Check if energy in the event is above low energy threshold and below high energy threshold
     if (Edep > EdepThreshold)
     {
         // Fills tuple for energy deposition in the event
@@ -28,6 +26,25 @@ void MyEventAction::EndOfEventAction(const G4Event*)
         man->FillNtupleDColumn(0, 0, Edep);
         man->AddNtupleRow(0); 
     }
+
+    // Print energy deposition and particle type to file
+    G4double lowThreshold = 48. * keV;
+    G4double highThreshold = 64. * keV;
+
+    if (Edep >= lowThreshold && Edep <= highThreshold){
+        std::ofstream outFile("particleTypes.txt", std::ios::app);
+        outFile << "Event energy: " << Edep / keV << "keV\n";
+        for (size_t i = 0; i < particleTypes.size(); ++i){
+            outFile << "Particle Type: " << particleTypes[i] << ", Energy Deposit: " << edeps[i] / keV << " keV" << ", Parent ID: " << parentIDs[i] << "\n";
+        }
+        outFile << "------------\n";
+        outFile.close();
+    }
+
+    // Reset
+    particleTypes.clear();
+    edeps.clear();
+    parentIDs.clear();
 }
 
 

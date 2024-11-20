@@ -23,10 +23,21 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     
     // If the 'volume' is not the SensitiveDetector
     if(volume != ScoringVolume) 
-        return; // do nothing                                  
+        return; // do nothing    
+
+    // Get step details
+    G4Track *track = step->GetTrack();
+
+    // Check parent ID (origin) and energy
+    G4int parentID = track->GetParentID();
+    G4double energy = track->GetKineticEnergy();
+
+    // Get particle name
+    G4String particleName = track->GetDefinition()->GetParticleName();
 
     // Get the energy deposit of this step
     G4double edep = step->GetTotalEnergyDeposit(); 
     // Adds it to the total energy deposited in the event
     EventAction->AddEdep(edep);
+    EventAction->AddParticleTypeAndEdep(particleName, edep, parentID);
 }

@@ -7,7 +7,6 @@
 MyDetectorConstruction::MyDetectorConstruction()
 {
     fMessenger = new G4GenericMessenger(this, "/detector/", "DetectorConstruction");
-    
     DefineMaterial();
 }
 
@@ -84,7 +83,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     logicWindow = new G4LogicalVolume(solidWindow, beWinMat, "LogicWindow");
     physWindow = new G4PVPlacement(0, G4ThreeVector(0., 0., -0.00625*mm), logicWindow, "PhysWindow", logicWorld, false, 0., true);
     
-    // Defines Multi Layer Collimator layers
+    // Defines Multi-Layer Collimator layers
     // W layer
     G4double R_Coll = 2.615*mm;
     G4double thick_W = 100*um;

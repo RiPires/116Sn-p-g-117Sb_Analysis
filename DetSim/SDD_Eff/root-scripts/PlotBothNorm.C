@@ -151,9 +151,9 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     canvas->SetLogy();
     canvas->Update();
     // Save figure
-    string s = lab+"_Normalized.root";
-    const char *figName = s.c_str();
-    canvas->SaveAs(figName);
+    //string s = lab+"_Normalized.root";
+    //const char *figName = s.c_str();
+    //canvas->SaveAs(figName);
     gPad->Update();
 }
 

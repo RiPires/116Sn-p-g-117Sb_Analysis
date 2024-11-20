@@ -8,6 +8,11 @@ using namespace std;
 
 void Plot(const char* filename){
 
+    // Energy conversion factor
+    double slope = 0.000031067; // MeV/ch
+    double intercept = -0.000005703; // MeV
+    int nrCh = 2048;
+
      // Open the ROOT file
      TFile *InputTFile = new TFile(filename, "READ");
      // Check if the file is open successfully
@@ -24,7 +29,7 @@ void Plot(const char* filename){
      ////////////////////////////////////////////////////
      TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
      // Create a histogram
-     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 4096, 0, 1.320);
+     TH1D* hist1 = new TH1D("hist", "SDD energy scoring", nrCh, intercept, nrCh*slope);
      // Project the variable into the histogram
      ScoringTTRee->Project("hist", "Scoring.Edep");
      // Set the histogram style and labels
@@ -37,26 +42,6 @@ void Plot(const char* filename){
      // Display the canvas
      canvas->SetLogy();
      canvas->Draw();
-     gPad->Update();
-
-     ////////////////////////////////////////////////////
-     // Create a canvas for plotting energy deposits  //
-     ////////////////////////////////////////////////////
-     TCanvas* canvasEdep = new TCanvas("canvasEdep", "Energy Deposits", 800, 600);
-     // Create a histogram
-     TH1D* histEdep = new TH1D("histEdep", "Ge energy deposits", 4096, 0, 1.320);
-     // Project the variable into the histogram
-     ScoringTTRee->Project("histEdep", "Scoring.edep");
-     // Set the histogram style and labels
-     histEdep->SetLineColor(kBlue);
-     histEdep->SetLineWidth(2);
-     histEdep->GetXaxis()->SetTitle("Energy (MeV)");
-     histEdep->GetYaxis()->SetTitle("Counts");
-     // Draw the histogram on the canvas
-     histEdep->Draw();
-     // Display the canvas
-     canvasEdep->SetLogy();
-     canvasEdep->Draw();
      gPad->Update();
 
     ////////////////////////////////////////////////
