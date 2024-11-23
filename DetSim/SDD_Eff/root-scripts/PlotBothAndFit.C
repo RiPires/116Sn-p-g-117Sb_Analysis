@@ -187,7 +187,7 @@ void Run14(){
     const vector<double> fitMin = {0.00485, 0.00540, 0.00594, 0.00645, 0.00694, 0.00735, 0.03916, 0.03985, 0.04504, 0.04632}; // units in MeV
     const vector<double> fitMax = {0.00519, 0.00588, 0.00642, 0.00683, 0.00734, 0.00759, 0.03980, 0.04059, 0.04596, 0.04699}; // units in MeV
 
-    PlotBothAndFit("../data-files_SDD/output_Run14_152Eu_2mm_Ni-Cover.root", "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca", fitMin, fitMax);
+    PlotBothAndFit("../data-files_SDD/output_Run14_152Eu_2mm_test2.root", "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca", fitMin, fitMax);
     cout << "\n" << endl;
 }
 
@@ -200,17 +200,5 @@ void Run15(){
     const vector<double> fitMax = {0.00444, 0.00480, 0.00505, 0.00539, 0.00566, 0.03544, 0.03614}; // units in MeV
 
     PlotBothAndFit("../data-files_SDD/output_Run15_133Ba_2mm.root", "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca", fitMin, fitMax);
-    cout << "\n" << endl;
-}
-
-void Run15_5mm(){
-    
-    // Peak ROIs for Run 15, 133Ba, sim at 5 mm
-    cout << "\nPeak Sim/Exp ratio for Run15, 133Ba, Exp @ 2 mm & Sim @ 5 mm" << endl;
-    cout << "------------------------------------------" << endl;
-    const vector<double> fitMin = {0.00407, 0.00447, 0.00485, 0.00514, 0.00543, 0.03458, 0.03551}; // units in MeV
-    const vector<double> fitMax = {0.00444, 0.00480, 0.00505, 0.00539, 0.00566, 0.03544, 0.03614}; // units in MeV
-
-    PlotBothAndFit("../data-files_SDD/output_Run15_133Ba_5mm.root", "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca", fitMin, fitMax);
     cout << "\n" << endl;
 }

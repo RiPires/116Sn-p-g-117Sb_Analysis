@@ -8,7 +8,6 @@ void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator* genera
     fPrimaryGenerator = generator;
 }
 
-
 MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(10 * mm), messenger(nullptr)  // Default value for source position
 {
     // Define materials and other necessary initializations
@@ -23,7 +22,6 @@ MyDetectorConstruction::~MyDetectorConstruction()
     delete messenger;
     delete setSourcePositionCmd;
 }
-
 
 void MyDetectorConstruction::DefineMaterial()
 {
@@ -90,8 +88,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
     // Defines mylar support of radioactive source
     G4double Rout_Mylar = 25/2 * mm;
-    G4double thickMylar = 125 * um;
-    G4ThreeVector mylarPosition(0., 0., sourcePosition - 75 * um);
+    G4double thickMylar = 200 * um;
+    G4ThreeVector mylarPosition(0., 0., sourcePosition - 100 * um);
     solidMylar = new G4Tubs("solidMylar", 0., Rout_Mylar, thickMylar/2, 0., 2*pi);
     logicMylar = new G4LogicalVolume(solidMylar, mylar, "LogicMylar");
     physMylar = new G4PVPlacement(0, mylarPosition, logicMylar, "PhysMylar", logicWorld, false, 0., true); 
@@ -175,7 +173,7 @@ void MyDetectorConstruction::SetSourcePosition(G4double position)
 
     // Update Mylar position based on the source position (75 um behind)
     if (physMylar) {
-        G4ThreeVector newMylarPosition(0., 0., sourcePosition - 75 * um);  // 75um behind the source
+        G4ThreeVector newMylarPosition(0., 0., sourcePosition - 100 * um);  // 75um behind the source
         physMylar->SetTranslation(newMylarPosition);  // Move the Mylar volume
     }
 

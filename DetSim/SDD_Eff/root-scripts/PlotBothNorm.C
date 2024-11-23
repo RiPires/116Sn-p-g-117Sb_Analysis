@@ -158,9 +158,9 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
 }
 
 void Run(){
-    PlotBothNorm("../data-files_SDD/output_Run11_152Eu_16mm_Ni-Cover.root", "../data-files_SDD/Run11_152Eu_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run12_137Cs_16mm_Ni-Cover.root", "../data-files_SDD/Run12_137Cs_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run13_133Ba_16mm_Ni-Cover.root", "../data-files_SDD/Run13_133Ba_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run14_152Eu_2mm_Ni-Cover.root", "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run15_133Ba_2mm_Ni-Cover.root", "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Run11_152Eu_16mm.root", "../data-files_SDD/Run11_152Eu_detSDD_16mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Run12_137Cs_16mm.root", "../data-files_SDD/Run12_137Cs_detSDD_16mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Run13_133Ba_16mm.root", "../data-files_SDD/Run13_133Ba_detSDD_16mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Run14_152Eu_2mm.root", "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Run15_133Ba_2mm.root", "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca");
 }
