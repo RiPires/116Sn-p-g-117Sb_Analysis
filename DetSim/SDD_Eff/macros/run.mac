@@ -11,8 +11,9 @@
 ## Set GunParticleSource properties
 /gps/particle ion                       ## particle type: gamma, ion
 /gps/ion 63 152                         ## if ion: Z, A
-/gps/pos/centre 0. 0. 2. mm
 /gps/ang/type iso
+#/gps/pos/centre 0. 0. 10. mm
+/detector/setSourcePosition 2. mm
 #/gps/ene/mono 200. keV
 
 # Print a summary of particles/regions/cuts

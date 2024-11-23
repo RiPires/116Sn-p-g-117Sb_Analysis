@@ -13,8 +13,12 @@
 #include "G4GenericMessenger.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4RotationMatrix.hh"
+#include "G4RunManager.hh"
 
 #include "detector.hh"
+#include "G4UIcmdWithADoubleAndUnit.hh"
+#include "messenger.hh"
+#include "generator.hh"
 
 
 class MyDetectorConstruction : public G4VUserDetectorConstruction
@@ -27,20 +31,27 @@ public:
     
     virtual G4VPhysicalVolume *Construct();
     virtual void ConstructSDandField();
+
+    void SetSourcePosition(G4double position);
+    void RegisterPrimaryGenerator(MyPrimaryGenerator* generator);
+
+    G4double GetSourcePosition() const { return sourcePosition; }
     
 private:
     
-    ///G4double *xWorld, *yWorld, *zWorld; 
+    G4double sourcePosition; 
     G4Box *solidWorld;
-    G4Tubs *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi, *solidNi, *solidHole;
-    G4LogicalVolume *logicWorld, *logicWindow, *logicW, *logicCr, *logicTi, *logicAl, *logicSi, *logicCover;
-    G4VPhysicalVolume *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi, *physCover;
+    G4Tubs *solidMylar, *solidWindow, *solidW, *solidCr, *solidTi, *solidAl, *solidSi, *solidNi, *solidHole;
+    G4LogicalVolume *logicMylar, *logicWorld, *logicWindow, *logicW, *logicCr, *logicTi, *logicAl, *logicSi, *logicCover;
+    G4VPhysicalVolume *physMylar, *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi, *physCover;
     G4RotationMatrix *rotation = new G4RotationMatrix();
     
-    G4GenericMessenger *fMessenger;
+    DetectorMessenger* messenger;
+    G4UIcmdWithADoubleAndUnit* setSourcePositionCmd;
+    MyPrimaryGenerator *fPrimaryGenerator;
     
-    G4Material *collMatAl, *collMatTi, *collMatCr, *collMatW, *worldMat, *detMat, *silicon, *beWinMat, *coverMat;
-    G4Element *Be, *Al, *Si, *Ti, *Cr, *Ni, *W;
+    G4Material *collMatAl, *collMatTi, *collMatCr, *collMatW, *worldMat, *detMat, *silicon, *beWinMat, *coverMat, *mylar;
+    G4Element *H, *C, *O, *Be, *Al, *Si, *Ti, *Cr, *Ni, *W;
     
     void DefineMaterial();
     

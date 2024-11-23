@@ -18,8 +18,8 @@ const double INTERCEPT = -0.000005703; // MeV
 const int NR_CH = 2048;
 
 // Resolution parameters (energy in MeV)
-const double A = 0.000211;
-const double B = -0.00083;
+const double A = 0.000111;
+const double B = -0.00043;
 const double C = 0.006576;
 
 // Helper function: Open a ROOT file and retrieve the "Scoring" tree
@@ -194,11 +194,10 @@ void Run14() {
 
 void Run15() {
     vector<const char*> simFiles = {
-        "../data-files_SDD/output_Run15_133Ba_2mm.root",
+        "../data-files_SDD/output_Run15_133Ba_2mm_Ni-Cover.root",
+        "../data-files_SDD/output_Run15_133Ba_5mm.root",
         "../data-files_SDD/output_Run15_133Ba_6mm.root",
-        "../data-files_SDD/output_Run15_133Ba_10mm.root",
-        "../data-files_SDD/output_Run15_133Ba_14mm.root",
-        "../data-files_SDD/output_Run15_133Ba_18mm.root"
+        "../data-files_SDD/output_Run15_133Ba_10mm.root"
     };
     const char* expFile = "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca";
     PlotMultiple(simFiles, expFile);

@@ -4,14 +4,26 @@
 #include "G4ProductionCuts.hh"
 
 
-MyDetectorConstruction::MyDetectorConstruction()
+void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator* generator) {
+    fPrimaryGenerator = generator;
+}
+
+
+MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(10 * mm), messenger(nullptr)  // Default value for source position
 {
-    fMessenger = new G4GenericMessenger(this, "/detector/", "DetectorConstruction");
+    // Define materials and other necessary initializations
     DefineMaterial();
+
+    // Initialize the messenger object
+    messenger = new DetectorMessenger(this);
 }
 
 MyDetectorConstruction::~MyDetectorConstruction()
-{}
+{
+    delete messenger;
+    delete setSourcePositionCmd;
+}
+
 
 void MyDetectorConstruction::DefineMaterial()
 {
@@ -19,6 +31,9 @@ void MyDetectorConstruction::DefineMaterial()
     G4NistManager *nist = G4NistManager::Instance();
     
     //  Elements  //
+    H = nist->FindOrBuildElement("H");
+    C = nist->FindOrBuildElement("C");
+    O = nist->FindOrBuildElement("O");
     Be = nist->FindOrBuildElement("Be");
     Al = nist->FindOrBuildElement("Al");
     Si = nist->FindOrBuildElement("Si");
@@ -54,6 +69,12 @@ void MyDetectorConstruction::DefineMaterial()
     // Defines detector cover material as Ni
     coverMat = new G4Material("Nickel", 8.907*g/cm3, 1);
     coverMat->AddElement(Ni, 1);
+
+    // Defines mylar for source support
+    mylar = new G4Material("Mylar", 1.4*g/cm3, 3);
+    mylar->AddElement(H, 0.041959);
+    mylar->AddElement(C, 0.625017);
+    mylar->AddElement(O, 0.333025);
 }
 
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
@@ -66,6 +87,14 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); 
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
+
+    // Defines mylar support of radioactive source
+    G4double Rout_Mylar = 25/2 * mm;
+    G4double thickMylar = 125 * um;
+    G4ThreeVector mylarPosition(0., 0., sourcePosition - 75 * um);
+    solidMylar = new G4Tubs("solidMylar", 0., Rout_Mylar, thickMylar/2, 0., 2*pi);
+    logicMylar = new G4LogicalVolume(solidMylar, mylar, "LogicMylar");
+    physMylar = new G4PVPlacement(0, mylarPosition, logicMylar, "PhysMylar", logicWorld, false, 0., true); 
 
     //  Defines Si crystal //
     G4double Rin_Si = 0*mm;
@@ -134,3 +163,25 @@ void MyDetectorConstruction::ConstructSDandField()
     MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
     logicSi->SetSensitiveDetector(sensDet); 
 }
+
+
+// Method to set the source position
+void MyDetectorConstruction::SetSourcePosition(G4double position)
+{
+    sourcePosition = position;  // Update the source position
+
+    // Update the GPS source position (via the General Particle Source)
+    G4UImanager::GetUIpointer()->ApplyCommand("/gps/pos/centre 0. 0. " + std::to_string(sourcePosition) + " mm");
+
+    // Update Mylar position based on the source position (75 um behind)
+    if (physMylar) {
+        G4ThreeVector newMylarPosition(0., 0., sourcePosition - 75 * um);  // 75um behind the source
+        physMylar->SetTranslation(newMylarPosition);  // Move the Mylar volume
+    }
+
+    // Notify Geant4 that the geometry has been modified
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+
+
