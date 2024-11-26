@@ -25,33 +25,33 @@ def double_gaussian_fit(params, x, y):
 ###  --------------------------------------------------------------  ###
 
 ## Path to calibration file
-calibFile152Eu = "../Calibrations/SDD/CalibrationRuns_PosExp/Run14_152Eu_detSDD_2mm.mca"
+calibFile133Ba = "../Calibrations/SDD/CalibrationRuns_PosExp/Run15_133Ba_detSDD_2mm.mca"
 
 ## Channel list
-channels152Eu = MCA2Lists(calibFile152Eu)[1]
+channels133Ba = MCA2Lists(calibFile133Ba)[1]
 ## Calibration yield list of sources
-calibYield152Eu = MCA2Lists(calibFile152Eu)[0]
+calibYield133Ba = MCA2Lists(calibFile133Ba)[0]
 
 # Initial guesses for the parameters
 initial_params = [
-    48, 1458, 1,  # Parameters for the first Gaussian
-    21, 1497, 1   # Parameters for the second Gaussian
+    620, 149, 2,  # Parameters for the first Gaussian
+    174, 158, 2   # Parameters for the second Gaussian
 ]
 
 # Perform the fit
-fit_params, _ = leastsq(double_gaussian_fit, initial_params, args=(channels152Eu, calibYield152Eu))
-
-# Plotting the results
-plt.figure(figsize=(10, 6))
-plt.plot(channels152Eu, calibYield152Eu, '.-', label="Data", color="blue")
-plt.plot(channels152Eu, double_gaussian(channels152Eu, fit_params), label="Fit", color="red", lw=2)
-plt.xlabel("Channels")
-plt.ylabel("Counts")
-plt.legend()
-plt.title("Double Gaussian Fit")
-plt.show()
+fit_params, _ = leastsq(double_gaussian_fit, initial_params, args=(channels133Ba, calibYield133Ba))
 
 # Print fitted parameters
 print("Fitted Parameters:")
 print(f"c1: {fit_params[0]:.2f}, mu1: {fit_params[1]:.2f}, sigma1: {fit_params[2]:.2f}")
 print(f"c2: {fit_params[3]:.2f}, mu2: {fit_params[4]:.2f}, sigma2: {fit_params[5]:.2f}")
+
+# Plotting the results
+plt.figure(figsize=(10, 6))
+plt.plot(channels133Ba, calibYield133Ba, '.-', label="Data", color="blue")
+plt.plot(channels133Ba, double_gaussian(channels133Ba, fit_params), label="Fit", color="red", lw=2)
+plt.xlabel("Channels")
+plt.ylabel("Counts")
+plt.legend()
+plt.title("Double Gaussian Fit")
+plt.show()

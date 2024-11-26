@@ -28,7 +28,7 @@ def PlotLogy(x, y, lab):
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Energy (keV)',fontsize=22)
+    xlabel('Channel',fontsize=22)
     xlim(left=0.)
     ylabel('Yield', fontsize=22)
     show()

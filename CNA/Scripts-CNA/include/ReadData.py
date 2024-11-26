@@ -47,13 +47,39 @@ def Ge2Lists(File):
     HOW TO USE:
         MyYield, MyChannel = MCA2Lists("MyFile.mca")
     """
-    with open(File, 'r', encoding='iso8859-4') as file:
+    with open(File, 'r') as file:
         reader = csv.reader(file, delimiter="\n", skipinitialspace=True, )
         data = list(reader)
     ch = []
     y = []
     aux = []
     for i in range(14, 4110):
+        aux.append(data[i][0].split())
+    for i in range(len(aux)):
+        ch.append(float(i)) ## axes in channel
+        y.append(float(aux[i][0]))
+
+    return y, ch
+
+#######################################################
+#######################################################
+def Ge2ListsBgRm(File):
+    """
+    Converts .dat data into yield and channel lists
+    INPUTS:
+        "FILENAME.mca"
+    OUTPUTS:
+        Yield and Channel lists
+    HOW TO USE:
+        MyYield, MyChannel = MCA2Lists("MyFile.mca")
+    """
+    with open(File, 'r') as file:
+        reader = csv.reader(file, delimiter="\n", skipinitialspace=True, )
+        data = list(reader)
+    ch = []
+    y = []
+    aux = []
+    for i in range(4096):
         aux.append(data[i][0].split())
     for i in range(len(aux)):
         ch.append(float(i)) ## axes in channel

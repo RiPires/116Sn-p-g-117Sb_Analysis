@@ -3,8 +3,8 @@
 #####################################################
 
 ## -------------------- ##
-from PlotData import *
-from ReadData import *
+from include.PlotData import *
+from include.ReadData import *
 ## -------------------- ##
 
 ## Paths for each activation energy
