@@ -1,11 +1,12 @@
-#include "generator.hh"
 #include "Randomize.hh"
 #include "G4RandomDirection.hh"
 #include "G4IonTable.hh"
-#include "construction.hh"
 #include "G4RunManager.hh"
 
-//  Primary particle generator constuctor and destructor  //
+#include "generator.hh"
+#include "construction.hh"
+
+//  Primary particle generator constuctor //
 MyPrimaryGenerator::MyPrimaryGenerator() {
     MyDetectorConstruction* detector =
         const_cast<MyDetectorConstruction*>(static_cast<const MyDetectorConstruction*>(G4RunManager::GetRunManager()->GetUserDetectorConstruction()));
@@ -23,7 +24,7 @@ MyPrimaryGenerator::MyPrimaryGenerator() {
     fParticleGun->SetParticleDefinition(particle);
 }
 
-
+// Destructor
 MyPrimaryGenerator::~MyPrimaryGenerator()
 {
     delete fParticleGun;
@@ -57,5 +58,3 @@ void MyPrimaryGenerator::UpdateSourcePosition(G4double position) {
     fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., position));  // Set particle gun position
     G4cout << "Primary generator source position updated to: " << position / mm << " mm" << G4endl;
 }
-
-

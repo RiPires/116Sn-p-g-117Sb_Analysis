@@ -18,7 +18,13 @@ public:
     
     virtual void GeneratePrimaries(G4Event*);
 
+    void SetGunPosition(G4double position);
+    void UpdateSourcePosition(G4double position);
+
+    G4double GetSourcePosition() const { return fSourcePosition; }
+
 private:
     G4GeneralParticleSource *fParticleGun;
+    G4double fSourcePosition;
 };
 #endif

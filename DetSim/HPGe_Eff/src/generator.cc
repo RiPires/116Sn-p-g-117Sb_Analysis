@@ -1,21 +1,30 @@
-#include "generator.hh"
 #include "Randomize.hh"
 #include "G4RandomDirection.hh"
 #include "G4IonTable.hh"
+#include "G4RunManager.hh"
 
-//  Primary particle generator constuctor and destructor  //
-MyPrimaryGenerator::MyPrimaryGenerator()
-{
+#include "generator.hh"
+#include "construction.hh"
+
+//  Primary particle generator constuctor //
+MyPrimaryGenerator::MyPrimaryGenerator() {
+    MyDetectorConstruction* detector =
+        const_cast<MyDetectorConstruction*>(static_cast<const MyDetectorConstruction*>(G4RunManager::GetRunManager()->GetUserDetectorConstruction()));
+
     fParticleGun = new G4GeneralParticleSource();
 
-    // Set default particle to geantino
-    G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
-    G4ParticleDefinition *particle = particleTable->FindParticle("geantino"); 
-    G4ThreeVector pos(0.,0.,0.);                    // Position for particle gun
-    fParticleGun->SetParticlePosition(pos);         // Particle Position
-    fParticleGun->SetParticleDefinition(particle);  // Sets particle as GEANTINO prev. deffined
+    // Get initial source position from the detector
+    fSourcePosition = detector->GetSourcePosition();
+    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., fSourcePosition));  // Set initial particle position
+    G4cout << "Primary generator initialized at position: " << fSourcePosition / mm << " mm" << G4endl;
+
+    // Set default particle type to geantino
+    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+    G4ParticleDefinition* particle = particleTable->FindParticle("geantino");
+    fParticleGun->SetParticleDefinition(particle);
 }
 
+// Destructor
 MyPrimaryGenerator::~MyPrimaryGenerator()
 {
     delete fParticleGun;
@@ -38,4 +47,14 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent)
     
     // Generate the primary even
     fParticleGun->GeneratePrimaryVertex(anEvent);
+}
+
+void MyPrimaryGenerator::SetGunPosition(G4double position) {
+    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., position));
+}
+
+void MyPrimaryGenerator::UpdateSourcePosition(G4double position) {
+    fSourcePosition = position;  // Update the internal source position
+    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., position));  // Set particle gun position
+    G4cout << "Primary generator source position updated to: " << position / mm << " mm" << G4endl;
 }

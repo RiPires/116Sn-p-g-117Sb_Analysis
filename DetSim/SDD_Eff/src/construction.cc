@@ -4,7 +4,7 @@
 #include "G4ProductionCuts.hh"
 
 
-void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator* generator) {
+void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *generator) {
     fPrimaryGenerator = generator;
 }
 

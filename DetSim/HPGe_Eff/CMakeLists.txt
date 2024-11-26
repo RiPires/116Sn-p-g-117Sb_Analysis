@@ -27,12 +27,6 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 file(GLOB MACRO_FILES ${PROJECT_SOURCE_DIR}/macros/*)
 file(COPY ${MACRO_FILES} DESTINATION ${PROJECT_BINARY_DIR})
 
-file(GLOB DATA_FILES ${PROJECT_SOURCE_DIR}/data-files/*)
-file(COPY ${DATA_FILES} DESTINATION ${PROJECT_BINARY_DIR})
-
-file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/root-scripts/*)
-file(COPY ${ROOT_FILES} DESTINATION ${PROJECT_BINARY_DIR})
-
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #

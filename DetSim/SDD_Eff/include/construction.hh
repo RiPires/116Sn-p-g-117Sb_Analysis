@@ -33,7 +33,7 @@ public:
     virtual void ConstructSDandField();
 
     void SetSourcePosition(G4double position);
-    void RegisterPrimaryGenerator(MyPrimaryGenerator* generator);
+    void RegisterPrimaryGenerator(MyPrimaryGenerator *generator);
 
     G4double GetSourcePosition() const { return sourcePosition; }
     
@@ -46,8 +46,8 @@ private:
     G4VPhysicalVolume *physMylar, *physWorld, *physWindow, *physW, *physCr, *physTi, *physAl, *physSi, *physCover;
     G4RotationMatrix *rotation = new G4RotationMatrix();
     
-    DetectorMessenger* messenger;
-    G4UIcmdWithADoubleAndUnit* setSourcePositionCmd;
+    DetectorMessenger *messenger;
+    G4UIcmdWithADoubleAndUnit *setSourcePositionCmd;
     MyPrimaryGenerator *fPrimaryGenerator;
     
     G4Material *collMatAl, *collMatTi, *collMatCr, *collMatW, *worldMat, *detMat, *silicon, *beWinMat, *coverMat, *mylar;
@@ -55,8 +55,7 @@ private:
     
     void DefineMaterial();
     
-    G4LogicalVolume *ScoringVolume;
-    
+    G4LogicalVolume *ScoringVolume;  
 };
 
 #endif
