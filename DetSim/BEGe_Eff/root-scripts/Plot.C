@@ -8,6 +8,11 @@ using namespace std;
 
 void Plot(const char* filename){
 
+    // Energy calibration parameters
+    double slope = 0.0010564; // MeV/channel
+    double intercept = -0.014207; // MeV
+    int nrCh = 1024;
+
      // Open the ROOT file
      TFile *InputTFile = new TFile(filename, "READ");
      // Check if the file is open successfully
@@ -15,38 +20,35 @@ void Plot(const char* filename){
           cout << "Error: Could not open ROOT file." << endl;
           return;} 
     
-     /////////////////////////////////////////////////
      // Access the Energy Scoring tree in the file  //
-     /////////////////////////////////////////////////
      TTree *ScoringTTRee = (TTree*)InputTFile->Get("Scoring");
-     ////////////////////////////////////////////////////
+
      // Create a canvas for plotting deposited energy  //
-     ////////////////////////////////////////////////////
      TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
+
      // Create a histogram
-     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", 100, 0, 0.1);
+     TH1D* hist1 = new TH1D("hist", "Ge energy scoring", nrCh, intercept, nrCh * slope);
+
      // Project the variable into the histogram
      ScoringTTRee->Project("hist", "Scoring.Edep");
+
      // Set the histogram style and labels
      hist1->SetLineColor(kBlue);
      hist1->SetLineWidth(2);
      hist1->GetXaxis()->SetTitle("Energy (MeV)");
      hist1->GetYaxis()->SetTitle("Counts");
-     // Draw the histogram on the canvas
      hist1->Draw();
+
      // Display the canvas
      canvas->SetLogy();
      canvas->Draw();
      gPad->Update();
 
-    ////////////////////////////////////////////////
+
     // Access the Hits position tree in the file  //
-    ////////////////////////////////////////////////
     TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
 
-    //////////////////////////////////////////////////
     // Create a canvas for plotting hit z position  //
-    //////////////////////////////////////////////////
     TCanvas* canvasZ = new TCanvas("canvasZ", "Hits position z ", 800, 600);
     // Create a histogram
     TH1D* histZ = new TH1D("histZ", "Ge hits position z ", 100, 0., 100.);
@@ -57,25 +59,27 @@ void Plot(const char* filename){
     histZ->SetLineWidth(2);
     histZ->GetXaxis()->SetTitle("z (cm)");
     histZ->GetYaxis()->SetTitle("Counts");
-    // Draw the histogram on the canvas
     histZ->Draw();
+
     // Display the canvas
     canvasZ->SetLogy();
     canvasZ->Draw();
     gPad->Update();
 
-    ///////////////////////////////////////////////////////
     // Create a canvas for plotting hit x vs y position  //
-    ///////////////////////////////////////////////////////
     // Variables to hold the data
     double xPos = 0., yPos = 0.;
+
     // Set the branches
     StepsTTree->SetBranchAddress("xPos", &xPos);
     StepsTTree->SetBranchAddress("yPos", &yPos);
+
     // Create a canvas for plotting hit x vs y position
     TCanvas* canvas4 = new TCanvas("canvas4", "Hits position x vs y ", 800, 600);
+
     // Create a histogram
     TH2F* hist4 = new TH2F("hist4", "Ge hits position x vs y ", 100, -30., 30., 100, -30., 30.);
+    
     // Fill the histogram
     Long64_t nEntries = StepsTTree->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
@@ -91,6 +95,7 @@ void Plot(const char* filename){
     hist4->GetXaxis()->SetTitle("x (cm)");
     hist4->GetYaxis()->SetTitle("y (cm)");
     hist4->Draw("COLZ");
+
     // Display the canvas
     canvas4->Draw();
     gPad->Update();
