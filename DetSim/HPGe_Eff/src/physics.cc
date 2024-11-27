@@ -1,9 +1,4 @@
 #include "physics.hh"
-#include "G4RegionStore.hh"
-#include "G4ProductionCuts.hh"
-#include "G4Electron.hh"
-#include "G4Gamma.hh"
-#include "G4SystemOfUnits.hh"
 
 MyPhysicsList::MyPhysicsList()
 {

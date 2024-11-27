@@ -30,15 +30,15 @@ public:
 private:
     
     ///G4double *xWorld, *yWorld, *zWorld; 
-    G4Box *solidWorld, *solidFrame;
-    G4Tubs *solidHole, *solidHolder, *solidTarget, *solidWindow, *solidDetector, *solidCase;
-    G4LogicalVolume  *logicTarget, *logicSubtraction, *logicWorld, *logicWindow, *logicDetector, *logicCase;
-    G4VPhysicalVolume *physHolder, *physTarget, *physSubtraction, *physWorld, *physWindow, *physDetector, *physCase;
+    G4Box *solidWorld;
+    G4Tubs *solidWindow, *solidDetector, *solidCase;
+    G4LogicalVolume *logicWorld, *logicWindow, *logicDetector, *logicCase;
+    G4VPhysicalVolume *physWorld, *physWindow, *physDetector, *physCase;
     
     G4GenericMessenger *fMessenger;
     
-    G4Material *SiO2, *H2O, *Epoxy, *holderMat, *targetMat, *worldMat, *detMat, *silicon;
-    G4Element *Al, *C, *Ge, *Sn, *Si;
+    G4Material *Epoxy, *worldMat, *caseMat, *detMat;
+    G4Element *Al, *C, *Ge;
     
     void DefineMaterial();
     

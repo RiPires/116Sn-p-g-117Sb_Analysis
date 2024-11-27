@@ -1,7 +1,5 @@
 #include "construction.hh"
 #include "G4PhysicalConstants.hh"
-#include "G4Region.hh"
-#include "G4ProductionCuts.hh"
 
 void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *generator){
     fPrimaryGenerator = generator;
