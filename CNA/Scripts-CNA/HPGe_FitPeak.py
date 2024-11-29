@@ -29,10 +29,10 @@ calibFile133Ba = "../Calibrations/HPGe/CalibrationRuns_PosExp/BgRemoved/Run04_13
 calibFile60Co = "../Calibrations/HPGe/CalibrationRuns_PosExp/BgRemoved/Run05_60Co_50mm_BgRemoved.mca"
 
 ## Labels for file creation and plot
-lab60Co = str('60Co')
-lab133Ba = str('133Ba')
-lab137Cs = str('137Cs')
-lab152Eu = str('152Eu')
+lab60Co = str('60Co_HPGe')
+lab133Ba = str('133Ba_HPGe')
+lab137Cs = str('137Cs_HPGe')
+lab152Eu = str('152Eu_HPGe')
 
 ## Calibration yield list of sources
 calibYield152Eu = Ge2ListsBgRm(calibFile152Eu)[0]

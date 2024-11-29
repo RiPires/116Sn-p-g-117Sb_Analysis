@@ -96,19 +96,26 @@ def FitData(func, x, y, init, lab, roid, roiu):
             p0 = init[3 * i: 3 * i + 3]
 
             # Fit the data within the ROI
-            popt, _ = curve_fit(func, x_roi, y_roi, p0=p0)
+            popt, pcov = curve_fit(func, x_roi, y_roi, p0=p0)
             fitted_params.append(popt)
 
             # Add current fit to the combined result
             all_fits += gaussian(x, *popt)
 
+            # Extract uncertainty for sigma from the covariance matrix
+            sigma_uncertainty = np.sqrt(np.diag(pcov))[2]  # Third parameter is sigma
+
             # Write results to file
             amp, mean, sigma = popt
-            outFile.write(f"{mean:.2f}\t{sigma:.2f}\n")
+            outFile.write(f"{mean:.2f}\t{sigma:.2f}\t{sigma_uncertainty:.2f}\n")
 
     # Print results
+    print("*************************************"+len(lab)*"*")
+    print("* Single peak gaussian fit results "+lab+"*")
+    print("*************************************"+len(lab)*"*")
     for i, param in enumerate(fitted_params, start=1):
-        print(f"Peak {i}: Amplitude = {param[0]:.2f}, Mean = {param[1]:.2f}, Sigma = {param[2]:.2f}")
+        print(f"Peak {i}: Amplitude = {param[0]:.2f}, Mean = {param[1]:.2f}, Sigma = {param[2]:.2f} ± {sigma_uncertainty:.2f}")
+    print()
 
     # Plot the results
     plt.plot(x, y, label=f"Data ({lab})", color="blue")
@@ -139,14 +146,20 @@ def FitNGauss(func, x, y, init, lab):
         means.append(cen)
         std_devs.append(sigma)
 
+    # Extract uncertainty for sigma from the covariance matrix
+    sigma_uncertainty = np.sqrt(np.diag(pcov))[2]  # Third parameter is sigma
+
     # Display the results
-    print("Fitted Parameters for Each Gaussian Peak:")
+    print("***********************************"+len(lab)*"*")
+    print("* Multi peak gaussian fit results "+lab+"*")
+    print("***********************************"+len(lab)*"*")
     for i, (amp, mean, std_dev) in enumerate(zip(amplitudes, means, std_devs), start=1):
-        print(f"Peak {i}: Amplitude = {amp:.2f}, Mean = {mean:.2f}, Std Dev = {std_dev:.2f}")
+        print(f"Peak {i}: Amplitude = {amp:.2f}, Mean = {mean:.2f}, Std Dev = {std_dev:.2f} ± {sigma_uncertainty:.2f}")
+    print()
 
     # Plot the results
     plt.figure(figsize=(10, 6))
-    plt.plot(x, y, label="Data", color='blue', linewidth=2)
+    plt.plot(x, y, label=str("Exp. "+lab), color='blue', linewidth=2)
     plt.plot(x, nGaussian(x, *popt), label="Fit", color='red', linewidth=2)
     plt.xlabel("x")
     plt.ylabel("y")

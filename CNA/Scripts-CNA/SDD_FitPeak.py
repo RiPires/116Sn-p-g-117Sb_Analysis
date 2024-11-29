@@ -27,8 +27,8 @@ calibFile152Eu = "../Calibrations/SDD/CalibrationRuns_PosExp/Run14_152Eu_detSDD_
 calibFile133Ba = "../Calibrations/SDD/CalibrationRuns_PosExp/Run15_133Ba_detSDD_2mm.mca"
 
 ## Labels for file creation and plot
-lab133Ba = str('133Ba')
-lab152Eu = str('152Eu')
+lab133Ba = str('133Ba_SDD')
+lab152Eu = str('152Eu_SDD')
 
 ## Calibration yield list of sources
 calibYield152Eu = MCA2Lists(calibFile152Eu)[0]
@@ -68,5 +68,8 @@ initial_guess152Eu = [
 ]
 
 # Fit the data
+FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
+FitData(gaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba, ROId133Ba, ROIu133Ba)
+
 FitNGauss(nGaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu)
-#FitNGauss(nGaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba)
+FitNGauss(nGaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba)
