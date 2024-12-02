@@ -5,7 +5,7 @@ import csv
 ##########################################
 ##########################################
 
-File = 'DataFiles/Sn116-pg-240516_CurrentMonitor.dat'
+File = '../1_Irradiation/DataFiles/Sn116-pg-240516_CurrentMonitor.dat'
 with open(File, 'r') as file:
     reader = csv.reader(file, delimiter='\n', skipinitialspace=True)
     data = list(reader)

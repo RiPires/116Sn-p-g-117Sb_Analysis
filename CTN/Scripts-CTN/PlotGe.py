@@ -14,7 +14,7 @@ def Plot(File):
     y, ch = Ge2Lists(File) 
     lab = str(File).replace('.TXT','')
     fig, ax = plt.subplots()
-    ax.plot(ch,y,'.-', color ='xkcd:black', label=(str(lab)+' - Ge'))
+    ax.semilogy(ch,y,'.-', color ='xkcd:black', label=(str(lab)+' - Ge'))
     legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
@@ -35,11 +35,11 @@ Plot('DataFilesGe/Decay/416044G2.TXT') """
 
 
 ## Calibration runs
-path = 'DataFilesGe/Calib/'
+path = '../Calibration/BEGe-Calib/Calib/'
 for file in os.listdir(path):
     Plot(str(path+file))
 
 ## Decay runs
-path = 'DataFilesGe/Decay/'
+""" path = '../2_Decay/DataFilesGe/Decay/'
 for file in os.listdir(path):
-    Plot(str(path+file))
+    Plot(str(path+file)) """

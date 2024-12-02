@@ -3,7 +3,7 @@ from matplotlib.pylab import *
 import matplotlib.pyplot as plt
 import csv
 import os
-from ReadData import*
+from ReadRBSData import*
 ##########################################
 ##########################################
 def PlotData(File, Label):
@@ -38,6 +38,6 @@ def PlotData(File, Label):
 #################
 
 ## RBS during activation
-path = 'DataFiles/Activation/'
+path = '../1_Irradiation/DataFiles/Activation/'
 for file in os.listdir(path):
     PlotData(str(path+file), str(file).replace('.mpa',''))

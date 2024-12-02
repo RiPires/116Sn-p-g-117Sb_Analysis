@@ -26,17 +26,17 @@ def MergeYieldGe(Dir):
 #########################################
 ###   Ge Acquisition merge and plot   ###
 #########################################
-geDir = "DataFilesGe/Decay"
+geDir = "../2_Decay/DataFilesGe/Decay"
 Channel = [i+1 for i in range(1024)]
 Yield_Ge = MergeYieldGe(geDir)
 
 ### Plot
 fig, ax = plt.subplots()
-ax.plot(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('Ge data merged'))
+ax.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('Ge data merged'))
 legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 legend.get_frame().set_facecolor('#DAEBF2')
 tick_params(axis='both', which='major', labelsize=22)
 xlabel('Channel',fontsize=22)
-ylabel('Yield', fontsize=22)
+ylabel('Accumulated yield', fontsize=22)
 show()
 ###########################################

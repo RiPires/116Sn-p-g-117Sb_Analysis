@@ -23,17 +23,18 @@ def MergeYield_MCA(Dir):
 
 
 ###   SDD Acquisition merge and plot   ###
-SDD_Dir = "DataFilesSDD/Decay"
+SDD_Dir = "../2_Decay/DataFilesSDD/Decay"
 Channel = [i+1 for i in range(2048)]
 Yield_SDD = MergeYield_MCA(SDD_Dir)
 
 fig, ax = plt.subplots()
-ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=('SDD'))
+ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=('Merged SDD'))
 legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 legend.get_frame().set_facecolor('#DAEBF2')
 tick_params(axis='both', which='major', labelsize=22)
 xlabel('Channel',fontsize=22)
-ylabel('Yield', fontsize=22)
+ylabel('Accumulated yield', fontsize=22)
+xlim(0, 1000)
 #grid()
 show()
 ###########################################

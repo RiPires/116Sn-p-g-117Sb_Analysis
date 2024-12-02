@@ -43,7 +43,7 @@ calibYield60Co = Ge2ListsBgRm(calibFile60Co)[0]
 ## Energies for calibration
 calibEnergies152Eu = [121.78, 244.70, 344.28, 411.12, 443.96, 778.9, 867.38, 964.06, 1085.84, 1112.08]
 calibEnergies137Cs = [661.66]
-calibEnergies133Ba = [81., 276.4, 302.85, 356.01, 383.85]
+calibEnergies133Ba = [30.8, 34.964, 81., 276.4, 302.85, 356.01, 383.85]
 calibEnergies60Co = [1173.2]
 
 ## Regions of interest, in channel, for each photo-peak
@@ -53,8 +53,8 @@ ROIu152Eu = [393, 771, 1081, 1282, 1385, 2431, 2699, 3001, 3373, 3458]
 ROId137Cs = [88, 107, 2037]
 ROIu137Cs = [106, 120, 2071]
 
-ROId133Ba = [240, 850, 931, 1095, 1184]
-ROIu133Ba = [261, 865, 947, 1117, 1195]
+ROId133Ba = [88, 103, 240, 850, 931, 1095, 1184]
+ROIu133Ba = [102, 117, 261, 865, 947, 1117, 1195]
 
 ROId60Co = [3617]
 ROIu60Co = [3651]
@@ -79,6 +79,8 @@ initial_guess137Cs = [
     4635, 2050, 1.0]
 
 initial_guess133Ba = [
+    30015, 96, 2.0,
+    7000, 108, 2.0,
     11630, 250, 2.0,
     1041, 857, 2.0,
     2329, 939, 2.0,
@@ -89,7 +91,7 @@ initial_guess133Ba = [
 initial_guess60Co = [1863, 3638, 2.0]
 
 # Fit the data
-FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
-FitData(gaussian, channels, calibYield137Cs, initial_guess137Cs, lab137Cs, ROId137Cs, ROIu137Cs)
+#FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
+#FitData(gaussian, channels, calibYield137Cs, initial_guess137Cs, lab137Cs, ROId137Cs, ROIu137Cs)
 FitData(gaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba, ROId133Ba, ROIu133Ba)
-FitData(gaussian, channels, calibYield60Co, initial_guess60Co, lab60Co, ROId60Co, ROIu60Co)
+#FitData(gaussian, channels, calibYield60Co, initial_guess60Co, lab60Co, ROId60Co, ROIu60Co)

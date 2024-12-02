@@ -1,6 +1,6 @@
 #RiP
 ####################################
-from ReadData import *
+from include.ReadData import *
 import matplotlib.pyplot as plt
 from matplotlib.pylab import *
 import os
@@ -26,13 +26,13 @@ def MergeYieldGe(Dir):
 #########################################
 ###   Ge Acquisition merge and plot   ###
 #########################################
-geDir = "Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/"
+geDir = "../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_HPGe/"
 Channel = [((i+1)*0.3225-0.149) for i in range(4096)]
 Yield_Ge = MergeYieldGe(geDir)
 
 ### Plot
 fig, ax = plt.subplots()
-ax.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('HPGe - Ebeam = 5.0 MeV'))
+ax.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('HPGe - Ebeam = 4.7 MeV'))
 legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 legend.get_frame().set_facecolor('#DAEBF2')
 tick_params(axis='both', which='major', labelsize=22)

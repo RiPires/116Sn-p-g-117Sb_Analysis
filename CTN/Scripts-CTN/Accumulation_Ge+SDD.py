@@ -33,14 +33,14 @@ ge_roiDown_g = int(160)
 ge_roiUp_g = int(164)
 
 ## Calculation of ge bg rate ##
-bgFile = '2_Decay/DataFilesGe/Background/415114G2.TXT'
+bgFile = '../Calibration/BEGe-Calib/Background/415114G2.TXT'
 bgYield = Ge2Lists(bgFile)[0] # counts
 bgSpan = 3849. # seconds = 64 min 9 sec
 bgRate = [counts/bgSpan for counts in bgYield]
 
 ## Loop over Ge data
 decayTime = 900. #s = 15 min
-gePath = '2_Decay/DataFilesGe/Decay/'
+gePath = '../2_Decay/DataFilesGe/Decay/'
 for file in os.listdir(gePath):
     y, ch = Ge2Lists(str(gePath+file))
     ## Add Ka rate
@@ -86,7 +86,7 @@ sdd_roiDown_Kb = int(900)
 sdd_roiUp_Kb = int(942)
 
 ## Loop over SDD data
-sddPath = '2_Decay/DataFilesSDD/Decay/'
+sddPath = '../2_Decay/DataFilesSDD/Decay/'
 for file in os.listdir(sddPath):
     y, ch = MCA2Lists(str(sddPath+file))
     ## Add Ka counts

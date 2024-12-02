@@ -9,67 +9,86 @@ from include.ReadData import *
 from include.Merge import *
 ## ---------------------------- ##
 
-##############################
-## Get calibration run rate ##
-##############################
 
-## HPGe 152Eu Calibration run at 8mm det-source distance
-calib152EuFile = '../Calibrations/HPGe/CalibrationRuns_PosExp/Run10_152Eu_detGe_8mm.mca'
-## HPGe 152Eu Calibration yield at 8mm
-calibYield = Ge2Lists(calib152EuFile)[0]
-## Calibration acquisition time
-calibTime = 900. # seconds
-## Calib rate
-calibRate = [calibYield[i]/calibTime for i in range(len(calibYield))]
-## Set channel axes
-ch_hpge = [((i+1)*0.3225-0.149) for i in range(4096)]
-## Set label
-lab = 'Run152Eu - 8 mm'
-## Plot calib rate
-#PlotRateLogy(ch_hpge, calibRate, lab)
+def RemoveBg(dataFile, acquTime):
 
-##############################
-## Get background runs rate ##
-##############################
+    """
+    Function that removes the background rate of a spectrum, using the
+    Backgroud measurement data.
 
-## Background runs path
-bgPath = '../Calibrations/HPGe/Background/'
-## Merge background yield
-mergeBgYield = Merge(bgPath, 'ge')
-## Background acquisition time
-bgTime = 35*1800 + 777 ## seconds: 35 full runs * 1800 sec each + 777 sec last run
-## Background rate
-bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
-## Set label
-bgLab = 'Background'
-## Plot bg rate
-#PlotRateLogy(ch_hpge, bgRate, bgLab)
+    INPUTS: 
+    OUTPUTS: 
+    """
 
-##############################
-## Plot both calib and bg rate
-##############################
-#PlotBothRateLogy(ch_hpge, calibRate, bgRate, lab, bgLab)
+    ##############################
+    ## Get calibration run rate ##
+    ##############################
+    ## Check detector HPGe or SDD from file name
+    if "HPGe" in dataFile:        
+        calibYield = Ge2Lists(dataFile)[0]
+    elif "SDD" in dataFile:
+        calibYield = MCA2Lists(dataFile)[0]
 
-############################
-## Remove background rate ##
-############################
+    ## Converts histogram counts to rate
+    calibRate = [calibYield[i]/acquTime for i in range(len(calibYield))]
 
-calibRateBgRem = [(calibRate[i] - bgRate[i]) for i in range(len(calibRate))]
-## Set label
-rateLab = 'Run10_152Eu-8mm-BG removed'
-## Plot calib rate bg removed
-#PlotRateLogy(ch_hpge, calibRateBgRem,rateLab)
+    ## Set Energy axes
+    ch_hpge = [((i+1)*0.3225-0.149) for i in range(4096)] ## ALWAYS check for CALIBRATION parameters
 
+    ## Set label
+    lab = 'MUDAR'
 
-########################################################
-## Plot both calib, bg rate and calib with bg removed ##
-########################################################
-Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
+    ## Plot rate
+    #PlotRateLogy(ch_hpge, calibRate, lab)
 
-##################################################################
-## Save calibration rate with background removed values to file ##
-##################################################################
-with open('Run10_152Eu_8mm_BgRemoved.mca', 'w') as file:
-    for value in calibRateBgRem:
-        file.write(str(int(value*900))+'\n') ## value back to counts instead of count rate
-file.close()
+    ##############################
+    ## Get background runs rate ##
+    ##############################
+    ## Background runs path
+    bgPath = '../Calibrations/HPGe/Background/'
+
+    ## Merge background yield
+    mergeBgYield = Merge(bgPath, 'ge')
+
+    ## Background acquisition time
+    bgTime = 35*1800 + 777 ## seconds: 35 full runs * 1800 sec each + 777 sec last run
+
+    ## Background rate
+    bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
+
+    ## Set label
+    bgLab = 'Background Rate'
+
+    ## Plot bg rate
+    #PlotRateLogy(ch_hpge, bgRate, bgLab)
+
+    ##############################
+    ## Plot both calib and bg rate
+    ##############################
+    #PlotBothRateLogy(ch_hpge, calibRate, bgRate, lab, bgLab)
+
+    ######################################
+    ## Remove background rate from file ##
+    ######################################
+    calibRateBgRem = [(calibRate[i] - bgRate[i]) for i in range(len(calibRate))]
+
+    ## Set label
+    rateLab = 'Run10_152Eu-8mm-BG removed'
+
+    ## Plot calib rate bg removed
+    #PlotRateLogy(ch_hpge, calibRateBgRem,rateLab)
+
+    ########################################################
+    ## Plot both calib, bg rate and calib with bg removed ##
+    ########################################################
+    Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
+
+    ##################################################################
+    ## Save calibration rate with background removed values to file ##
+    ##################################################################
+    with open(dataFile+"_BgRemoved.mca", 'w') as outFile:
+        for value in calibRateBgRem:
+            outFile.write(f"{value:.2f}\n") ## value back to counts instead of count rate
+    outFile.close()
+
+    return

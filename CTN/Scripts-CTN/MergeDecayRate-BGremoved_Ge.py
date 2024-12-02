@@ -19,7 +19,7 @@ def MergeRateBgRmGe(path):
     ############################
     ## Calculation of bg rate ##
     ############################
-    bgFile = 'DataFilesGe/Background/415114G2.TXT'
+    bgFile = '../Calibration/BEGe-Calib/Background/415114G2.TXT'
     bgYield = Ge2Lists(bgFile)[0] # counts
     bgSpan = 3849. # seconds = 64 min 9 sec
     bgRate = [counts/bgSpan for counts in bgYield]
@@ -41,12 +41,12 @@ def MergeRateBgRmGe(path):
 ##################################
 ## Ge rate bg rm merge and plot ##
 ##################################
-gePath = "DataFilesGe/Decay/"
+gePath = "../2_Decay/DataFilesGe/Decay/"
 channel = [i+1 for i in range(1024)]
 yieldGe = MergeRateBgRmGe(gePath)
 
 fig, ax = plt.subplots()
-ax.plot(channel, yieldGe,'+-', color ='xkcd:black', label=('Ge rate bg rm merged'))
+ax.semilogy(channel, yieldGe,'+-', color ='xkcd:black', label=('Ge rate bg rm merged'))
 legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 legend.get_frame().set_facecolor('#DAEBF2')
 tick_params(axis='both', which='major', labelsize=22)

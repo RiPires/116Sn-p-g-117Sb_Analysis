@@ -2,7 +2,7 @@
 from matplotlib.pylab import *
 import matplotlib.pyplot as plt
 import os
-from ReadData import*
+from include.ReadData import*
 ##########################################
 ##########################################
 def Plot(File):
@@ -27,6 +27,6 @@ def Plot(File):
 #################
 
 ## Decay runs
-path = '../Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/'
+path = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_HPGe/'
 for file in os.listdir(path):
     Plot(str(path+file))

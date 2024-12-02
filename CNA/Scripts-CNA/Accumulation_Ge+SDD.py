@@ -3,7 +3,7 @@
 import os
 import matplotlib.pyplot as plt
 from matplotlib.pylab import *
-from ReadData import *
+from include.ReadData import *
 
 ##################################
 ## Calculations for Ge detector ##
@@ -35,7 +35,7 @@ ge_roiUp_g = int(500)
 
 ## Loop over Ge data
 geDecayTime = 900. #s = 15 min
-gePath = 'DataFiles_HPGe/'
+gePath = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_HPGe/'
 for file in os.listdir(gePath):
     y, ch = Ge2Lists(str(gePath+file))
     ## Add Ka rate
@@ -82,7 +82,7 @@ sdd_roiUp_Kb = int(928)
 
 ## Loop over SDD data
 sddDecayTime = 1800. # s = 30 min
-sddPath = 'DataFiles_SDD/'
+sddPath = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/'
 for file in os.listdir(sddPath):
     y, ch = MCA2Lists(str(sddPath+file))
     ## Add Ka counts
