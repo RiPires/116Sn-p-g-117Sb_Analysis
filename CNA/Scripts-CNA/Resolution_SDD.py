@@ -6,6 +6,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+from matplotlib.pylab import *
 ## ----------------------------------- ##
 
 # Define the resolution response model
@@ -45,15 +46,15 @@ print("r_squared = ", r_squared)
 E_fit = np.linspace(min(1/np.sqrt(E)), max(1/np.sqrt(E)), 500)  # Fine grid for plotting
 R_fit = resolution_model((1/E_fit)**2, *popt)
 
-plt.errorbar(1/np.sqrt(E), R, yerr=R_err, fmt='o', label="Experimental Data", color='blue', capsize=3)
-plt.plot(E_fit, R_fit, label="Fit: $R(E) = \\frac{a}{E} + \\frac{b}{\\sqrt{E}} + c$", color='red')
-plt.xlabel("1/sqrt(E) [Energy (MeV)]")
-plt.ylabel("Resolution (R)")
-plt.legend()
-plt.grid(True)
-plt.show()
-
-
+fig, ax = plt.subplots()
+ax.errorbar(1/np.sqrt(E), R, yerr=R_err, color='blue', fmt='o', label="SDD")
+ax.plot(E_fit, R_fit, color='red', label="Fit: $R(E) = \\frac{a}{E} + \\frac{b}{\\sqrt{E}} + c$")
+legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+legend.get_frame().set_facecolor('#DAEBF2')
+tick_params(axis='both', which='major', labelsize=22)
+xlabel("1/$\\sqrt{\\rm{E}}$  [Energy (MeV)]", fontsize=22)
+ylabel("R = $\\frac{\\rm{FWHM}}{\\rm{E}}$", fontsize=22)
+show()
 
 ###########################
 ### USING NUMPY POLYFIT ###
@@ -82,10 +83,12 @@ print("r_squared = ", r_squared)
 E_fit = np.linspace(min(1/np.sqrt(E)), max(1/np.sqrt(E)), 500)  # Fine grid for plotting
 R_fit = resolution_model((1/E_fit)**2, a, b, c)
 
-plt.errorbar(1/np.sqrt(E), R, yerr=R_err, fmt='o', label="Experimental Data", color='blue', capsize=3)
-plt.plot(E_fit, R_fit, label="Fit: $R(E) = \\frac{a}{E} + \\frac{b}{\\sqrt{E}} + c$", color='red')
-plt.xlabel("1/sqrt(E) [Energy (MeV)]")
-plt.ylabel("Resolution (R)")
-plt.legend()
-plt.grid(True)
-plt.show()
+fig, ax = plt.subplots()
+ax.errorbar(1/np.sqrt(E), R, yerr=R_err, fmt='o', color='blue', label="SDD Resolution")
+ax.plot(E_fit, R_fit, color='red', label="Fit: $R(E) = \\frac{a}{E} + \\frac{b}{\\sqrt{E}} + c$")
+legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+legend.get_frame().set_facecolor('#DAEBF2')
+tick_params(axis='both', which='major', labelsize=22)
+xlabel("1/$\\sqrt{\\rm{E}}$  [Energy (MeV)]", fontsize=22)
+ylabel("R = $\\frac{\\rm{FWHM}}{\\rm{E}}$", fontsize=22)
+show()

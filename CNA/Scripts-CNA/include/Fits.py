@@ -1,6 +1,6 @@
-#################### RiP #################################
-## Funtion to fit Gaussian, Lorentzian and Voigt curves ##
-##########################################################
+#################### RiP ##########################################
+## Funtions to fit Gaussian, Lorentzian and Voigt curves to data ##
+###################################################################
 
 ## ------------------------------- ##
 from __future__ import print_function 
@@ -11,6 +11,7 @@ from scipy.optimize import leastsq
 from scipy.optimize import curve_fit
 ## ------------------------------- ##
 
+## Defines Voigt fit for n peaks
 def nVoigt(x, *params):
     """
     Function to model the sum of n Voigt peaks.
@@ -50,10 +51,11 @@ def nVoigt(x, *params):
 
     return result
 
-# Define the Gaussian function
+## Define the Gaussian function
 def gaussian(x, amp, mean, sigma):
     return amp * np.exp(-((x - mean) ** 2) / (2 * sigma ** 2))
 
+## Define N Gaussian peaks
 def nGaussian(x, *params):
     """
     Function to model n Gaussian peaks.
@@ -68,9 +70,18 @@ def nGaussian(x, *params):
         result += gaussian
     return result
 
-    
-def FitData(func, x, y, init, lab, roid, roiu):
 
+## Fits function "func" to experimental data x and y, within certain regions of interest 
+def FitData(func, x, y, init, lab, roid, roiu):
+    """
+    Uses scipy curve_fit to perform fit of a fucntion "func" to experimental data x and y, given initial guesses "init", in the regions of interest limited by roid and roiu.
+    Writes the peak centroid and standard deviation into an output file with a costume name given by the label "lab".
+    Prints the results into the terminal.
+    Plots both the data and the fit.
+
+    INPUTS - func: fucntion to fit; x: x-data; y: y-data; init: initial guess for fitting; lab: label for plot; roid: region of interest down; roiu: region of interest up;
+    OUTPUTS - list of fitted parameters;
+    """
     x = np.array(x)
     y = np.array(y)
     roid = np.array(roid)
@@ -118,18 +129,29 @@ def FitData(func, x, y, init, lab, roid, roiu):
     print()
 
     # Plot the results
-    plt.plot(x, y, label=f"Data ({lab})", color="blue")
-    plt.plot(x, all_fits, label="Combined Fit", color="red", linestyle="--")
-    plt.xlabel("Channel")
-    plt.ylabel("Yield")
-    plt.legend()
-    plt.title("Gaussian Fit")
-    plt.show()
+    fig, ax = plt.subplots()
+    ax.plot(x, y, '+-', color="blue", label=f"Data ({lab})")
+    ax.plot(x, all_fits, '--', color="red", label="Combined Fit")
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Channel", fontsize=22)
+    ylabel("Yield", fontsize=22)
+    title("Gaussian Fit")
+    show()
 
     return fitted_params
 
+## Fits multiple functions "func" to experimental data x and y
 def FitNGauss(func, x, y, init, lab):
+    """
+    Uses scipy curve_fit to perform fit of a fucntion "func" to experimental data x and y, given initial guesses "init", for N cases, being N = len(init).
+    Prints the results into the terminal.
+    Plots both the data and the fit.
 
+    INPUTS - func: fucntion to fit; x: x-data; y: y-data; init: initial guess for fitting; lab: label for plot;
+    OUTPUTS - 
+    """
     # Fit the data
     popt, pcov = curve_fit(func, x, y, p0=init)
 
@@ -158,11 +180,15 @@ def FitNGauss(func, x, y, init, lab):
     print()
 
     # Plot the results
-    plt.figure(figsize=(10, 6))
-    plt.plot(x, y, label=str("Exp. "+lab), color='blue', linewidth=2)
-    plt.plot(x, nGaussian(x, *popt), label="Fit", color='red', linewidth=2)
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.legend()
-    plt.title(f"Fit for {n_peaks} Gaussian Peaks")
-    plt.show()
+    fig, ax = plt.subplots()
+    ax.plot(x, y, '*-', color='blue', label=str("Exp. "+lab))
+    ax.plot(x, nGaussian(x, *popt), '--', color='red', label="Fit")
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Channel")
+    ylabel("Yield")
+    title(f"Fit for {n_peaks} Gaussian Peaks")
+    show()
+
+    return

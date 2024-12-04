@@ -42,21 +42,10 @@ calibEnergies133Ba = [4.285, 4.619, 4.936, 5.28, 30.625, 30.973, 34.964, 35.822]
 ROId152Eu = [175, 194, 207, 225, 1261, 1282, 1448]
 ROIu152Eu = [188, 206, 218, 235, 1281, 1308, 1472]
 
-ROId133Ba = [132, 144, 156, 168, 981, 991, 1116, 1142]
-ROIu133Ba = [144, 155, 162, 173, 989, 1008, 1136, 1164]
+ROId133Ba = [132, 144, 156, 168, 971, 991, 1116, 1142]
+ROIu133Ba = [144, 155, 162, 173, 990, 1014, 1136, 1164]
 
-# Initial guess
-initial_guess133Ba = [
-    921, 137, 2.1,  # Peak 1
-    644, 148, 2.9,  # Peak 2
-    182, 158, 2.4,  # Peak 3
-    97, 171, 2.0,   # Peak 4
-    64, 179, 2.0,   # Peak 5
-    473, 987, 2.4,  # Peak 6
-    776, 997, 2.4,  # Peak 7
-    158, 1124, 2.4, # Peak 8
-]
-
+# Initial guesses
 initial_guess152Eu = [
     1145, 181, 2.1, # Peak 1
     728, 200, 2.9,  # Peak 2
@@ -67,9 +56,21 @@ initial_guess152Eu = [
     36, 1462, 2.4   # Peak 7
 ]
 
-# Fit the data
+initial_guess133Ba = [
+    921, 137, 2.1,  # Peak 1
+    644, 148, 2.9,  # Peak 2
+    182, 158, 2.4,  # Peak 3
+    97, 171, 2.0,   # Peak 4
+    64, 179, 2.0,   # Peak 5
+    473, 987, 4.0,  # Peak 6
+    776, 997, 4.0,  # Peak 7
+    158, 1124, 2.4, # Peak 8
+]
+
+##  Fit the data usign single peak fit
 FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
 FitData(gaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba, ROId133Ba, ROIu133Ba)
 
+## Fit data using multi-peak fit
 FitNGauss(nGaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu)
 FitNGauss(nGaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba)

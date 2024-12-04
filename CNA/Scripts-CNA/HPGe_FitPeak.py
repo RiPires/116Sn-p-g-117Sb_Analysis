@@ -91,7 +91,10 @@ initial_guess133Ba = [
 initial_guess60Co = [1863, 3638, 2.0]
 
 # Fit the data
-#FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
+FitData(gaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu, ROId152Eu, ROIu152Eu)
 #FitData(gaussian, channels, calibYield137Cs, initial_guess137Cs, lab137Cs, ROId137Cs, ROIu137Cs)
 FitData(gaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba, ROId133Ba, ROIu133Ba)
 #FitData(gaussian, channels, calibYield60Co, initial_guess60Co, lab60Co, ROId60Co, ROIu60Co)
+
+FitNGauss(nGaussian, channels, calibYield152Eu, initial_guess152Eu, lab152Eu)
+FitNGauss(nGaussian, channels, calibYield133Ba, initial_guess133Ba, lab133Ba)
