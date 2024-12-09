@@ -16,8 +16,8 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     TRandom3 rng(0);
 
     // Energy conversion factor
-    double slope = 0.000031067; // MeV/ch
-    double intercept = -0.000005703; // MeV
+    double slope = 0.000031059; // MeV/ch
+    double intercept = -0.0000041372; // MeV
     int nrCh = 2048; 
 
     // Build costume label for figures
@@ -151,9 +151,9 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     canvas->SetLogy();
     canvas->Update();
     // Save figure
-    //string s = lab+"_Normalized.root";
-    //const char *figName = s.c_str();
-    //canvas->SaveAs(figName);
+    string s = lab+"_Normalized.root";
+    const char *figName = s.c_str();
+    canvas->SaveAs(figName);
     gPad->Update();
 }
 
