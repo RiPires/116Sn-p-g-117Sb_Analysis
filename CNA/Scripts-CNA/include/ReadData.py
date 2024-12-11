@@ -27,7 +27,35 @@ def MCA2Lists(File):
     ch = []
     y = []
     aux = []
-    for i in range(12, 2060):
+    for i in range(2060):
+        aux.append(data[i][0].split())
+    ## Acquisition time    
+    time = float(aux[8][2])
+    for i in range(12, len(aux)):
+        ch.append(float(i)) ## axes in channel
+        y.append(float(aux[i][0]))
+
+    return y, ch, time
+
+#######################################################
+#######################################################
+def MCA2ListsBgRm(File):
+    """
+    Converts .mca data into yield and channel lists
+    INPUTS:
+        "FILENAME.mca"
+    OUTPUTS:
+        Yield and Channel lists
+    HOW TO USE:
+        MyYield, MyChannel = MCA2Lists("MyFile.mca")
+    """
+    with open(File, 'r',encoding='iso8859-4') as file:
+        reader = csv.reader(file, delimiter="\n", skipinitialspace=True)
+        data = list(reader)
+    ch = []
+    y = []
+    aux = []
+    for i in range(2048):
         aux.append(data[i][0].split())
     for i in range(len(aux)):
         ch.append(float(i)) ## axes in channel

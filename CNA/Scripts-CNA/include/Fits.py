@@ -218,7 +218,7 @@ def Ndecay(time, *params):
     return Ndirr * (1 - np.exp(-lamb * time))
 
 ## Funtion to fit accumulation curve to experimental data
-def FitNdecay(func, time, counts, init, lab, roid, roiu):
+def FitNdecay(func, time, countsGamma, countsKa, countsKb, init, lab):
 
     """
     INPUTS:
@@ -229,47 +229,125 @@ def FitNdecay(func, time, counts, init, lab, roid, roiu):
         - lab: a label to use for plotting;
     OUTPUTS:
     """
-
     time = np.array(time)
-    counts = np.array(counts)
-
-    # Restrict data to the ROI
-    mask = (time >= roid) & (time <= roiu)
-    time_roi = time[mask]
-    counts_roi = counts[mask]
-
+    countsGamma = np.array(countsGamma)
+    countsKa = np.array(countsKa)
+    countsKb = np.array(countsKb)
 
     ## Fit the data
-    popt, pcov = curve_fit(func, time_roi, counts_roi, p0=init[0:2])
+    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:2])
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:2])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:2])
 
     ## Calculate the half-life
-    halfLife_minutes = np.log(2)/popt[1] ## minutes
-    halfLife_hours = halfLife_minutes/60 ## hours
+    halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
+    halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
+    halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
+    halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
+    halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
+    halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
 
-    lamb_uncertainty_minutes = np.sqrt(np.diag(pcov))[1] ## minutes^-1
-    lamb_uncertainty_hours = lamb_uncertainty_minutes/60 ## hours^-1 
+    lambGamma_uncertainty_minutes = np.sqrt(np.diag(pcovGamma))[1] ## minutes^-1
+    lambGamma_uncertainty_hours = lambGamma_uncertainty_minutes/60 ## hours^-1 
+    lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
+    lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
+    lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
+    lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
 
-    halfLife_hours_uncertainty = np.log(2)*lamb_uncertainty_hours/(popt[1]**2)
+    halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)
+    halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)
+    halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)
 
     ## Print results
-    print("*****************************"+len(lab)*"*")
-    print("* Accumulation fit results "+lab+"*")
-    print("*****************************"+len(lab)*"*")
-    print(f"T_1/2 = ({halfLife_hours:.2f} ± {halfLife_hours_uncertainty:.2f}) h")
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h")
+    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h")
+    print()
 
     ## Fited function
-    fitted = Ndecay(time_roi, *popt)
+    fittedGamma = Ndecay(time, *poptGamma)
+    fittedKa = Ndecay(time, *poptKa)
+    fittedKb = Ndecay(time, *poptKb)
 
     # Plot the results
     fig, ax = plt.subplots()
-    ax.semilogy(time, counts, '+-', color="blue", label=f"Ka line: {lab}")
-    ax.semilogy(time_roi, fitted, '--', color="red", label="Fit")
-    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    ax.semilogy(time, countsGamma, '*', color="xkcd:sky blue", label=f"Gamma")
+    ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
+    ax.semilogy(time, countsKa, '^', color="xkcd:turquoise", label=f"Ka")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
+    ax.semilogy(time, countsKb, 'v', color="xkcd:salmon", label=f"Kb")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
+    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
     xlabel("Time (minutes)", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
-    title("Accumulation Fit")
+    title("Accumulation Fit: "+lab, fontsize=24)
+    show()
+
+    return
+
+## Funtion to fit accumulation curve to experimental data from SDD detector
+def FitNdecaySDD(func, time, countsKa, countsKb, init, lab):
+
+    """
+    INPUTS:
+        - func: fucntion to fit;
+        - time: acquisition time, the x-axis variable;
+        - counts: accumulation yield in counts, the y-axis variable;
+        - init: initial gusses for the fit parameters;
+        - lab: a label to use for plotting;
+    OUTPUTS:
+    """
+    time = np.array(time)
+    countsKa = np.array(countsKa)
+    countsKb = np.array(countsKb)
+
+    ## Fit the data
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[0][0:2])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[1][0:2])
+
+    ## Calculate the half-life
+    halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
+    halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
+    halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
+    halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
+
+    lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
+    lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
+    lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
+    lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
+
+    halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)
+    halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)
+
+    ## Print results
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h")
+    print()
+
+    ## Fited function
+    fittedKa = Ndecay(time, *poptKa)
+    fittedKb = Ndecay(time, *poptKb)
+
+    # Plot the results
+    fig, ax = plt.subplots()
+    ax.semilogy(time, countsKa, '^', color="xkcd:turquoise", label=f"Ka")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
+    ax.semilogy(time, countsKb, 'v', color="xkcd:salmon", label=f"Kb")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
+    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Time (minutes)", fontsize=22)
+    ylabel("Accumulated Yield", fontsize=22)
+    title("Accumulation Fit: "+lab, fontsize=24)
     show()
 
     return
