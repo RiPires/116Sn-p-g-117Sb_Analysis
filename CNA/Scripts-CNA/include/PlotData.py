@@ -73,14 +73,8 @@ def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Energy (keV)',fontsize=22)
-    xlim(left=0.)
+    xlabel('Channel',fontsize=22)
     ylabel('Rate ($s^{-1}$)', fontsize=22)
-    figManager = plt.get_current_fig_manager()
-    figManager.window.showMaximized()
-    figure=gcf()
-    figure.set_size_inches(16,9)
-    savefig(fname=str(lab3+'.svg'), dpi=200, format='svg')
     show()
     
 

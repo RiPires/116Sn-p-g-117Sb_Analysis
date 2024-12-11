@@ -5,6 +5,7 @@
 ## ------------------ ##
 import os
 from include.ReadData import *
+from include.Merge import *
 ## ------------------ ##
 
 #######################################################################
@@ -61,6 +62,20 @@ def AccumulateGe(gePath):
         Accu_g.append(accu_g)
         Accu_t.append(accu_t)
     return Accu_Ka, Accu_Kb, Accu_g, Accu_t
+
+
+#######################################################################
+#######################################################################
+def AccumulateGe_BgRemove(gePath):
+    """
+    Performs Accumulation of the decay runs of a specific path removing the background
+
+    INPUTS: gePath - the path for the directory containing the decay data files
+
+    OUPUTS: Accu_Ka, Accu_Kb, Accu_g, Accu_t - lists of accumulated yield for Ka, Kb, and gamma lines, and time
+    """
+
+    return 
 
 #######################################################################
 #######################################################################

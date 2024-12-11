@@ -7,7 +7,6 @@ from __future__ import print_function
 import matplotlib.pyplot as plt
 from matplotlib.pylab import *
 import numpy as np
-from scipy.optimize import leastsq
 from scipy.optimize import curve_fit
 ## ------------------------------- ##
 
@@ -189,6 +188,88 @@ def FitNGauss(func, x, y, init, lab):
     xlabel("Channel")
     ylabel("Yield")
     title(f"Fit for {n_peaks} Gaussian Peaks")
+    show()
+
+    return
+## --------------------------------------------------------------------------------------- ##
+## --------------------------------------------------------------------------------------- ##
+
+#######################
+## Accumulation fits ##
+#######################
+
+## Defines Accumulation function as N_decay(t_acqui) = N_Dirr(1-exp(-lamb t_acqui))
+def Ndecay(time, *params):
+
+    """
+    Function that models the accumulation of radioactive decays depending on the acquisition time.
+
+    INPUTS:
+    time : ndarray
+        The x-axis variable, time of acquisition.
+    *params : tuple
+        A flattened list of parameters for the function:
+        - N_Dirr: total number of radioactive nuclei in the target after the irradiation and the transportation time.
+        - lamb: the decay caracteristic time, depending on the radioactive decay.
+
+    OUPUTS: adjusted Ndecay curve
+    """    
+    Ndirr, lamb = params[0:2]
+    return Ndirr * (1 - np.exp(-lamb * time))
+
+## Funtion to fit accumulation curve to experimental data
+def FitNdecay(func, time, counts, init, lab, roid, roiu):
+
+    """
+    INPUTS:
+        - func: fucntion to fit;
+        - time: acquisition time, the x-axis variable;
+        - counts: accumulation yield in counts, the y-axis variable;
+        - init: initial gusses for the fit parameters;
+        - lab: a label to use for plotting;
+    OUTPUTS:
+    """
+
+    time = np.array(time)
+    counts = np.array(counts)
+
+    # Restrict data to the ROI
+    mask = (time >= roid) & (time <= roiu)
+    time_roi = time[mask]
+    counts_roi = counts[mask]
+
+
+    ## Fit the data
+    popt, pcov = curve_fit(func, time_roi, counts_roi, p0=init[0:2])
+
+    ## Calculate the half-life
+    halfLife_minutes = np.log(2)/popt[1] ## minutes
+    halfLife_hours = halfLife_minutes/60 ## hours
+
+    lamb_uncertainty_minutes = np.sqrt(np.diag(pcov))[1] ## minutes^-1
+    lamb_uncertainty_hours = lamb_uncertainty_minutes/60 ## hours^-1 
+
+    halfLife_hours_uncertainty = np.log(2)*lamb_uncertainty_hours/(popt[1]**2)
+
+    ## Print results
+    print("*****************************"+len(lab)*"*")
+    print("* Accumulation fit results "+lab+"*")
+    print("*****************************"+len(lab)*"*")
+    print(f"T_1/2 = ({halfLife_hours:.2f} ± {halfLife_hours_uncertainty:.2f}) h")
+
+    ## Fited function
+    fitted = Ndecay(time_roi, *popt)
+
+    # Plot the results
+    fig, ax = plt.subplots()
+    ax.semilogy(time, counts, '+-', color="blue", label=f"Ka line: {lab}")
+    ax.semilogy(time_roi, fitted, '--', color="red", label="Fit")
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Time (minutes)", fontsize=22)
+    ylabel("Accumulated Yield", fontsize=22)
+    title("Accumulation Fit")
     show()
 
     return

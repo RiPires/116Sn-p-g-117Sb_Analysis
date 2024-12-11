@@ -53,13 +53,17 @@ def Ge2Lists(File):
     ch = []
     y = []
     aux = []
-    for i in range(14, 4110):
+    for i in range(4110):
         aux.append(data[i][0].split())
-    for i in range(len(aux)):
+    
+    ## Acquisition time    
+    time = float(aux[8][2])
+
+    for i in range(14, len(aux)):
         ch.append(float(i)) ## axes in channel
         y.append(float(aux[i][0]))
 
-    return y, ch
+    return y, ch, time
 
 #######################################################
 #######################################################
