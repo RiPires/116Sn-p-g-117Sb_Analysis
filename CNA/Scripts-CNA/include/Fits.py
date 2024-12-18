@@ -198,7 +198,7 @@ def FitNGauss(func, x, y, init, lab):
 ## Accumulation fits ##
 #######################
 
-## Defines Accumulation function as N_decay(t_acqui) = N_Dirr(1-exp(-lamb t_acqui))
+## Defines Accumulation function for the number of radioactive decays as N_decay(t_acqui) = N_Dirr(1-exp(-lamb t_acqui))
 def Ndecay(time, *params):
 
     """
@@ -215,11 +215,41 @@ def Ndecay(time, *params):
     OUPUTS: adjusted Ndecay curve
     """    
     Ndirr, lamb = params[0:2]
-    return Ndirr * (1 - np.exp(-lamb * time))
 
-## Funtion to fit accumulation curve to experimental data
-def FitNdecay(func, time, countsGamma, countsKa, countsKb, init, lab):
+    tTrans = 29. # minutes
 
+    return Ndirr * np.exp(-lamb * tTrans) * (1 - np.exp(-lamb * time))
+
+## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
+def Npeak(time, *params):
+
+    """
+    Function that models the accumulation of radioactive decays depending on the acquisition time.
+
+    INPUTS:
+    time : ndarray
+        The x-axis variable, time of acquisition.
+    *params : tuple
+        A flattened list of parameters for the function:
+        - N_Dirr (int): total number of radioactive nuclei in the target after the irradiation and the transportation time.
+        - lamb (float): the decay caracteristic time, depending on the radioactive decay.
+        - eta (float): photo-peak decay branching;
+        - epsilon_D (float): detector resolution at the photo-peak energy;
+        - t_trans (float): time of transportation of the activated target, since the end of the activation,
+          from the irradiation chamber, into the decay station at the begining of the decay measurement;
+
+    OUPUTS: adjusted Npeak curve
+    """    
+    Ndirr, lamb, eta, epsilonD = params[0:5]
+
+    t_trans = 29. # minutes
+
+    return eta * epsilonD * np.exp(-lamb*t_trans) * Ndirr * (1 - np.exp(-lamb * time))
+
+## Funtion to fit accumulation curve of number of decays to experimental data
+## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
+## at the end of the activation (N_Dirr), for the HPGe detector
+def FitNdecayHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -235,9 +265,9 @@ def FitNdecay(func, time, countsGamma, countsKa, countsKb, init, lab):
     countsKb = np.array(countsKb)
 
     ## Fit the data
-    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:2])
-    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:2])
-    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:2])
+    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:3])
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:3])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:3])
 
     ## Calculate the half-life
     halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
@@ -258,13 +288,18 @@ def FitNdecay(func, time, countsGamma, countsKa, countsKb, init, lab):
     halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)
     halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)
 
+    ## Get fitted Ndirr and tTrans
+    NdirrGamma = poptGamma[0]
+    NdirrKa = poptKa[0]
+    NdirrKb= poptKb[0]
+
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h")
-    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h")
-    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h")
+    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrGamma:.2e}")
+    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKa:.2e}")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKb:.2e}")
     print()
 
     ## Fited function
@@ -285,14 +320,15 @@ def FitNdecay(func, time, countsGamma, countsKa, countsKb, init, lab):
     tick_params(axis='both', which='major', labelsize=22)
     xlabel("Time (minutes)", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
-    title("Accumulation Fit: "+lab, fontsize=24)
+    title("Accumulation Fit Ndecay: "+lab, fontsize=24)
     show()
 
     return
 
-## Funtion to fit accumulation curve to experimental data from SDD detector
+## Funtion to fit accumulation curve of number of decays to experimental data
+## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
+## at the end of the activation (N_Dirr), for the SDD detector
 def FitNdecaySDD(func, time, countsKa, countsKb, init, lab):
-
     """
     INPUTS:
         - func: fucntion to fit;
@@ -347,7 +383,96 @@ def FitNdecaySDD(func, time, countsKa, countsKb, init, lab):
     tick_params(axis='both', which='major', labelsize=22)
     xlabel("Time (minutes)", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
-    title("Accumulation Fit: "+lab, fontsize=24)
+    title("Accumulation Fit Ndecay: "+lab, fontsize=24)
+    show()
+
+    return
+
+## Funtion to fit accumulation curve of area under a photo-peak to experimental data
+## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of 
+## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD)
+## and trasnportation time (t_trans), for the HPGe detector
+def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
+    """
+    INPUTS:
+        - func: fucntion to fit;
+        - time: acquisition time, the x-axis variable;
+        - counts: accumulation yield in counts, the y-axis variable;
+        - init: initial gusses for the fit parameters (N_Dirr, lambda, eta, epsilonD);
+        - lab: a label to use for plotting;
+    OUTPUTS:
+    """
+
+    time = np.array(time)
+    countsGamma = np.array(countsGamma)
+    countsKa = np.array(countsKa)
+    countsKb = np.array(countsKb)
+
+    ## Fit the data
+    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:5])
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:5])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:5])
+
+    ## Calculate the half-life
+    # Gamma line
+    halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
+    halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
+    # Ka line
+    halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
+    halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
+    # Kb line
+    halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
+    halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
+
+    ## Calculate lambda uncertainty
+    # Gamma line
+    lambGamma_uncertainty_minutes = np.sqrt(np.diag(pcovGamma))[1] ## minutes^-1
+    lambGamma_uncertainty_hours = lambGamma_uncertainty_minutes/60 ## hours^-1 
+    # Ka line
+    lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
+    lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
+    # Kb line
+    lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
+    lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
+
+    ## Calculate half-life uncertainty in hours
+    halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)   # Gamma line
+    halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)            # Ka line
+    halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)            # Kb line
+
+    ## Get remaining fit parameters
+    etaGamma, epsilonDGamma = poptGamma[2], poptGamma[3]             # Gamma line
+    etaKa, epsilonDKa = poptKa[2], poptKa[3]                         # Ka line
+    etaKb, epsilonDKb = poptKb[2], poptKb[3]                         # Kb line
+
+    ## Print results
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
+    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t eta = {etaKa:.2f}, \t epsilonD = {epsilonDKa:.2f}")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}")
+    print()
+
+    ## Fited function
+    fittedGamma = Ndecay(time, *poptGamma)
+    fittedKa = Ndecay(time, *poptKa)
+    fittedKb = Ndecay(time, *poptKb)
+
+    # Plot the results
+    fig, ax = plt.subplots()
+    ax.semilogy(time, countsGamma, '*', color="xkcd:sky blue", label=f"Gamma")
+    ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
+    ax.semilogy(time, countsKa, '^', color="xkcd:turquoise", label=f"Ka")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
+    ax.semilogy(time, countsKb, 'v', color="xkcd:salmon", label=f"Kb")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
+    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Time (minutes)", fontsize=22)
+    ylabel("Accumulated Yield", fontsize=22)
+    title("Accumulation Fit Npeak: "+lab, fontsize=24)
     show()
 
     return
