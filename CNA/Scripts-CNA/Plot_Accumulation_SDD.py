@@ -38,8 +38,10 @@ for file in sddPaths:
     title(str(file[15:27]+' - '+file[-4:-1]), fontsize=24)    
     show() """
 
-    ## Initial guesses for fit parameters [[gamma], [Ka], [Kb]]
-    initParams = [[5e3, 7e-5], [5e2, 7e-5]] ## N_Dirr ~ 3e5 counts, T1/2 ~ 1e4 seconds <=> lambda ~ 7e-5 sec^-1
+    ## Initial guesses for fit parameters [[Ka], 
+    #                                      [Kb]]
+    initParams = [[4.5e3, 4.12e-3], 
+                  [6.0e2, 4.12e-3]] ## N_Dirr ~ 3e5 counts, T1/2 ~ 1e4 seconds <=> lambda ~ 7e-5 sec^-1
 
     ## Fit the data
     FitNdecaySDD(Ndecay, accu_t, accu_Ka, accu_Kb, initParams, lab=str(file[15:27]+' - '+file[-4:-1]))

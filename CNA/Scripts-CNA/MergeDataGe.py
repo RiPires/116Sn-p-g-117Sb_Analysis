@@ -19,24 +19,24 @@ def MergeYieldGe(Dir):
     ConvYield = [0 for i in range(4096)]
     for file in os.listdir(Dir):
         Path = str(Dir+"\\"+file)
-        Yield = Ge2Lists(Path)[0]
+        Yield = Ge2ListsBgRm(Path)[0]
         ConvYield = [ConvYield[i] + Yield[i] for i in range(len(ConvYield))]
     return ConvYield
 
 #########################################
 ###   Ge Acquisition merge and plot   ###
 #########################################
-geDir = "../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_HPGe/"
-Channel = [((i+1)*0.3225-0.149) for i in range(4096)]
+geDir = "../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/HPGe/"
+Channel = [(i+1) for i in range(4096)]
 Yield_Ge = MergeYieldGe(geDir)
 
 ### Plot
 fig, ax = plt.subplots()
-ax.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('HPGe - Ebeam = 4.7 MeV'))
+ax.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=('HPGe - Ebeam = 3.5 MeV'))
 legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 legend.get_frame().set_facecolor('#DAEBF2')
 tick_params(axis='both', which='major', labelsize=22)
-xlabel('Energy (keV)',fontsize=22)
+xlabel('Channel',fontsize=22)
 xlim(left=0.)
 ylabel('Total yield', fontsize=22)
 show()

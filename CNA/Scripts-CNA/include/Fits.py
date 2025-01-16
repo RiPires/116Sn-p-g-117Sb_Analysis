@@ -240,16 +240,20 @@ def Npeak(time, *params):
 
     OUPUTS: adjusted Npeak curve
     """    
-    Ndirr, lamb, eta, epsilonD = params[0:5]
+    Ndirr, eta, epsilonD = params[0:4]
 
+    ## Define variables that will not be calculated by the fitting model
+    # Time of transportation in minutes
     t_trans = 29. # minutes
+    # Decay half-life in minutes
+    halfLife = 2.8 * 60 # minutes
 
-    return eta * epsilonD * np.exp(-lamb*t_trans) * Ndirr * (1 - np.exp(-lamb * time))
+    return eta * epsilonD * np.exp(-np.log(2)/halfLife * t_trans) * Ndirr * (1 - np.exp(-np.log(2)/halfLife * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
 ## at the end of the activation (N_Dirr), for the HPGe detector
-def FitNdecayHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
+def FitNdecayHPGe(func, time, countsGamma, counts511, countsKa, countsKb, init, lab):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -261,35 +265,53 @@ def FitNdecayHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     """
     time = np.array(time)
     countsGamma = np.array(countsGamma)
+    counts511 = np.array(counts511)
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
 
     ## Fit the data
     poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:3])
-    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:3])
-    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:3])
+    popt511, pcov511 = curve_fit(func, time, counts511, p0=init[1][0:3])
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[2][0:3])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[3][0:3])
 
     ## Calculate the half-life
+    # Gamma line
     halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
     halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
+    # 511 keV line
+    halfLife511_minutes = np.log(2)/popt511[1] # minutes
+    halfLife511_hours = halfLife511_minutes/60 # hours
+    # Ka line
     halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
     halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
+    # Kb line
     halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
     halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
 
+    ## Calculate lambda uncertainty
+    # Gamma line
     lambGamma_uncertainty_minutes = np.sqrt(np.diag(pcovGamma))[1] ## minutes^-1
     lambGamma_uncertainty_hours = lambGamma_uncertainty_minutes/60 ## hours^-1 
+    # 511 keV line
+    lamb511_uncertainty_minutes = np.sqrt(np.diag(pcov511))[1] ## minutes^-1
+    lamb511_uncertainty_hours = lamb511_uncertainty_minutes/60 ## hours^-1 
+    # Ka line
     lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
     lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
+    # Kb line
     lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
     lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
 
+    ## Calculate half-life uncertainty
     halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)
+    halfLife511_hours_uncertainty = np.log(2)*lamb511_uncertainty_hours/(popt511[1]**2)
     halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)
     halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)
 
     ## Get fitted Ndirr and tTrans
     NdirrGamma = poptGamma[0]
+    Ndirr511 = popt511[0]
     NdirrKa = poptKa[0]
     NdirrKb= poptKb[0]
 
@@ -297,13 +319,15 @@ def FitNdecayHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrGamma:.2e}")
-    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKa:.2e}")
-    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKb:.2e}")
+    print(f"Gamma line: \t T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrGamma:.2e}")
+    print(f"511 keV line: \t T_1/2 = ({halfLife511_hours:.2f} ± {halfLife511_hours_uncertainty:.2f}) h, \t Ndirr = {Ndirr511:.2e}")
+    print(f"Ka line: \t T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKa:.2e}")
+    print(f"Kb line: \t T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKb:.2e}")
     print()
 
     ## Fited function
     fittedGamma = Ndecay(time, *poptGamma)
+    fitted511 = Ndecay(time, *popt511)
     fittedKa = Ndecay(time, *poptKa)
     fittedKb = Ndecay(time, *poptKb)
 
@@ -311,11 +335,13 @@ def FitNdecayHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     fig, ax = plt.subplots()
     ax.semilogy(time, countsGamma, '*', color="xkcd:sky blue", label=f"Gamma")
     ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
+    ax.semilogy(time, counts511, 'D', color="xkcd:maize", label=f"511 keV")
+    ax.semilogy(time, fitted511, '-', color="xkcd:orange yellow", label=f"Fit - 511 keV")
     ax.semilogy(time, countsKa, '^', color="xkcd:turquoise", label=f"Ka")
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
     ax.semilogy(time, countsKb, 'v', color="xkcd:salmon", label=f"Kb")
     ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
-    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=4,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
     xlabel("Time (minutes)", fontsize=22)
@@ -360,12 +386,16 @@ def FitNdecaySDD(func, time, countsKa, countsKb, init, lab):
     halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)
     halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)
 
+    ## Get fitted Ndirr and tTrans
+    NdirrKa = poptKa[0]
+    NdirrKb= poptKb[0]
+
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h")
-    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h")
+    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKa:.2e}")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t Ndirr = {NdirrKb:.2e}")
     print()
 
     ## Fited function
@@ -397,23 +427,28 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     INPUTS:
         - func: fucntion to fit;
         - time: acquisition time, the x-axis variable;
-        - counts: accumulation yield in counts, the y-axis variable;
-        - init: initial gusses for the fit parameters (N_Dirr, lambda, eta, epsilonD);
+        - countsGamma: accumulation yield in counts, the y-axis variable, for the gamma line;
+        - countsKa: accumulation yield in counts, the y-axis variable, for the Ka line;
+        - countsKb: accumulation yield in counts, the y-axis variable, for the Kb line;
+        - init: initial gusses for the fit parameters (N_Dirr, eta, epsilonD);
         - lab: a label to use for plotting;
     OUTPUTS:
     """
+    ## Nr. of variables to fit
+    nrVar = len(init)
 
+    ## Convert input arrays into numpy arrays
     time = np.array(time)
     countsGamma = np.array(countsGamma)
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
 
     ## Fit the data
-    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:5])
-    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:5])
-    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:5])
+    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:nrVar+1])
+    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:nrVar+1])
+    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:nrVar+1])
 
-    ## Calculate the half-life
+    """     ## Calculate the half-life
     # Gamma line
     halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
     halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
@@ -439,19 +474,23 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)   # Gamma line
     halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)            # Ka line
     halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)            # Kb line
-
+    """
+    
     ## Get remaining fit parameters
-    etaGamma, epsilonDGamma = poptGamma[2], poptGamma[3]             # Gamma line
-    etaKa, epsilonDKa = poptKa[2], poptKa[3]                         # Ka line
-    etaKb, epsilonDKb = poptKb[2], poptKb[3]                         # Kb line
+    NdirrGamma, etaGamma, epsilonDGamma = poptGamma[0], poptGamma[1], poptGamma[2]             # Gamma line
+    NdirrKa,etaKa, epsilonDKa = poptKa[0], poptKa[1], poptKa[2]                         # Ka line
+    NdirrKb,etaKb, epsilonDKb = poptKb[0], poptKb[1], poptKb[2]                         # Kb line
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
+    """     print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
     print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t eta = {etaKa:.2f}, \t epsilonD = {epsilonDKa:.2f}")
-    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}")
+    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}") """
+    print(f"Gamma line: \t Ndirr = {NdirrGamma:.2e}, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.2e}, \t eta = {etaKa:.2f}, \t epsilonD = {epsilonDKa:.2f}")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.2e}, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}")
     print()
 
     ## Fited function
@@ -467,7 +506,7 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
     ax.semilogy(time, countsKb, 'v', color="xkcd:salmon", label=f"Kb")
     ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
-    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
     xlabel("Time (minutes)", fontsize=22)

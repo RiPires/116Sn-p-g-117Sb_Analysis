@@ -5,13 +5,13 @@ import os
 from include.ReadData import*
 ##########################################
 ##########################################
-def Plot(File):
+def PlotBgRemoved(File):
     """
     Plots yield vs channel data from our .mca files
     INPUTS: "FileName.mca"
     OUTPUTS: yield vs channel plot
     """
-    y, ch = Ge2Lists(File) 
+    y, ch = Ge2ListsBgRm(File)
     lab = str(File).replace('.TXT','').replace('DataFiles_HPGe/20240708/','')
     fig, ax = plt.subplots()
     ax.semilogy(ch,y,'.-', color ='xkcd:black', label=(str(lab)))
@@ -27,6 +27,6 @@ def Plot(File):
 #################
 
 ## Decay runs
-path = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_HPGe/'
+path = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/HPGe/'
 for file in os.listdir(path):
-    Plot(str(path+file))
+    PlotBgRemoved(str(path+file))
