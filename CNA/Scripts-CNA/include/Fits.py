@@ -222,9 +222,8 @@ def Ndecay(time, *params):
 
 ## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
 def Npeak(time, *params):
-
     """
-    Function that models the accumulation of radioactive decays depending on the acquisition time.
+    Function that models the accumulation of radioactive decays over the acquisition time.
 
     INPUTS:
     time : ndarray
@@ -244,11 +243,11 @@ def Npeak(time, *params):
 
     ## Define variables that will not be calculated by the fitting model
     # Time of transportation in minutes
-    t_trans = 29. # minutes
+    t_transMin = 29. # minutes
     # Decay half-life in minutes
-    halfLife = 2.8 * 60 # minutes
+    halfLifeMin = 2.8 * 60 # minutes
 
-    return eta * epsilonD * np.exp(-np.log(2)/halfLife * t_trans) * Ndirr * (1 - np.exp(-np.log(2)/halfLife * time))
+    return eta * epsilonD * np.exp(-np.log(2)/halfLifeMin * t_transMin) * Ndirr * (1 - np.exp(-np.log(2)/halfLifeMin * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
@@ -418,10 +417,12 @@ def FitNdecaySDD(func, time, countsKa, countsKb, init, lab):
 
     return
 
-## Funtion to fit accumulation curve of area under a photo-peak to experimental data
-## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of 
-## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD)
-## and trasnportation time (t_trans), for the HPGe detector
+## ************************************************************************************ ##
+## Funtion to fit accumulation curve of area under a photo-peak to experimental data    ##
+## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of    ##
+## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD) ##
+## and transportation time (t_trans), for the HPGe detector                             ##
+## ************************************************************************************ ##
 def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     """
     INPUTS:
@@ -494,9 +495,9 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     print()
 
     ## Fited function
-    fittedGamma = Ndecay(time, *poptGamma)
-    fittedKa = Ndecay(time, *poptKa)
-    fittedKb = Ndecay(time, *poptKb)
+    fittedGamma = Npeak(time, *poptGamma)
+    fittedKa = Npeak(time, *poptKa)
+    fittedKb = Npeak(time, *poptKb)
 
     # Plot the results
     fig, ax = plt.subplots()
