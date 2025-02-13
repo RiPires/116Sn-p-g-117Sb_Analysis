@@ -34,4 +34,10 @@ cSpeed = 2.99792458e8 # m/s
 
 ## 1 - Calculate Rutherford Differential Cross-Section
 energies = np.array([3.2, 3.5, 3.9, 4.3, 4.7, 5.0]) # MeV
-ruthCrossSection = ( (zBeam*zTarget*eCharge) / (4*np.pi*epsilon0*4*energies*10**6*np.sin(scattAngRad/2)) )**2 # barn ?????
+ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6*np.sin(scattAngRad/2)**2) )**2 *1e31 # mb/sr
+
+print(ruthCrossSection)
+
+## 2 - Determine the total number of radioactive nuclei in the target at the end of the irradiation,
+##     N_Dirr, from the fit of Npeak, for each radiation type (gamma, Ka and Kb);
+

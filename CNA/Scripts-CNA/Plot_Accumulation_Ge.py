@@ -17,34 +17,30 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved/HPGe/',]
 
-############################################################
-## Calculate 117Sb half-life from decay accumulation data ##
-############################################################
+## Define initial guess N_Dirr for each beam energy
+##                  [[gamma], [ Ka  ], [ Kb  ]] 
+initParamsDict = {
+    'Ebeam=3.2MeV': [[1.0e6], [1.0e6], [2.5e5]],  # Example values for 3.2 MeV
+    'Ebeam=3.5MeV': [[1.2e6], [1.2e6], [2.5e5]],  # Example values for 3.5 MeV
+    'Ebeam=3.9MeV': [[3.0e6], [3.0e6], [6.0e5]],  # Example values for 3.9 MeV
+    'Ebeam=4.3MeV': [[5.0e6], [5.0e6], [1.0e6]],  # Example values for 4.3 MeV
+    'Ebeam=4.7MeV': [[1.0e7], [1.0e7], [2.0e6]],  # Example values for 4.7 MeV
+    'Ebeam=5.0MeV': [[2.0e7], [2.0e7], [4.0e6]],  # Example values for 5.0 MeV
+}
 
 ## Loop over different activation energies
 for files in gePaths:
-    
-    ## Exctract data from file
+    ## Extract energy value from path
+    energy_key = next((key for key in initParamsDict if key in files), None)
+
+    if energy_key is None:
+        print(f"Warning: No initial parameters found for {files}. Using default values.")
+        initParamsNpeak = [[1.2e6], [1.2e6], [2.8e5]]  # Default values
+    else:
+        initParamsNpeak = initParamsDict[energy_key]  # Get the correct values
+
+    ## Extract data from file
     accu_Ka, accu_Kb, accu_gamma, accu511, accu_time = AccumulateGe_BgRemove(files)
-
-    ## Accumulation plot
-    """fig, ax = plt.subplots()
-    ax.semilogy(accu_time, accu_gamma,'*-', color ='xkcd:red', label=('$\gamma$ - 158 keV'))
-    ax.semilogy(accu_time, accu_Ka,'^-', color ='xkcd:blue', label=('Ka'))
-    ax.semilogy(accu_time, accu_Kb,'.-', color ='xkcd:black', label=('Kb'))
-    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
-    legend.get_frame().set_facecolor('#DAEBF2')
-    tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Time (minutes)',fontsize=22)
-    ylabel('Yield', fontsize=22)
-    title(str(file[15:27]+' - '+file[-5:-1]))
-    show()  """
-
-    ## Initial guesses for Npeak fit parameters
-    ##                  Ndirr, eta, epsilonD
-    initParamsNpeak = [[1.2e6, 1.0, 0.0101], # gamma
-                       [1.2e6, 1.0, 0.0718], # Ka
-                       [2.8e5, 0.2, 0.0629]] # Kb
 
     ## Fit the data for Npeak
     FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_Ka, accu_Kb, initParamsNpeak, lab=str(files[15:27]+' - '+files[-5:-1]))

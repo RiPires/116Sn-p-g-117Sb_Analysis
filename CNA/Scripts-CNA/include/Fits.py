@@ -221,7 +221,7 @@ def Ndecay(time, *params):
     return Ndirr * np.exp(-lamb * tTrans) * (1 - np.exp(-lamb * time))
 
 ## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
-def Npeak(time, *params):
+def Npeak(time, *params, radType):
     """
     Function that models the accumulation of radioactive decays over the acquisition time.
 
@@ -239,15 +239,31 @@ def Npeak(time, *params):
 
     OUPUTS: adjusted Npeak curve
     """    
-    Ndirr, eta, epsilonD = params[0:4]
+    
+    try:
+        Ndirr = float(params[0])  # Force conversion to float
+    except ValueError:
+        raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
-    ## Define variables that will not be calculated by the fitting model
-    # Time of transportation in minutes
-    t_transMin = 29. # minutes
-    # Decay half-life in minutes
-    halfLifeMin = 2.8 * 60 # minutes
+    time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
 
-    return eta * epsilonD * np.exp(-np.log(2)/halfLifeMin * t_transMin) * Ndirr * (1 - np.exp(-np.log(2)/halfLifeMin * time))
+    ## Efficiency and emission probabilities
+    eta, epsilonD = {
+        'gamma': (0.859, 0.003),
+        'Ka': (0.675, 0.0212),
+        'Kb': (0.1164, 0.0186)
+    }.get(radType, (None, None))  # Use .get() to handle invalid radType
+    
+    if eta is None or epsilonD is None:
+        raise ValueError(f"Invalid radType '{radType}'. Expected 'gamma', 'Ka', or 'Kb'.")
+
+
+    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
+    t_transMin = 29         # Transit time (minutes)
+    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
+
+    ## Compute accumulation
+    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
@@ -431,12 +447,12 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
         - countsGamma: accumulation yield in counts, the y-axis variable, for the gamma line;
         - countsKa: accumulation yield in counts, the y-axis variable, for the Ka line;
         - countsKb: accumulation yield in counts, the y-axis variable, for the Kb line;
-        - init: initial gusses for the fit parameters (N_Dirr, eta, epsilonD);
+        - init: initial gusses for the fit parameters (N_Dirr, radType);
         - lab: a label to use for plotting;
     OUTPUTS:
     """
     ## Nr. of variables to fit
-    nrVar = len(init)
+    nrVar = 1
 
     ## Convert input arrays into numpy arrays
     time = np.array(time)
@@ -444,10 +460,15 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
 
-    ## Fit the data
-    poptGamma, pcovGamma = curve_fit(func, time, countsGamma, p0=init[0][0:nrVar+1])
-    poptKa, pcovKa = curve_fit(func, time, countsKa, p0=init[1][0:nrVar+1])
-    poptKb, pcovKb = curve_fit(func, time, countsKb, p0=init[2][0:nrVar+1])
+    ## Fit the data, passing radType explicitly
+    poptGamma, pcovGamma = curve_fit(lambda t, *p: Npeak(t, *p, radType='gamma'), 
+                                     time, countsGamma, p0=init[0][0:2])
+    
+    poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p, radType='Ka'), 
+                               time, countsKa, p0=init[1][0:2])
+    
+    poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p, radType='Kb'), 
+                               time, countsKb, p0=init[2][0:2])
 
     """     ## Calculate the half-life
     # Gamma line
@@ -478,26 +499,23 @@ def FitNpeakHPGe(func, time, countsGamma, countsKa, countsKb, init, lab):
     """
     
     ## Get remaining fit parameters
-    NdirrGamma, etaGamma, epsilonDGamma = poptGamma[0], poptGamma[1], poptGamma[2]             # Gamma line
-    NdirrKa,etaKa, epsilonDKa = poptKa[0], poptKa[1], poptKa[2]                         # Ka line
-    NdirrKb,etaKb, epsilonDKb = poptKb[0], poptKb[1], poptKb[2]                         # Kb line
+    NdirrGamma  = poptGamma[0]  # Gamma line
+    NdirrKa     = poptKa[0]     # Ka line
+    NdirrKb     = poptKb[0]     # Kb line
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    """     print(f"Gamma line: T_1/2 = ({halfLifeGamma_hours:.2f} ± {halfLifeGamma_hours_uncertainty:.2f}) h, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
-    print(f"Ka line:    T_1/2 = ({halfLifeKa_hours:.2f} ± {halfLifeKa_hours_uncertainty:.2f}) h, \t eta = {etaKa:.2f}, \t epsilonD = {epsilonDKa:.2f}")
-    print(f"Kb line:    T_1/2 = ({halfLifeKb_hours:.2f} ± {halfLifeKb_hours_uncertainty:.2f}) h, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}") """
-    print(f"Gamma line: \t Ndirr = {NdirrGamma:.2e}, \t eta = {etaGamma:.2f}, \t epsilonD = {epsilonDGamma:.2f}")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.2e}, \t eta = {etaKa:.2f}, \t epsilonD = {epsilonDKa:.2f}")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.2e}, \t eta = {etaKb:.2f}, \t epsilonD = {epsilonDKb:.2f}")
+    print(f"Gamma line: \t Ndirr = {NdirrGamma:.2e}")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.2e}")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.2e}")
     print()
 
-    ## Fited function
-    fittedGamma = Npeak(time, *poptGamma)
-    fittedKa = Npeak(time, *poptKa)
-    fittedKb = Npeak(time, *poptKb)
+    ## Fit function for plotting
+    fittedGamma = Npeak(time, *poptGamma, radType='gamma')
+    fittedKa = Npeak(time, *poptKa, radType='Ka')
+    fittedKb = Npeak(time, *poptKb, radType='Kb')
 
     # Plot the results
     fig, ax = plt.subplots()
