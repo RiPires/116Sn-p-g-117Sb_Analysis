@@ -30,4 +30,5 @@ for path in Paths:
     for file in os.listdir(path):
         ch, y = ReadActivationRBS(str(path+file))
         lab = str(file).replace('.SI2.dat', '')
+        lab = path[15:27] + ' - Run: ' + lab
         PlotRBS(ch, y, lab)

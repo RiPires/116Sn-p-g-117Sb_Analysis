@@ -106,3 +106,35 @@ def PlotRBS(ch, y, lab):
     show()
 
     return '-------------------'
+
+def PlotCrossSection(crossSections):
+    """
+    Plots the reaction cross-section as a function of beam energy for different radiation types.
+    
+    Parameters:
+    crossSections (dict): Dictionary containing cross-section values for each beam energy and radiation type.
+    """
+    # Define colors and markers for different radiation types
+    colors = {"gamma": "red", "Ka": "blue", "Kb": "green"}
+    markers = {"gamma": "o", "Ka": "s", "Kb": "^"}
+
+    # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
+    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections.keys()])
+
+    # Loop over each radiation type to plot separately
+    fig, ax = plt.subplots()
+    for rad_type in ["gamma", "Ka", "Kb"]:
+        cross_section_values = [crossSections[key][rad_type] for key in crossSections.keys()]
+        ax.semilogy(energies, cross_section_values, 
+                    marker=markers[rad_type], 
+                    color=colors[rad_type], 
+                    label=rad_type)
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    tick_params(axis='both', which='major', labelsize=22)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    xlabel("Energy (MeV)", fontsize=22)
+    ylabel("Cross-Section (mb)", fontsize=22)
+    title("Relative Method", fontsize=22)
+    show()
+
+    return '-------------------'
