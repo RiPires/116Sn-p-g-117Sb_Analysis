@@ -8,7 +8,7 @@ void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *genera
     fPrimaryGenerator = generator;
 }
 
-MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(10 * mm), messenger(nullptr)  // Default value for source position
+MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(10 * mm), snTargetThickness(1*um), alLayerThickness(1*um), messenger(nullptr)  // Default value for source position
 {
     // Define materials and other necessary initializations
     DefineMaterial();
@@ -38,6 +38,7 @@ void MyDetectorConstruction::DefineMaterial()
     Ti = nist->FindOrBuildElement("Ti");
     Cr = nist->FindOrBuildElement("Cr");
     Ni = nist->FindOrBuildElement("Ni");
+    Sn = nist->FindOrBuildElement("Sn");
     W = nist->FindOrBuildElement("W");
 
     // Defines world material as Air  //
@@ -68,11 +69,9 @@ void MyDetectorConstruction::DefineMaterial()
     coverMat = new G4Material("Nickel", 8.907*g/cm3, 1);
     coverMat->AddElement(Ni, 1);
 
-    // Defines mylar for source support
-    mylar = new G4Material("Mylar", 1.4*g/cm3, 3);
-    mylar->AddElement(H, 0.041959);
-    mylar->AddElement(C, 0.625017);
-    mylar->AddElement(O, 0.333025);
+    // Defines Sn target material
+    targetSnMat = new G4Material("Tin", 7.31*g/cm3, 1);
+    targetSnMat->AddElement(Sn, 1);
 }
 
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
@@ -86,13 +85,23 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
 
-    // Defines mylar support of radioactive source
-    G4double Rout_Mylar = 25/2 * mm;
-    G4double thickMylar = 200 * um;
-    G4ThreeVector mylarPosition(0., 0., sourcePosition - 100 * um);
-    solidMylar = new G4Tubs("solidMylar", 0., Rout_Mylar, thickMylar/2, 0., 2*pi);
-    logicMylar = new G4LogicalVolume(solidMylar, mylar, "LogicMylar");
-    physMylar = new G4PVPlacement(0, mylarPosition, logicMylar, "PhysMylar", logicWorld, false, 0., true); 
+    // Defines Sn target volume
+    G4double Rout_SnTarget = 5 * mm;
+    G4double thickSnTarget = snTargetThickness;
+    G4double z_target = sourcePosition;
+    G4ThreeVector SnTargetPosition(0., 0., z_target); // source is in the middle of the target
+    solidSnTarget = new G4Tubs("solidSnTarget", 0., Rout_SnTarget, thickSnTarget/2, 0., 2*pi);
+    logicSnTarget = new G4LogicalVolume(solidSnTarget, targetSnMat, "LogicSnTarget");
+    physSnTarget = new G4PVPlacement(0, SnTargetPosition, logicSnTarget, "PhysSnTarget", logicWorld, false, 0., true); 
+
+    // Defines Al target layer volume
+    G4double Rout_AlLayer = 5 * mm;
+    G4double thickAlLayer = alLayerThickness;
+    G4double z_al = z_target - (thickSnTarget/2) - (thickAlLayer/2);
+    G4ThreeVector AlLayerPosition(0., 0., z_al);
+    solidAlLayer = new G4Tubs("solidAlLayer", 0., Rout_AlLayer, thickAlLayer/2, 0., 2*pi);
+    logicAlLayer = new G4LogicalVolume(solidAlLayer, collMatAl, "LogicAlLayer");
+    physAlLayer = new G4PVPlacement(0, AlLayerPosition, logicAlLayer, "PhysAlLayer", logicWorld, false, 0., true); 
 
     //  Defines Si crystal //
     G4double Rin_Si = 0*mm;
@@ -163,23 +172,59 @@ void MyDetectorConstruction::ConstructSDandField()
 }
 
 
-// Method to set the source position
+// Method to set the source position and update Sn and Al positions relative to the source
 void MyDetectorConstruction::SetSourcePosition(G4double position)
 {
     sourcePosition = position;  // Update the source position
 
     // Update the GPS source position (via the General Particle Source)
     G4UImanager::GetUIpointer()->ApplyCommand("/gps/pos/centre 0. 0. " + std::to_string(sourcePosition) + " mm");
+    
+    G4double snThick = solidSnTarget->GetZHalfLength() * 2;
+    G4double alThick = solidAlLayer->GetZHalfLength() * 2;
 
-    // Update Mylar position based on the source position (75 um behind)
-    if (physMylar) {
-        G4ThreeVector newMylarPosition(0., 0., sourcePosition - 100 * um);  // 75um behind the source
-        physMylar->SetTranslation(newMylarPosition);  // Move the Mylar volume
+    // Update Sn Target and Al layer position based on the source position
+    if (physSnTarget) {
+        G4ThreeVector newSnTargetPosition(0., 0., sourcePosition);  // source is in the middle of the target
+        physSnTarget->SetTranslation(newSnTargetPosition);  // Move the SnTarget volume
+    }
+
+    // Update the Al layer position based on the Sn target position
+    if (physAlLayer) {
+        G4ThreeVector newAlLayerPosition(0., 0., sourcePosition/mm - snThick/2/mm - alThick/2/mm);  // Al layer is right after the Sn target
+        physAlLayer->SetTranslation(newAlLayerPosition);  // Move the Al Layer volume
     }
 
     // Notify Geant4 that the geometry has been modified
     G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 
+// Method to set the Sn target thickness
+void MyDetectorConstruction::SetSnThickness(G4double thickness)
+{
+    snTargetThickness = thickness; // Update the Sn target thickness
+
+    if (physSnTarget) {
+        G4ThreeVector currentPosition = physSnTarget->GetTranslation();       
+        // Updates the Sn target thickness
+        solidSnTarget->SetZHalfLength(snTargetThickness / 2.0);
+        G4cout << "Sn target thickness updated to: " << snTargetThickness / um << " um" << G4endl;       
+    }
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+// Method to set the Al layer thickness
+void MyDetectorConstruction::SetAlThickness(G4double thickness)
+{
+    alLayerThickness = thickness; // Update the Sn target thickness
+
+    if (physAlLayer) {
+        G4ThreeVector currentPosition = physAlLayer->GetTranslation();
+        // Updates the Al layer thickness
+        solidAlLayer->SetZHalfLength(alLayerThickness / 2.0);
+        G4cout << "Al layer thickness updated to: " << alLayerThickness / um << " um" << G4endl;
+    }
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
 
 

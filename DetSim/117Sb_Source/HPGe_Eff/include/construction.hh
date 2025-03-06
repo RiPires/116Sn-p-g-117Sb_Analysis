@@ -41,17 +41,17 @@ private:
     
     G4double sourcePosition;
     G4Box *solidWorld;
-    G4Tubs *solidHole, *solidGe, *solidWindow, *solidMylar, *solidMylarSource, *solidCase;
-    G4LogicalVolume *logicWorld, *logicWindow, *logicMylar, *logicMylarSource, *logicDetector, *logicCase;
-    G4VPhysicalVolume *physWorld, *physWindow, *physMylar, *physMylarSource, *physDetector, *physCase;
+    G4Tubs *solidHole, *solidGe, *solidWindow, *solidMylar, *solidSnTarget, *solidCase;
+    G4LogicalVolume *logicWorld, *logicWindow, *logicMylar, *logicSnTarget, *logicDetector, *logicCase;
+    G4VPhysicalVolume *physWorld, *physWindow, *physMylar, *physSnTarget, *physDetector, *physCase;
     G4RotationMatrix *rotation = new G4RotationMatrix();
     
     DetectorMessenger *messenger;
     G4UIcmdWithADoubleAndUnit *setSourcePositionCmd;
     MyPrimaryGenerator *fPrimaryGenerator;
     
-    G4Material *mylar, *holderMat, *worldMat, *detMat, *cw;
-    G4Element *H, *C, *O, *Al, *Ge, *Si;
+    G4Material *mylar, *holderMat, *worldMat, *detMat, *cw, *targetMat;
+    G4Element *H, *C, *O, *Al, *Si, *Ge, *Sn;
     
     void DefineMaterial();
     

@@ -6,14 +6,15 @@
 /vis/drawVolume
 /vis/viewer/set/autoRefresh true
 
-/vis/geometry/set/colour LogicWorld 0 1 1 1 .1
-/vis/geometry/set/colour LogicSi 0 1 0.549 0 .5     # orange 
-/vis/geometry/set/colour LogicWindow 0 0 1 0 .5     # green
-/vis/geometry/set/colour LogicTungsten 0 1 0 0 .5   # red
-/vis/geometry/set/colour LogicChromium 0 0 0 1 .5   # blue
-/vis/geometry/set/colour LogicTitanium 0 1 0 1 .5   # magenta
-/vis/geometry/set/colour LogicAluminium 0 0 1 1 .5  # cyan
-/vis/geometry/set/colour LogicMylar 0 0.3 0.8 1 .5      # 
+/vis/geometry/set/colour LogicWorld 0 1 1 1 .1          # dark grey
+/vis/geometry/set/colour LogicSi 0 1 0.549 0 .5         # orange 
+/vis/geometry/set/colour LogicWindow 0 0 1 0 .5         # green
+/vis/geometry/set/colour LogicTungsten 0 1 0 0 .5       # red
+/vis/geometry/set/colour LogicChromium 0 0 0 1 .5       # blue
+/vis/geometry/set/colour LogicTitanium 0 1 0 1 .5       # magenta
+/vis/geometry/set/colour LogicAluminium 0 0 1 1 .5      # cyan
+/vis/geometry/set/colour LogicAlLayer 0 1 0 1 .5        # magenta
+/vis/geometry/set/colour LogicSnTarget 0 0 1 0 .5       # green
 
 /vis/viewer/set/style surface
 
