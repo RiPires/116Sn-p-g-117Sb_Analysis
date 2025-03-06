@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "*.mac": "cmake",
+        "Plot.C": "cpp",
+        "hadd.C": "cpp",
+        "PlotAll.C": "cpp",
+        "*.tcc": "cpp",
+        "FitPeak.C": "cpp",
+        "Plot copy.C": "cpp",
+        "PlotFit.C": "cpp",
+        "PlotAndFit.C": "cpp",
+        "iostream": "cpp",
+        "PlotExp.C": "cpp",
+        "MergeBg.C": "cpp",
+        "PlotBoth.C": "cpp",
+        "PlotBoth copy.C": "cpp",
+        "PlotCalib.C": "cpp"
+    }
+}
