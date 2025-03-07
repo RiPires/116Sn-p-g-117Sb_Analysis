@@ -23,18 +23,31 @@ def MergeYield_MCA(Dir):
 
 
 ###   SDD Acquisition merge and plot   ###
-SDD_Dir = "../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/"
-Channel = [i+1 for i in range(2048)]
-Yield_SDD = MergeYield_MCA(SDD_Dir)
+SDD_Dir = ["../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/",
+           "../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/",
+           "../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/",
+           "../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/",
+           "../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/",
+           "../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/"]
 
-fig, ax = plt.subplots()
-ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=('SDD - Ebeam = 4.7 MeV'))
-legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
-legend.get_frame().set_facecolor('#DAEBF2')
-tick_params(axis='both', which='major', labelsize=22)
-xlabel('Channel',fontsize=22)
-ylabel('Total Yield', fontsize=22)
-xlim(0, 1000)
-#grid()
-show()
-###########################################
+Channel = [i+1 for i in range(2048)]
+
+for dir in SDD_Dir:
+
+    Yield_SDD = MergeYield_MCA(dir)
+    output_filename = str(dir[15:27]+"_"+os.listdir(dir)[0][0:18]+"_Merged.txt")
+    with open(output_filename, 'w') as outfile:
+        for value in Yield_SDD:
+            outfile.write(f"{value}\n")
+    print(f"Output file: {output_filename}")
+
+    fig, ax = plt.subplots()
+    ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=(output_filename))
+    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Channel',fontsize=22)
+    ylabel('Total Yield', fontsize=22)
+    xlim(0, 1000)
+    show()
+    ###########################################
