@@ -36,7 +36,6 @@ cSpeed = 2.99792458e8 # m/s
 ## 1 - Calculate Rutherford Differential Cross-Section
 energies = np.array([3.2, 3.5, 3.9, 4.3, 4.7, 5.0]) # MeV
 ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6*np.sin(scattAngRad/2)**2) )**2 *1e31 # mb/sr
-
 print(ruthCrossSection)
 
 ## 2 - Determine the total number of radioactive nuclei in the target at the end of the irradiation,
@@ -50,8 +49,7 @@ N_D_irr = {
     "Ebeam=3.9MeV": {"gamma": 1.19e9, "Ka": 2.09e8, "Kb": 3.22e8},
     "Ebeam=4.3MeV": {"gamma": 2.25e9, "Ka": 3.93e8, "Kb": 6.04e8},
     "Ebeam=4.7MeV": {"gamma": 4.39e9, "Ka": 7.63e8, "Kb": 1.18e9},
-    "Ebeam=5.0MeV": {"gamma": 8.82e9, "Ka": 1.51e9, "Kb": 2.35e9},
-}
+    "Ebeam=5.0MeV": {"gamma": 8.82e9, "Ka": 1.51e9, "Kb": 2.35e9},}
 
 ## 3   - Compute the reaction cross-section using the known values for epsilon_P (RBS detector resolution),
 ##       t_irr (irradiation time), w_A (isotopic enrichement of the target), t_irr (irradiation time), and lambda (decay constant)

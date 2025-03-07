@@ -249,9 +249,9 @@ def Npeak(time, *params, radType):
 
     ## Efficiency and emission probabilities
     eta, epsilonD = {
-        'gamma': (0.859, 0.003),
-        'Ka': (0.675, 0.0212),
-        'Kb': (0.1164, 0.0186)
+        'gamma': (0.8590, 0.0030),
+        'Ka'   : (0.6750, 0.0212),
+        'Kb'   : (0.1164, 0.0186)
     }.get(radType, (None, None))  # Use .get() to handle invalid radType
     
     if eta is None or epsilonD is None:
