@@ -15,7 +15,8 @@ public:
 
 private:
     MyDetectorConstruction* detector; // Pointer to the detector construction class
-    G4UIcmdWithADoubleAndUnit* setSourcePositionCmd; // Command for setting the source position
+    G4UIcmdWithADoubleAndUnit *setSourcePositionCmd; // Command for setting the source position
+    G4UIcmdWithADoubleAndUnit *setSnThicknessCmd;
 };
 
 #endif // MESSENGER_HH

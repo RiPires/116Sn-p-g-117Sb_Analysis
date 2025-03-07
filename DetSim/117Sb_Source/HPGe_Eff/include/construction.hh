@@ -33,13 +33,16 @@ public:
     virtual void ConstructSDandField();
 
     void SetSourcePosition(G4double position);
+    void SetSnThickness(G4double thickness);
     void RegisterPrimaryGenerator(MyPrimaryGenerator *generator);
 
     G4double GetSourcePosition() const { return sourcePosition; }
+    G4double GetSnTargetThickness() const {return snTargetThickness;}
     
 private:
     
     G4double sourcePosition;
+    G4double snTargetThickness;
     G4Box *solidWorld;
     G4Tubs *solidHole, *solidGe, *solidWindow, *solidMylar, *solidSnTarget, *solidCase;
     G4LogicalVolume *logicWorld, *logicWindow, *logicMylar, *logicSnTarget, *logicDetector, *logicCase;

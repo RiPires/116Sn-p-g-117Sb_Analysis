@@ -5,7 +5,7 @@ void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *genera
     fPrimaryGenerator = generator;
 }
 
-MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(-50 * mm), messenger(nullptr)
+MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(-50 * mm), snTargetThickness(1*um), messenger(nullptr)
 {   
     // Define materials and other necessary initializations
     DefineMaterial();
@@ -70,8 +70,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
 
     // Defines Sn target
-    G4double Rout_SnTarget = 0.5 * mm;
-    G4double thickSnTarget = 2 * um;
+    G4double Rout_SnTarget = 5 * mm;
+    G4double thickSnTarget = snTargetThickness;
     G4ThreeVector targetPosition(0., 0., sourcePosition); // the source is in the middle of the target
     solidSnTarget = new G4Tubs("solidSnTarget", 0., Rout_SnTarget, thickSnTarget/2, 0., 2*pi);
     logicSnTarget = new G4LogicalVolume(solidSnTarget, mylar, "LogicSnTarget");
@@ -142,5 +142,18 @@ void MyDetectorConstruction::SetSourcePosition(G4double position)
     }
 
     // Notify Geant4 that the geometry has been modified
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+// Method to set the Sn target thickness
+void MyDetectorConstruction::SetSnThickness(G4double thickness)
+{
+    snTargetThickness = thickness;
+
+    if (physSnTarget) {
+        solidSnTarget->SetZHalfLength(snTargetThickness/2.0);
+        G4cout << "Sn target thickness updated to: " << snTargetThickness / um << " um" << G4endl;        
+    }
+
     G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
