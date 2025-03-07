@@ -69,7 +69,8 @@
         "PlotDistance.C": "cpp",
         "PlotMultiple.C": "cpp",
         "PlotAndIntegral.C": "cpp",
-        "PlotBothAndFit.C": "cpp"
+        "PlotBothAndFit.C": "cpp",
+        "PlotAndEff.C": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/Lenovo/OneDrive - Universidade de Lisboa/NUCRIA/TESE/Activations/116Sn(p,g)117Sb_Analysis/DetSim/117Sb_Source"
 }

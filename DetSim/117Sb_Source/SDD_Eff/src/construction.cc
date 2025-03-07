@@ -226,5 +226,3 @@ void MyDetectorConstruction::SetAlThickness(G4double thickness)
     }
     G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
-
-

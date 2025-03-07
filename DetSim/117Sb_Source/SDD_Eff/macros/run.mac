@@ -17,11 +17,7 @@
 /gps/pos/radius 0.5 mm
 /detector/setSnThickness 10. um
 /detector/setAlThickness 1. um
-/detector/setSourcePosition 10. mm  ## SourcePosition must be defined after thicknesses!!!
-
-# Print a summary of particles/regions/cuts
-#/run/dumpCouples
+/detector/setSourcePosition 10. mm  ## SourcePosition must be defined after the thicknesses!!!
 
 ## Run loop macro or just beamOn
-#/control/loop loop.mac eKin 5 500 50   ## run loop.mac for multiple gamma energies 
 /run/beamOn 10000                     ## run beamOn NUM for ion or single gamma energy

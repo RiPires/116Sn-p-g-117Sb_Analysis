@@ -15,7 +15,7 @@
 /gps/pos/type Plane
 /gps/pos/shape Circle
 /gps/pos/radius 0.5 mm
-/detector/setSourcePosition 2. mm
+/detector/setSourcePosition -8. mm
 #/gps/pos/centre 0. 0. 10. mm
 #/gps/ene/mono 200. keV
 
@@ -24,4 +24,4 @@
 
 ## Run loop macro or just beamOn
 #/control/loop loop.mac eKin 5 500 50   ## run loop.mac for multiple gamma energies 
-/run/beamOn 3280727                     ## run beamOn NUM for ion or single gamma energy
+/run/beamOn 10000                     ## run beamOn NUM for ion or single gamma energy

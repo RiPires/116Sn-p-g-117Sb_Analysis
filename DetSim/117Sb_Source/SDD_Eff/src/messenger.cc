@@ -49,9 +49,3 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
     }
     G4RunManager::GetRunManager()->GeometryHasBeenModified(); 
 }
-
-
-
-
-
-
