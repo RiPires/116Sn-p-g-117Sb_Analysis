@@ -76,7 +76,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         }
     }
 
-    // FInd maximum yield of the resolution broadened spectrum
+    // Find maximum yield of the resolution broadened spectrum
     double maxYield = histRes->GetMaximum();
 
     // Normalize the bin content  by the maximum yield

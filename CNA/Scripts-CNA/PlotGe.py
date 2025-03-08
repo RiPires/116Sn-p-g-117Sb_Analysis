@@ -27,6 +27,6 @@ def PlotBgRemoved(File):
 #################
 
 ## Decay runs
-path = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/HPGe/'
-for file in os.listdir(path):
+path = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/'
+for file in sorted(os.listdir(path)):
     PlotBgRemoved(str(path+file))

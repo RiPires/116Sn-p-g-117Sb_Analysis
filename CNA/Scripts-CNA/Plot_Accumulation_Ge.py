@@ -9,7 +9,7 @@ from include.Accumulation import *
 from include.Fits import *
 ## -------------------------- ##
 
-## Paths for different energy decays
+## Paths for different activation beam energies
 gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
@@ -40,7 +40,10 @@ for files in gePaths:
         initParamsNpeak = initParamsDict[energy_key]  # Get the correct values
 
     ## Extract data from file
-    accu_Ka, accu_Kb, accu_gamma, accu511, accu_time = AccumulateGe_BgRemove(files)
+    accu_Ka, integral_Ka, accu_Ka_err, accu_Kb, integral_Kb, accu_Kb_err, accu_gamma, integral_gamma, accu_gamma_err, accu511, accu_time = AccumulateGe_BgRemove(files)
 
     ## Fit the data for Npeak
-    FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_Ka, accu_Kb, initParamsNpeak, lab=str(files[15:27]+' - '+files[-5:-1]))
+    FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_gamma_err, 
+                        accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, 
+                        initParamsNpeak, energy_key=energy_key, 
+                        lab=str(files[15:27]+' - '+files[-5:-1]))

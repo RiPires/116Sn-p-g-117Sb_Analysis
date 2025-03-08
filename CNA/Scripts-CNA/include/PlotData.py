@@ -107,7 +107,7 @@ def PlotRBS(ch, y, lab):
 
     return '-------------------'
 
-def PlotCrossSection(crossSections):
+def PlotCrossSection(crossSections, crossSections2):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
     
@@ -117,18 +117,28 @@ def PlotCrossSection(crossSections):
     # Define colors and markers for different radiation types
     colors = {"gamma": "red", "Ka": "blue", "Kb": "green"}
     markers = {"gamma": "o", "Ka": "s", "Kb": "^"}
+    colors2 = {"gamma": "xkcd:light red", "Ka": "xkcd:light blue", "Kb": "xkcd:light green"}
+    markers2 = {"gamma": ".", "Ka": "d", "Kb": "v"}
+
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
     energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections.keys()])
+
 
     # Loop over each radiation type to plot separately
     fig, ax = plt.subplots()
     for rad_type in ["gamma", "Ka", "Kb"]:
         cross_section_values = [crossSections[key][rad_type] for key in crossSections.keys()]
+        cross_section_values2 = [crossSections2[key][rad_type] for key in crossSections2.keys()]
         ax.semilogy(energies, cross_section_values, 
-                    marker=markers[rad_type], 
+                    marker=markers[rad_type],
+                    linestyle=':', 
                     color=colors[rad_type], 
-                    label=rad_type)
+                    label=rad_type+" Fit Method")
+        ax.semilogy(energies, cross_section_values2, 
+                    marker=markers2[rad_type], 
+                    color=colors2[rad_type], 
+                    label=rad_type+" Sum method")
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')

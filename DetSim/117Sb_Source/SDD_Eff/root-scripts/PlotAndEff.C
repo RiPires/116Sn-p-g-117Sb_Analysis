@@ -9,9 +9,9 @@ using namespace std;
 void PlotAndEff(const char* filename){
 
     // Energy conversion factor
-    double slope = 0.0003225; // MeV/ch
-    double intercept = -0.000149; // MeV
-    int nrCh = 4096; 
+    double slope = 0.000031059; // MeV/ch
+    double intercept = -0.0000041372; // MeV
+    int nrCh = 2048;  
 
      // Open the ROOT file
      TFile *InputTFile = new TFile(filename, "READ");
@@ -46,9 +46,6 @@ void PlotAndEff(const char* filename){
 
 
      // ROIs for each photopeak area calculation
-        // gamma 158 keV
-        int binMinGamma = hist1->FindBin(0.1585);
-        int binMaxGamma = hist1->FindBin(0.1589);
         // Ka
         int binMinKa = hist1->FindBin(0.0246);
         int binMaxKa = hist1->FindBin(0.0253);
@@ -57,21 +54,17 @@ void PlotAndEff(const char* filename){
         int binMaxKb = hist1->FindBin(0.0292);
 
     // Calculate the area under each photopeak
-        double area_Gamma = hist1->Integral(binMinGamma, binMaxGamma);
         double area_Ka = hist1->Integral(binMinKa, binMaxKa);
         double area_Kb = hist1->Integral(binMinKb, binMaxKb);
 
     // Calculate the detetcor efficiency for each peak energy
         double eff_Gamma, eff_Ka, eff_Kb, nTot;
         nTot = 1000000;
-        eff_Gamma = area_Gamma/nTot;
         eff_Ka = area_Ka/nTot;
         eff_Kb = area_Kb/nTot;
 
     cout << "Efficiencies: " << endl;
-    cout << "Gamma = \t" << eff_Gamma << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
-
 
 }
