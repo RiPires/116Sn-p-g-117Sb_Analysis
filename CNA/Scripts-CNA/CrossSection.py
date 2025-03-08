@@ -51,13 +51,21 @@ print(ruthCrossSection)
     "Ebeam=4.7MeV": {"gamma": 7.479e7, "Ka": 1.016e8, "Kb": 6.541e8},
     "Ebeam=5.0MeV": {"gamma": 1.495e8, "Ka": 1.992e8, "Kb": 1.291e9},} ## Using photopeak gaussian fit integration """
 
-N_D_irr = {
+N_D_irr_HPGe = {
     "Ebeam=3.2MeV": {"gamma": 2.300e6, "Ka": 3.197e6, "Kb": 2.033e7},
     "Ebeam=3.5MeV": {"gamma": 9.094e6, "Ka": 1.270e7, "Kb": 8.007e7},
     "Ebeam=3.9MeV": {"gamma": 2.070e7, "Ka": 2.875e7, "Kb": 1.827e8},
     "Ebeam=4.3MeV": {"gamma": 4.029e7, "Ka": 5.598e7, "Kb": 3.554e8},
     "Ebeam=4.7MeV": {"gamma": 7.539e7, "Ka": 1.044e8, "Kb": 6.734e8},
     "Ebeam=5.0MeV": {"gamma": 1.509e8, "Ka": 2.046e8, "Kb": 1.329e9},} ## Using photopeak channel by channel yield sum
+
+N_D_irr_SDD = {
+                      "Ebeam=3.2MeV": {"Ka": 2.657e6, "Kb": 1.267e7},
+                      "Ebeam=3.5MeV": {"Ka": 1.053e7, "Kb": 5.396e7},
+                      "Ebeam=3.9MeV": {"Ka": 2.585e7, "Kb": 1.265e8},
+                      "Ebeam=4.3MeV": {"Ka": 5.019e7, "Kb": 2.590e8},
+                      "Ebeam=4.7MeV": {"Ka": 1.052e8, "Kb": 4.834e8},
+                      "Ebeam=5.0MeV": {"Ka": 2.114e8, "Kb": 1.014e9},} ## Using photopeak channel by channel yield sum
 
 ## 3   - Compute the reaction cross-section using the known values for epsilon_P (RBS detector resolution),
 ##       t_irr (irradiation time), w_A (isotopic enrichement of the target), t_irr (irradiation time), and lambda (decay constant)
@@ -69,7 +77,7 @@ epsilon_p = 4.409e-4
 wA = 0.978
 
 ## 117Sb decay half-life in minutes (2.8 hours)
-halfLife_min = 2.8*60 # minutes
+halfLife_min = 2.9*60 # minutes
 decayConstant = np.log(2) / halfLife_min  # in min^-1
 
 ## Total irradiation time, in minutes, for each activation
@@ -87,17 +95,17 @@ N_p = {
     "Ebeam=3.9MeV": 5.90e7,
     "Ebeam=4.3MeV": 4.87e7,
     "Ebeam=4.7MeV": 2.64e7,
-    "Ebeam=5.0MeV": 2.64e7,
-}
+    "Ebeam=5.0MeV": 2.64e7,}
 
 ## ---------------- Cross-Section Calculation ---------------- ##
-crossSections = {}
+crossSections_HPGe = {}
+crossSections_SDD = {}
 
 for i, energy in enumerate(energies):
     key = f"Ebeam={energy:.1f}MeV"
-    print(f"Cross-section for {key}")
+    print(f"HPGe Cross-section for {key}")
 
-    if key in N_D_irr:
+    if key in N_D_irr_HPGe:
         t_irr = t_irr_min[key]  # irradiation time
         Np = N_p[key]  # incident protons
         
@@ -105,19 +113,43 @@ for i, energy in enumerate(energies):
         decayFactor = 1 - np.exp(-decayConstant * t_irr)
         
         # Compute the cross-section for each radiation type
-        crossSections[key] = {}
-        for rad_type, N_D in N_D_irr[key].items():
+        crossSections_HPGe[key] = {}
+        for rad_type, N_D in N_D_irr_HPGe[key].items():
             sigma = (
                 ruthCrossSection[i] *
                 (4 * np.pi * N_D * epsilon_p) /
                 (decayFactor) *
-                (decayConstant * t_irr / (wA * Np))
-            )
+                (decayConstant * t_irr / (wA * Np)))
             
             # Store result
-            crossSections[key][rad_type] = sigma
-            print(f"{rad_type}: {sigma:.4e} mb")
+            crossSections_HPGe[key][rad_type] = sigma
+            print(f"{rad_type}: {sigma:.2f} mb")
 
     print()
-    
-PlotCrossSection(crossSections)
+
+for i, energy in enumerate(energies):
+    key = f"Ebeam={energy:.1f}MeV"
+    print(f"SDD Cross-section for {key}")
+
+    if key in N_D_irr_SDD:
+        t_irr = t_irr_min[key]  # irradiation time
+        Np = N_p[key]  # incident protons
+        
+        # Compute the decay factor
+        decayFactor = 1 - np.exp(-decayConstant * t_irr)
+        
+        # Compute the cross-section for each radiation type
+        crossSections_SDD[key] = {}
+        for rad_type, N_D in N_D_irr_SDD[key].items():
+            sigma = (
+                ruthCrossSection[i] *
+                (4 * np.pi * N_D * epsilon_p) /
+                (decayFactor) *
+                (decayConstant * t_irr / (wA * Np)))
+            
+            # Store result
+            crossSections_SDD[key][rad_type] = sigma
+            print(f"{rad_type}: {sigma:.2f} mb")
+    print()
+
+PlotCrossSection(crossSections_HPGe, crossSections_SDD)

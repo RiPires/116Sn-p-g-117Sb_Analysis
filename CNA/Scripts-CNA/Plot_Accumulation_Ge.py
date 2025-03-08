@@ -43,7 +43,7 @@ for files in gePaths:
     accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_gamma, accu_gamma_err, accu511, accu_time = AccumulateGe_BgRemove(files)
 
     ## Fit the data for Npeak
-    FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_gamma_err, 
+    FitNpeakHPGe(NpeakHPGe, accu_time, accu_gamma, accu_gamma_err, 
                         accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, 
                         initParamsNpeak, energy_key=energy_key, 
                         lab=str(files[15:27]+' - '+files[-5:-1]))

@@ -107,7 +107,7 @@ def PlotRBS(ch, y, lab):
 
     return '-------------------'
 
-def PlotCrossSection(crossSections):
+def PlotCrossSection(crossSections_HPGe, crossSections_SDD):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
     
@@ -115,23 +115,34 @@ def PlotCrossSection(crossSections):
     crossSections (dict): Dictionary containing cross-section values for each beam energy and radiation type.
     """
     # Define colors and markers for different radiation types
-    colors = {"gamma": "xkcd:light red", "Ka": "xkcd:light blue", "Kb": "xkcd:light green"}
-    markers = {"gamma": "o", "Ka": "o", "Kb": "^"}
+    colorsHPGe = {"gamma": "xkcd:light red", "Ka": "xkcd:light blue", "Kb": "xkcd:light green"}
+    markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^"}
+    colorsSDD = {"Ka": "xkcd:blue", "Kb": "xkcd:green"}
+    markersSDD = {"Ka": ".", "Kb": "v"}
 
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
-    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections.keys()])
+    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
 
 
     # Loop over each radiation type to plot separately
     fig, ax = plt.subplots()
     for rad_type in ["gamma", "Ka", "Kb"]:
-        cross_section_values = [crossSections[key][rad_type] for key in crossSections.keys()]
-        ax.semilogy(energies, cross_section_values, 
-                    marker=markers[rad_type],
-                    linestyle=':', 
-                    color=colors[rad_type], 
-                    label=rad_type)
+        cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
+        ax.semilogy(energies, cross_section_values_HPGe, 
+                    marker=markersHPGe[rad_type],
+                    markersize=8,
+                    linestyle='--', 
+                    linewidth=2,
+                    color=colorsHPGe[rad_type], 
+                    label=rad_type+" HPGe")
+    for rad_type in ["Ka", "Kb"]:
+        cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
+        ax.semilogy(energies, cross_section_values_SDD, 
+            marker=markersSDD[rad_type],
+            linestyle=':', 
+            color=colorsSDD[rad_type], 
+            label=rad_type+" SDD")
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')

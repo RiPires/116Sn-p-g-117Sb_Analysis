@@ -223,7 +223,7 @@ def Ndecay(time, *params):
     return Ndirr * np.exp(-lamb * tTrans) * (1 - np.exp(-lamb * time))
 
 ## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
-def Npeak(time, *params, radType, energy_key):
+def NpeakHPGe(time, *params, radType, energy_key):
     """
     Function that models the accumulation of radioactive decays over the acquisition time.
 
@@ -254,6 +254,66 @@ def Npeak(time, *params, radType, energy_key):
 
     ## Transportation time (in minutes) for each activation energy
     t_transMin_key ={'Ebeam=3.2MeV': 63,
+                     'Ebeam=3.5MeV': 29,
+                     'Ebeam=3.9MeV': 32,
+                     'Ebeam=4.3MeV': 40,
+                     'Ebeam=4.7MeV': 31,
+                     'Ebeam=5.0MeV': 29}
+    
+    try:
+        Ndirr = float(params[0])  # Force conversion to float
+    except ValueError:
+        raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
+
+    time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
+
+    ## Get efficiency and emission probability for the given energy and radiation type
+    ## and the corresponding trasportation time
+    try:
+        eta, epsilonD = efficiency_params[energy_key][radType]
+        t_transMin = t_transMin_key[energy_key]
+    except KeyError:
+        raise ValueError(f"Invalid energy '{energy_key}' or radType '{radType}'. Check input values.")
+
+    ## Constants
+    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
+    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
+
+    ## Compute accumulation
+    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+
+## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
+def NpeakSDD(time, *params, radType, energy_key):
+    """
+    Function that models the accumulation of radioactive decays over the acquisition time.
+
+    INPUTS:
+    time : ndarray
+        The x-axis variable, time of acquisition.
+    *params : tuple
+        A flattened list of parameters for the function:
+        - N_Dirr (int): total number of radioactive nuclei in the target after the irradiation and the transportation time.
+        - lamb (float): the decay caracteristic time, depending on the radioactive decay.
+        - eta (float): photo-peak decay branching;
+        - epsilon_D (float): detector resolution at the photo-peak energy;
+        - t_trans (float): time of transportation of the activated target, since the end of the activation,
+          from the irradiation chamber, into the decay station at the begining of the decay measurement;
+
+    OUPUTS: adjusted Npeak curve
+    """    
+
+    ## Efficiency and emission probabilities for each energy
+    efficiency_params = {
+    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.835e-3), 'Kb': (0.1164, 4.61e-4)},
+    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.892e-3), 'Kb': (0.1164, 4.19e-4)},
+    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.782e-3), 'Kb': (0.1164, 4.37e-4)},
+    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.918e-3), 'Kb': (0.1164, 4.40e-4)},
+    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.765e-3), 'Kb': (0.1164, 4.68e-4)},
+    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.856e-3), 'Kb': (0.1164, 4.61e-4)}
+    }
+
+    ## Transportation time (in minutes) for each activation energy
+    t_transMin_key ={'Ebeam=3.2MeV': 28,
                      'Ebeam=3.5MeV': 29,
                      'Ebeam=3.9MeV': 32,
                      'Ebeam=4.3MeV': 40,
@@ -478,13 +538,13 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     countsKb = np.array(countsKb)
 
     ## Fit the data, passing radType explicitly
-    poptGamma, pcovGamma = curve_fit(lambda t, *p: Npeak(t, *p, radType='gamma', energy_key=energy_key), 
+    poptGamma, pcovGamma = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='gamma', energy_key=energy_key), 
                                      time, countsGamma, p0=init[0][0:2])
     
-    poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p, radType='Ka', energy_key=energy_key), 
+    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='Ka', energy_key=energy_key), 
                                time, countsKa, p0=init[1][0:2])
     
-    poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p, radType='Kb', energy_key=energy_key), 
+    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='Kb', energy_key=energy_key), 
                                time, countsKb, p0=init[2][0:2])
 
     """     ## Calculate the half-life
@@ -530,15 +590,81 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     print()
 
     ## Fit function for plotting
-    fittedGamma = Npeak(time, *poptGamma, radType='gamma', energy_key=energy_key)
-    fittedKa = Npeak(time, *poptKa, radType='Ka', energy_key=energy_key)
-    fittedKb = Npeak(time, *poptKb, radType='Kb', energy_key=energy_key)
+    fittedGamma = NpeakHPGe(time, *poptGamma, radType='gamma', energy_key=energy_key)
+    fittedKa = NpeakHPGe(time, *poptKa, radType='Ka', energy_key=energy_key)
+    fittedKb = NpeakHPGe(time, *poptKb, radType='Kb', energy_key=energy_key)
 
     # Plot the results
     fig, ax = plt.subplots()
     ax.set_yscale("log")
     ax.errorbar(time, countsGamma, yerr=errGamma[1:], fmt='*', color="xkcd:sky blue", label=f"Gamma")
     ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
+    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
+    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
+    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Time (minutes)", fontsize=22)
+    ylabel("Accumulated Yield", fontsize=22)
+    title("Accumulation Fit Npeak: "+lab, fontsize=24)
+    show()
+
+    return
+
+## ************************************************************************************ ##
+## Funtion to fit accumulation curve of area under a photo-peak to experimental data    ##
+## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of    ##
+## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD) ##
+## and transportation time (t_trans), for the HPGe detector                             ##
+## ************************************************************************************ ##
+def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_key):
+    """
+    INPUTS:
+        - func: fucntion to fit;
+        - time: acquisition time, the x-axis variable;
+        - countsGamma: accumulation yield in counts, the y-axis variable, for the gamma line;
+        - countsKa: accumulation yield in counts, the y-axis variable, for the Ka line;
+        - countsKb: accumulation yield in counts, the y-axis variable, for the Kb line;
+        - init: initial gusses for the fit parameters (N_Dirr, radType);
+        - lab: a label to use for plotting;
+    OUTPUTS:
+    """
+    ## Nr. of variables to fit
+    nrVar = 1
+
+    ## Convert input arrays into numpy arrays
+    time = np.array(time)
+    countsKa = np.array(countsKa)
+    countsKb = np.array(countsKb)
+
+    ## Fit the data, passing radType explicitly    
+    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka', energy_key=energy_key), 
+                               time, countsKa, p0=init[0][0:2])
+    
+    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb', energy_key=energy_key), 
+                               time, countsKb, p0=init[1][0:2])
+    
+    ## Get fit parameters
+    NdirrKa, NdirrKa_err        = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]     # Ka line
+    NdirrKb, NdirrKb_err        = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]     # Kb line
+
+    ## Print results
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print()
+
+    ## Fit function for plotting
+    fittedKa = NpeakSDD(time, *poptKa, radType='Ka', energy_key=energy_key)
+    fittedKb = NpeakSDD(time, *poptKb, radType='Kb', energy_key=energy_key)
+
+    # Plot the results
+    fig, ax = plt.subplots()
+    ax.set_yscale("log")
     ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
     ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")

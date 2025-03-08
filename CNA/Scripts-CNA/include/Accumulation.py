@@ -146,6 +146,8 @@ def AccumulateGe_BgRemove(gePath):
         ## Increment time
         accu_t += 15 # minutes
 
+        #print(f"Ratio Ka/Kb yields = {accu_Ka/accu_Kb:.2f}")
+
         ## Save integral at this point
         Accu_Ka.append(accu_Ka)
         Accu_Ka_err.append(accu_Ka_err)
@@ -189,23 +191,34 @@ def AccumulateSDD(sddPath):
     roiDown_Kb = int(907)
     roiUp_Kb = int(928)
 
+    Accu_Ka_err, Accu_Kb_err = [0], [0]
+
     ## Loop over Ge data
-    for file in os.listdir(sddPath):
+    for file in sorted(os.listdir(sddPath)):
+
         y = MCA2Lists(str(sddPath+file))[0]
+
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
             accu_Ka += y[c]
+            accu_Ka_err = np.sqrt(accu_Ka)
+
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
             accu_Kb += y[c]
+            accu_Kb_err = np.sqrt(accu_Kb)
+
         ## Increment time
         accu_t += 30 # minutes
+
         ## Save integral at this point
         Accu_Ka.append(accu_Ka)
+        Accu_Ka_err.append(accu_Ka_err)
         Accu_Kb.append(accu_Kb)
+        Accu_Kb_err.append(accu_Kb_err)
         Accu_t.append(accu_t)
 
-    return Accu_Ka, Accu_Kb, Accu_t
+    return Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_t
 
 #######################################################################
 #######################################################################

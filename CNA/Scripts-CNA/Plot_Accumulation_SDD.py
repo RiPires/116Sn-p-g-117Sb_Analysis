@@ -11,37 +11,39 @@ from include.Fits import *
 
 ## Paths for different energy decays
 sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/',]
+            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/',]
 
-############################################################
-## Calculate 117Sb half-life from decay accumulation data ##
-############################################################
+## Define initial guess N_Dirr for each beam energy
+##                  [[ Ka  ], [ Kb  ]] 
+initParamsDict = {
+    'Ebeam=3.2MeV': [[1.0e6], [2.5e5]],  # Example values for 3.2 MeV
+    'Ebeam=3.5MeV': [[1.2e6], [2.5e5]],  # Example values for 3.5 MeV
+    'Ebeam=3.9MeV': [[3.0e6], [6.0e5]],  # Example values for 3.9 MeV
+    'Ebeam=4.3MeV': [[5.0e6], [1.0e6]],  # Example values for 4.3 MeV
+    'Ebeam=4.7MeV': [[1.0e7], [2.0e6]],  # Example values for 4.7 MeV
+    'Ebeam=5.0MeV': [[2.0e7], [4.0e6]],  # Example values for 5.0 MeV
+}
+
 ## Loop over different activation energies
-for file in sddPaths:
-    
-    ## Exctract data from file
-    accu_Ka, accu_Kb, accu_t = AccumulateSDD(file)
+for files in sddPaths:
+    ## Extract energy value from path
+    energy_key = next((key for key in initParamsDict if key in files), None)
 
-    ## Accumulation plot
-    """fig, ax = plt.subplots()
-    ax.semilogy(accu_t, accu_Ka,'^-', color ='xkcd:blue', label=('Ka'))
-    ax.semilogy(accu_t, accu_Kb,'.-', color ='xkcd:black', label=('Kb'))
-    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
-    legend.get_frame().set_facecolor('#DAEBF2')
-    tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Time (minutes)',fontsize=22)
-    ylabel('Yield', fontsize=22)
-    title(str(file[15:27]+' - '+file[-4:-1]), fontsize=24)    
-    show() """
+    if energy_key is None:
+        print(f"Warning: No initial parameters found for {files}. Using default values.")
+        initParamsNpeak = [[1.2e6], [2.8e5]]  # Default values
+    else:
+        initParamsNpeak = initParamsDict[energy_key]  # Get the correct values
 
-    ## Initial guesses for fit parameters [[Ka], 
-    #                                      [Kb]]
-    initParams = [[4.5e3, 4.12e-3], 
-                  [6.0e2, 4.12e-3]] ## N_Dirr ~ 3e5 counts, T1/2 ~ 1e4 seconds <=> lambda ~ 7e-5 sec^-1
+    ## Extract data from file
+    accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_time = AccumulateSDD(files)
 
-    ## Fit the data
-    FitNdecaySDD(Ndecay, accu_t, accu_Ka, accu_Kb, initParams, lab=str(file[15:27]+' - '+file[-4:-1]))
+    ## Fit the data for Npeak
+    FitNpeakSDD(NpeakSDD,  accu_time, accu_Ka, accu_Ka_err, 
+                        accu_Kb, accu_Kb_err, 
+                        initParamsNpeak, energy_key=energy_key, 
+                        lab=str(files[15:27]+' - '+files[-5:-1]))
