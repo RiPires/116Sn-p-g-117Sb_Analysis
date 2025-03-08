@@ -252,7 +252,7 @@ def Npeak(time, *params, radType, energy_key):
     'Ebeam=5.0MeV': {'gamma': (0.8590, 0.1760), 'Ka': (0.6750, 0.1575), 'Kb': (0.1164, 0.03435)}
     }
 
-    ## Transportation time for each activation energy
+    ## Transportation time (in minutes) for each activation energy
     t_transMin_key ={'Ebeam=3.2MeV': 63,
                      'Ebeam=3.5MeV': 29,
                      'Ebeam=3.9MeV': 32,

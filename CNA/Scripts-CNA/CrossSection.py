@@ -43,15 +43,15 @@ print(ruthCrossSection)
 
 # The number of radioactive nuclei at the end  of the irradiation, from the Npeak fit, 
 # for each beam energy, and each radiation type, in the format [gamma, Ka, Kb]
-N_D_irr1 = {
+""" N_D_irr1 = {
     "Ebeam=3.2MeV": {"gamma": 2.282e6, "Ka": 3.105e6, "Kb": 1.978e7},
     "Ebeam=3.5MeV": {"gamma": 9.036e6, "Ka": 1.236e7, "Kb": 7.791e7},
     "Ebeam=3.9MeV": {"gamma": 2.056e7, "Ka": 2.796e7, "Kb": 1.775e8},
     "Ebeam=4.3MeV": {"gamma": 3.999e7, "Ka": 5.444e7, "Kb": 3.456e8},
     "Ebeam=4.7MeV": {"gamma": 7.479e7, "Ka": 1.016e8, "Kb": 6.541e8},
-    "Ebeam=5.0MeV": {"gamma": 1.495e8, "Ka": 1.992e8, "Kb": 1.291e9},} ## Using photopeak gaussian fit integration
+    "Ebeam=5.0MeV": {"gamma": 1.495e8, "Ka": 1.992e8, "Kb": 1.291e9},} ## Using photopeak gaussian fit integration """
 
-N_D_irr2 = {
+N_D_irr = {
     "Ebeam=3.2MeV": {"gamma": 2.300e6, "Ka": 3.197e6, "Kb": 2.033e7},
     "Ebeam=3.5MeV": {"gamma": 9.094e6, "Ka": 1.270e7, "Kb": 8.007e7},
     "Ebeam=3.9MeV": {"gamma": 2.070e7, "Ka": 2.875e7, "Kb": 1.827e8},
@@ -92,13 +92,12 @@ N_p = {
 
 ## ---------------- Cross-Section Calculation ---------------- ##
 crossSections = {}
-crossSections2 = {}
 
 for i, energy in enumerate(energies):
     key = f"Ebeam={energy:.1f}MeV"
     print(f"Cross-section for {key}")
 
-    if key in N_D_irr1:
+    if key in N_D_irr:
         t_irr = t_irr_min[key]  # irradiation time
         Np = N_p[key]  # incident protons
         
@@ -107,7 +106,7 @@ for i, energy in enumerate(energies):
         
         # Compute the cross-section for each radiation type
         crossSections[key] = {}
-        for rad_type, N_D in N_D_irr1[key].items():
+        for rad_type, N_D in N_D_irr[key].items():
             sigma = (
                 ruthCrossSection[i] *
                 (4 * np.pi * N_D * epsilon_p) /
@@ -118,28 +117,7 @@ for i, energy in enumerate(energies):
             # Store result
             crossSections[key][rad_type] = sigma
             print(f"{rad_type}: {sigma:.4e} mb")
-    
-    if key in N_D_irr2:
-        t_irr = t_irr_min[key]  # irradiation time
-        Np = N_p[key]  # incident protons
-        
-        # Compute the decay factor
-        decayFactor = 1 - np.exp(-decayConstant * t_irr)
-        
-        # Compute the cross-section for each radiation type
-        crossSections2[key] = {}
-        for rad_type, N_D in N_D_irr2[key].items():
-            sigma2 = (
-                ruthCrossSection[i] *
-                (4 * np.pi * N_D * epsilon_p) /
-                (decayFactor) *
-                (decayConstant * t_irr / (wA * Np))
-            )
-            
-            # Store result
-            crossSections2[key][rad_type] = sigma2
-            print(f"{rad_type}: {sigma:.4e} mb")
 
     print()
     
-PlotCrossSection(crossSections, crossSections2)
+PlotCrossSection(crossSections)

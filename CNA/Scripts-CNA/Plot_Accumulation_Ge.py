@@ -40,7 +40,7 @@ for files in gePaths:
         initParamsNpeak = initParamsDict[energy_key]  # Get the correct values
 
     ## Extract data from file
-    accu_Ka, integral_Ka, accu_Ka_err, accu_Kb, integral_Kb, accu_Kb_err, accu_gamma, integral_gamma, accu_gamma_err, accu511, accu_time = AccumulateGe_BgRemove(files)
+    accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_gamma, accu_gamma_err, accu511, accu_time = AccumulateGe_BgRemove(files)
 
     ## Fit the data for Npeak
     FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_gamma_err, 
