@@ -107,7 +107,7 @@ def PlotRBS(ch, y, lab):
 
     return '-------------------'
 
-def PlotCrossSection(crossSections_HPGe, crossSections_SDD):
+def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
     
@@ -127,9 +127,12 @@ def PlotCrossSection(crossSections_HPGe, crossSections_SDD):
 
     # Loop over each radiation type to plot separately
     fig, ax = plt.subplots()
+    ax.set_yscale("log")
     for rad_type in ["gamma", "Ka", "Kb"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
-        ax.semilogy(energies, cross_section_values_HPGe, 
+        hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
+        ax.errorbar(energies, cross_section_values_HPGe,
+                    yerr=hpge_err, 
                     marker=markersHPGe[rad_type],
                     markersize=8,
                     linestyle='--', 
@@ -138,11 +141,13 @@ def PlotCrossSection(crossSections_HPGe, crossSections_SDD):
                     label=rad_type+" HPGe")
     for rad_type in ["Ka", "Kb"]:
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
-        ax.semilogy(energies, cross_section_values_SDD, 
-            marker=markersSDD[rad_type],
-            linestyle=':', 
-            color=colorsSDD[rad_type], 
-            label=rad_type+" SDD")
+        sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
+        ax.errorbar(energies, cross_section_values_SDD, 
+                    yerr=sdd_err,
+                    marker=markersSDD[rad_type],
+                    linestyle=':', 
+                    color=colorsSDD[rad_type], 
+                    label=rad_type+" SDD")
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')

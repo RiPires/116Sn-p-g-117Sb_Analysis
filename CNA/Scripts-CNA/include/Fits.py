@@ -665,9 +665,9 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
     # Plot the results
     fig, ax = plt.subplots()
     ax.set_yscale("log")
-    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
+    ax.errorbar(time, countsKa, yerr=errKa, fmt='^', color="xkcd:turquoise", label=f"Ka")
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
-    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")
+    ax.errorbar(time, countsKb, yerr=errKb,fmt='v', color="xkcd:salmon", label=f"Kb")
     ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')

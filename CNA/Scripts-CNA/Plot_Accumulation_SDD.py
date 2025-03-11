@@ -43,7 +43,7 @@ for files in sddPaths:
     accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_time = AccumulateSDD(files)
 
     ## Fit the data for Npeak
-    FitNpeakSDD(NpeakSDD,  accu_time, accu_Ka, accu_Ka_err, 
-                        accu_Kb, accu_Kb_err, 
-                        initParamsNpeak, energy_key=energy_key, 
-                        lab=str(files[15:27]+' - '+files[-5:-1]))
+    FitNpeakSDD(NpeakSDD,   accu_time, accu_Ka, accu_Ka_err, 
+                            accu_Kb, accu_Kb_err, 
+                            initParamsNpeak, energy_key=energy_key, 
+                            lab=str(files[15:27]+' - '+files[-5:-1]))

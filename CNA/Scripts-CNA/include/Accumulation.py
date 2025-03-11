@@ -91,9 +91,9 @@ def AccumulateGe_BgRemove(gePath):
     accu_t = 0.
 
     ## Set empty lists to store accumulation points and time
-    Accu_Ka = []
-    Accu_Kb = []
-    Accu_g = []
+    Accu_Ka = [0]
+    Accu_Kb = [0]
+    Accu_g = [0]
     Accu_511 = []
     Accu_t = []
 
@@ -118,6 +118,7 @@ def AccumulateGe_BgRemove(gePath):
     roiUp_511 = int(1594)
 
     Accu_Ka_err, Accu_Kb_err, Accu_g_err = [0], [0], [0]
+    counter = 1
 
     ## Loop over Ge data
     for file in sorted(os.listdir(gePath)):
@@ -127,24 +128,25 @@ def AccumulateGe_BgRemove(gePath):
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
             accu_Ka += y[c]
-            accu_Ka_err = np.sqrt(accu_Ka)
+            accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
             
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
             accu_Kb += y[c]
-            accu_Kb_err = np.sqrt(accu_Kb)
+            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
         ## Add gamma counts
         for c in range(roiDown_g, roiUp_g):
             accu_g += y[c]
-            accu_g_err = np.sqrt(accu_g)
+            accu_g_err = np.sqrt(accu_g + Accu_g[counter-1])
 
         ## Add 511 keV counts
         for c in range(roiDown_511, roiUp_511):
             accu_511 += y[c]
 
-        ## Increment time
+        ## Increment time and counter
         accu_t += 15 # minutes
+        counter += 1
 
         #print(f"Ratio Ka/Kb yields = {accu_Ka/accu_Kb:.2f}")
 
@@ -158,7 +160,7 @@ def AccumulateGe_BgRemove(gePath):
         Accu_511.append(accu_511)
         Accu_t.append(accu_t)
 
-    return Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_g, Accu_g_err, Accu_511, Accu_t
+    return Accu_Ka[1:], Accu_Ka_err, Accu_Kb[1:], Accu_Kb_err, Accu_g[1:], Accu_g_err, Accu_511, Accu_t
 
 #######################################################################
 #######################################################################
@@ -178,8 +180,8 @@ def AccumulateSDD(sddPath):
     accu_t = 0.
 
     ## Set empty lists to store accumulation points and time
-    Accu_Ka = []
-    Accu_Kb = []
+    Accu_Ka = [0]
+    Accu_Kb = [0]
     Accu_t = []
 
     ## Set ROI for each peak, in channel
@@ -192,6 +194,7 @@ def AccumulateSDD(sddPath):
     roiUp_Kb = int(928)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
+    counter = 1
 
     ## Loop over Ge data
     for file in sorted(os.listdir(sddPath)):
@@ -201,15 +204,16 @@ def AccumulateSDD(sddPath):
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
             accu_Ka += y[c]
-            accu_Ka_err = np.sqrt(accu_Ka)
+            accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
 
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
             accu_Kb += y[c]
-            accu_Kb_err = np.sqrt(accu_Kb)
+            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
-        ## Increment time
+        ## Increment time and counter
         accu_t += 30 # minutes
+        counter += 1
 
         ## Save integral at this point
         Accu_Ka.append(accu_Ka)
@@ -218,7 +222,7 @@ def AccumulateSDD(sddPath):
         Accu_Kb_err.append(accu_Kb_err)
         Accu_t.append(accu_t)
 
-    return Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_t
+    return Accu_Ka[1:], Accu_Ka_err[1:], Accu_Kb[1:], Accu_Kb_err[1:], Accu_t
 
 #######################################################################
 #######################################################################

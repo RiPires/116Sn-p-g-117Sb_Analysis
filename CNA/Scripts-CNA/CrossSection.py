@@ -14,7 +14,9 @@ zTarget = 50
 eCharge = 1.60217663e-19 # C
 epsilon0 = 8.8541878e-12 # F/m
 scattAngDeg = 165 # deg
+scattAngDeg_err = 2.3 # deg
 scattAngRad = np.deg2rad(scattAngDeg) # radians
+scattAngRad_err = np.deg2rad(scattAngDeg_err) # radians
 cSpeed = 2.99792458e8 # m/s
 ## ___________________________________ ## 
 
@@ -36,7 +38,13 @@ cSpeed = 2.99792458e8 # m/s
 ## 1 - Calculate Rutherford Differential Cross-Section
 energies = np.array([3.2, 3.5, 3.9, 4.3, 4.7, 5.0]) # MeV
 ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6*np.sin(scattAngRad/2)**2) )**2 *1e31 # mb/sr
-print(ruthCrossSection)
+#print(ruthCrossSection)
+
+## Compute Ruth cross-section error
+alfa = ((zBeam*zTarget*eCharge)/(16*np.pi*epsilon0*10**6))**2 * 10**31
+ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattAngRad/2))**3) * scattAngRad_err ## mbarn
+print(ruthCrossSection_err)
+
 
 ## 2 - Determine the total number of radioactive nuclei in the target at the end of the irradiation,
 ##     N_Dirr, from the fit of Npeak, for each radiation type (gamma, Ka and Kb);
@@ -67,6 +75,23 @@ N_D_irr_SDD = {
                       "Ebeam=4.7MeV": {"Ka": 1.052e8, "Kb": 4.834e8},
                       "Ebeam=5.0MeV": {"Ka": 2.114e8, "Kb": 1.014e9},} ## Using photopeak channel by channel yield sum
 
+## Error values of N_Dirr from the fit
+N_D_irr_HPGe_err = {
+    "Ebeam=3.2MeV": {"gamma": 2e3, "Ka": 2e3, "Kb": 2e4},
+    "Ebeam=3.5MeV": {"gamma": 5e3, "Ka": 9e3, "Kb": 4e4},
+    "Ebeam=3.9MeV": {"gamma": 1e4, "Ka": 2e4, "Kb": 1e5},
+    "Ebeam=4.3MeV": {"gamma": 3e4, "Ka": 5e4, "Kb": 3e5},
+    "Ebeam=4.7MeV": {"gamma": 3e4, "Ka": 5e4, "Kb": 3e5},
+    "Ebeam=5.0MeV": {"gamma": 1e5, "Ka": 2e5, "Kb": 1e6},} ## Using photopeak channel by channel yield sum
+
+N_D_irr_SDD_err = {
+    "Ebeam=3.2MeV": {"Ka": 2e3, "Kb": 4e4},
+    "Ebeam=3.5MeV": {"Ka": 4e4, "Kb": 2e5},
+    "Ebeam=3.9MeV": {"Ka": 2e4, "Kb": 2e5},
+    "Ebeam=4.3MeV": {"Ka": 4e4, "Kb": 2e5},
+    "Ebeam=4.7MeV": {"Ka": 4e4, "Kb": 2e5},
+    "Ebeam=5.0MeV": {"Ka": 9e4, "Kb": 4e5},} ## Using photopeak channel by channel yield sum
+
 ## 3   - Compute the reaction cross-section using the known values for epsilon_P (RBS detector resolution),
 ##       t_irr (irradiation time), w_A (isotopic enrichement of the target), t_irr (irradiation time), and lambda (decay constant)
 
@@ -77,8 +102,12 @@ epsilon_p = 4.409e-4
 wA = 0.978
 
 ## 117Sb decay half-life in minutes (2.8 hours)
-halfLife_min = 2.9*60 # minutes
+halfLife_min = 2.8*60 # minutes
+halfLife_min_err = 0.01*60 # minutes
+
+## Decay constant
 decayConstant = np.log(2) / halfLife_min  # in min^-1
+decayConstant_err = np.log(2) * halfLife_min_err / halfLife_min**2  # in min^-1
 
 ## Total irradiation time, in minutes, for each activation
 t_irr_min = {"Ebeam=3.2MeV": 358,
@@ -87,19 +116,21 @@ t_irr_min = {"Ebeam=3.2MeV": 358,
              "Ebeam=4.3MeV": 361,
              "Ebeam=4.7MeV": 347,
              "Ebeam=5.0MeV": 344,}
+t_irr_err = 1. # minute
 
 ## Total number of backscattered protons, Np
-N_p = {
-    "Ebeam=3.2MeV": 8.41e7,
-    "Ebeam=3.5MeV": 1.03e8,
-    "Ebeam=3.9MeV": 5.90e7,
-    "Ebeam=4.3MeV": 4.87e7,
-    "Ebeam=4.7MeV": 2.64e7,
-    "Ebeam=5.0MeV": 2.64e7,}
+N_p = {"Ebeam=3.2MeV": 8.41e7,
+       "Ebeam=3.5MeV": 1.03e8,
+       "Ebeam=3.9MeV": 5.90e7,
+       "Ebeam=4.3MeV": 4.87e7,
+       "Ebeam=4.7MeV": 2.64e7,
+       "Ebeam=5.0MeV": 2.64e7,}
 
 ## ---------------- Cross-Section Calculation ---------------- ##
 crossSections_HPGe = {}
+crossSections_HPGe_err = {}
 crossSections_SDD = {}
+crossSections_SDD_err = {}
 
 for i, energy in enumerate(energies):
     key = f"Ebeam={energy:.1f}MeV"
@@ -107,24 +138,39 @@ for i, energy in enumerate(energies):
 
     if key in N_D_irr_HPGe:
         t_irr = t_irr_min[key]  # irradiation time
-        Np = N_p[key]  # incident protons
+        Np = N_p[key]           # incident protons
         
         # Compute the decay factor
         decayFactor = 1 - np.exp(-decayConstant * t_irr)
         
         # Compute the cross-section for each radiation type
         crossSections_HPGe[key] = {}
+        crossSections_HPGe_err[key] = {}
+
         for rad_type, N_D in N_D_irr_HPGe[key].items():
-            sigma = (
-                ruthCrossSection[i] *
-                (4 * np.pi * N_D * epsilon_p) /
-                (decayFactor) *
+
+            ## Get N_D_irr errors
+            N_D_err = N_D_irr_HPGe_err[key][rad_type]
+            
+            ## Cross-Section calculation
+            sigma = (ruthCrossSection[i] *
+                (4 * np.pi * N_D * epsilon_p) / (decayFactor) *
                 (decayConstant * t_irr / (wA * Np)))
             
-            # Store result
+            ## Compute error propagation
+            sigma_err = np.sqrt(sigma**2/Np + 
+                                (sigma*ruthCrossSection_err[i]/ruthCrossSection[i])**2 +
+                                (sigma/N_D)**2 * N_D_err**2 + 
+                                ((decayConstant*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * t_irr_err**2 + 
+                                ((t_irr*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * decayConstant_err**2)
+            
+            ## Store the results
             crossSections_HPGe[key][rad_type] = sigma
-            print(f"{rad_type}: {sigma:.2f} mb")
+            crossSections_HPGe_err[key][rad_type] = sigma_err
 
+            print(f"{rad_type}: ({sigma:.2f} +- {sigma_err:.2f}) mb")
     print()
 
 for i, energy in enumerate(energies):
@@ -140,16 +186,31 @@ for i, energy in enumerate(energies):
         
         # Compute the cross-section for each radiation type
         crossSections_SDD[key] = {}
+        crossSections_SDD_err[key] = {}
+
         for rad_type, N_D in N_D_irr_SDD[key].items():
-            sigma = (
-                ruthCrossSection[i] *
-                (4 * np.pi * N_D * epsilon_p) /
-                (decayFactor) *
+
+            ## Get N_D_irr errors
+            N_D_err = N_D_irr_SDD_err[key][rad_type]
+
+            ## Cross-Section calculation
+            sigma = (ruthCrossSection[i] *
+                (4 * np.pi * N_D * epsilon_p) / (decayFactor) *
                 (decayConstant * t_irr / (wA * Np)))
+            
+                        ## Compute error propagation
+            sigma_err = np.sqrt(sigma**2/Np + 
+                                (sigma/N_D)**2 * N_D_err**2 + 
+                                ((decayConstant*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * t_irr_err**2 + 
+                                ((t_irr*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * decayConstant_err**2)
             
             # Store result
             crossSections_SDD[key][rad_type] = sigma
-            print(f"{rad_type}: {sigma:.2f} mb")
+            crossSections_SDD_err[key][rad_type] = sigma_err
+
+            print(f"{rad_type}: ({sigma:.2f} +- {sigma_err:.2f}) mb")
     print()
 
-PlotCrossSection(crossSections_HPGe, crossSections_SDD)
+PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err)
