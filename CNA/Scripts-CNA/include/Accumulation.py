@@ -120,10 +120,12 @@ def AccumulateGe_BgRemove(gePath):
     Accu_Ka_err, Accu_Kb_err, Accu_g_err = [0], [0], [0]
     counter = 1
 
-    ## Loop over Ge data
+    ## Loop over Ge data files
     for file in sorted(os.listdir(gePath)):
 
         y = Ge2ListsBgRm(str(gePath+file))[0]
+        live_time = Ge2Lists(str(gePath.replace("BgRemoved/","")+file.replace("_BgRemoved","")))[2]
+        #print(f"live-time = {live_time:.0f} s = {live_time/60:.1f} min")
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -144,8 +146,9 @@ def AccumulateGe_BgRemove(gePath):
         for c in range(roiDown_511, roiUp_511):
             accu_511 += y[c]
 
-        ## Increment time and counter
-        accu_t += 15 # minutes
+        ## Increment accumulation time and counter
+        accu_t += live_time/60 # minutes
+        #print(f"Acumulation time = {accu_t:.0f} min \n")
         counter += 1
 
         #print(f"Ratio Ka/Kb yields = {accu_Ka/accu_Kb:.2f}")
@@ -196,10 +199,12 @@ def AccumulateSDD(sddPath):
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1
 
-    ## Loop over Ge data
+    ## Loop over SDD data files
     for file in sorted(os.listdir(sddPath)):
 
         y = MCA2Lists(str(sddPath+file))[0]
+        live_time = MCA2Lists(str(sddPath+file))[2]
+        #print(f"Live-time = {live_time:.0f} s = {live_time/60:.1f} min")
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -211,8 +216,9 @@ def AccumulateSDD(sddPath):
             accu_Kb += y[c]
             accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
-        ## Increment time and counter
-        accu_t += 30 # minutes
+        ## Increment accumulation time and counter
+        accu_t += live_time/60 # minutes
+        #print(f"Accumulation time = {accu_t:.0f} min \n")
         counter += 1
 
         ## Save integral at this point

@@ -43,7 +43,7 @@ ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6
 ## Compute Ruth cross-section error
 alfa = ((zBeam*zTarget*eCharge)/(16*np.pi*epsilon0*10**6))**2 * 10**31
 ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattAngRad/2))**3) * scattAngRad_err ## mbarn
-print(ruthCrossSection_err)
+#print(ruthCrossSection_err)
 
 
 ## 2 - Determine the total number of radioactive nuclei in the target at the end of the irradiation,
@@ -60,33 +60,33 @@ print(ruthCrossSection_err)
     "Ebeam=5.0MeV": {"gamma": 1.495e8, "Ka": 1.992e8, "Kb": 1.291e9},} ## Using photopeak gaussian fit integration """
 
 N_D_irr_HPGe = {
-    "Ebeam=3.2MeV": {"gamma": 2.300e6, "Ka": 3.197e6, "Kb": 2.033e7},
-    "Ebeam=3.5MeV": {"gamma": 9.094e6, "Ka": 1.270e7, "Kb": 8.007e7},
-    "Ebeam=3.9MeV": {"gamma": 2.070e7, "Ka": 2.875e7, "Kb": 1.827e8},
-    "Ebeam=4.3MeV": {"gamma": 4.029e7, "Ka": 5.598e7, "Kb": 3.554e8},
-    "Ebeam=4.7MeV": {"gamma": 7.539e7, "Ka": 1.044e8, "Kb": 6.734e8},
-    "Ebeam=5.0MeV": {"gamma": 1.509e8, "Ka": 2.046e8, "Kb": 1.329e9},} ## Using photopeak channel by channel yield sum
+    "Ebeam=3.2MeV": {"gamma": 2.318e6, "Ka": 3.223e6, "Kb": 2.049e7},
+    "Ebeam=3.5MeV": {"gamma": 9.171e6, "Ka": 1.281e7, "Kb": 8.075e7},
+    "Ebeam=3.9MeV": {"gamma": 2.088e7, "Ka": 2.901e7, "Kb": 1.843e8},
+    "Ebeam=4.3MeV": {"gamma": 4.069e7, "Ka": 5.654e7, "Kb": 3.589e8},
+    "Ebeam=4.7MeV": {"gamma": 7.565e7, "Ka": 1.048e8, "Kb": 6.756e8},
+    "Ebeam=5.0MeV": {"gamma": 1.521e8, "Ka": 2.063e8, "Kb": 1.340e9},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD = {
-                      "Ebeam=3.2MeV": {"Ka": 2.657e6, "Kb": 1.267e7},
-                      "Ebeam=3.5MeV": {"Ka": 1.053e7, "Kb": 5.396e7},
+                      "Ebeam=3.2MeV": {"Ka": 2.658e6, "Kb": 1.267e7},
+                      "Ebeam=3.5MeV": {"Ka": 1.062e7, "Kb": 5.441e7},
                       "Ebeam=3.9MeV": {"Ka": 2.585e7, "Kb": 1.265e8},
-                      "Ebeam=4.3MeV": {"Ka": 5.019e7, "Kb": 2.590e8},
+                      "Ebeam=4.3MeV": {"Ka": 5.020e7, "Kb": 2.591e8},
                       "Ebeam=4.7MeV": {"Ka": 1.052e8, "Kb": 4.834e8},
                       "Ebeam=5.0MeV": {"Ka": 2.114e8, "Kb": 1.014e9},} ## Using photopeak channel by channel yield sum
 
 ## Error values of N_Dirr from the fit
 N_D_irr_HPGe_err = {
-    "Ebeam=3.2MeV": {"gamma": 2e3, "Ka": 2e3, "Kb": 2e4},
-    "Ebeam=3.5MeV": {"gamma": 5e3, "Ka": 9e3, "Kb": 4e4},
-    "Ebeam=3.9MeV": {"gamma": 1e4, "Ka": 2e4, "Kb": 1e5},
-    "Ebeam=4.3MeV": {"gamma": 3e4, "Ka": 5e4, "Kb": 3e5},
-    "Ebeam=4.7MeV": {"gamma": 3e4, "Ka": 5e4, "Kb": 3e5},
-    "Ebeam=5.0MeV": {"gamma": 1e5, "Ka": 2e5, "Kb": 1e6},} ## Using photopeak channel by channel yield sum
+    "Ebeam=3.2MeV": {"gamma": 4e2, "Ka": 9e2, "Kb": 1e4},
+    "Ebeam=3.5MeV": {"gamma": 3e3, "Ka": 3e3, "Kb": 3e4},
+    "Ebeam=3.9MeV": {"gamma": 9e3, "Ka": 6e3, "Kb": 7e4},
+    "Ebeam=4.3MeV": {"gamma": 2e4, "Ka": 1e4, "Kb": 1e5},
+    "Ebeam=4.7MeV": {"gamma": 2e4, "Ka": 2e4, "Kb": 1e5},
+    "Ebeam=5.0MeV": {"gamma": 6e4, "Ka": 3e4, "Kb": 5e5},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD_err = {
     "Ebeam=3.2MeV": {"Ka": 2e3, "Kb": 4e4},
-    "Ebeam=3.5MeV": {"Ka": 4e4, "Kb": 2e5},
+    "Ebeam=3.5MeV": {"Ka": 1e4, "Kb": 6e4},
     "Ebeam=3.9MeV": {"Ka": 2e4, "Kb": 2e5},
     "Ebeam=4.3MeV": {"Ka": 4e4, "Kb": 2e5},
     "Ebeam=4.7MeV": {"Ka": 4e4, "Kb": 2e5},

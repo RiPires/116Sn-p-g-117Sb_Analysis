@@ -148,7 +148,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     linestyle=':', 
                     color=colorsSDD[rad_type], 
                     label=rad_type+" SDD")
-    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("Energy (MeV)", fontsize=22)

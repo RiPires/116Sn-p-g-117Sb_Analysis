@@ -30,7 +30,7 @@ def MCA2Lists(File):
     for i in range(2060):
         aux.append(data[i][0].split())
     ## Acquisition time    
-    time = float(aux[8][2])
+    time = float(aux[7][2])
     for i in range(12, len(aux)):
         ch.append(float(i)) ## axes in channel
         y.append(float(aux[i][0]))
@@ -75,7 +75,7 @@ def Ge2Lists(File):
     HOW TO USE:
         MyYield, MyChannel = MCA2Lists("MyFile.mca")
     """
-    with open(File, 'r') as file:
+    with open(File, 'r', encoding='iso8859-4') as file:
         reader = csv.reader(file, delimiter="\n", skipinitialspace=True, )
         data = list(reader)
     ch = []
@@ -85,7 +85,7 @@ def Ge2Lists(File):
         aux.append(data[i][0].split())
     
     ## Acquisition time    
-    time = float(aux[8][2])
+    time = float(aux[7][2])
 
     for i in range(14, len(aux)):
         ch.append(float(i)) ## axes in channel

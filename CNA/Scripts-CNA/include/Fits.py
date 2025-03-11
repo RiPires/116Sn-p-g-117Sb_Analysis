@@ -528,8 +528,6 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
         - lab: a label to use for plotting;
     OUTPUTS:
     """
-    ## Nr. of variables to fit
-    nrVar = 1
 
     ## Convert input arrays into numpy arrays
     time = np.array(time)
@@ -575,7 +573,7 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)            # Kb line
     """
     
-    ## Get fit parameters
+    ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
     NdirrGamma, NdirrGamma_err  = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]  # Gamma line
     NdirrKa, NdirrKa_err        = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]     # Ka line
     NdirrKb, NdirrKb_err        = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]     # Kb line
@@ -631,8 +629,6 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
         - lab: a label to use for plotting;
     OUTPUTS:
     """
-    ## Nr. of variables to fit
-    nrVar = 1
 
     ## Convert input arrays into numpy arrays
     time = np.array(time)
@@ -647,8 +643,8 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
                                time, countsKb, p0=init[1][0:2])
     
     ## Get fit parameters
-    NdirrKa, NdirrKa_err        = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]     # Ka line
-    NdirrKb, NdirrKb_err        = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]     # Kb line
+    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line
+    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0] # Kb line
 
     ## Print results
     print("******************************"+len(lab)*"*")
