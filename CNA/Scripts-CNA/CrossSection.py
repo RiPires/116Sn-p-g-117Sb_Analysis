@@ -60,35 +60,35 @@ ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattA
     "Ebeam=5.0MeV": {"gamma": 1.495e8, "Ka": 1.992e8, "Kb": 1.291e9},} ## Using photopeak gaussian fit integration """
 
 N_D_irr_HPGe = {
-    "Ebeam=3.2MeV": {"gamma": 2.318e6, "Ka": 3.223e6, "Kb": 2.049e7},
-    "Ebeam=3.5MeV": {"gamma": 9.171e6, "Ka": 1.281e7, "Kb": 8.075e7},
-    "Ebeam=3.9MeV": {"gamma": 2.088e7, "Ka": 2.901e7, "Kb": 1.843e8},
-    "Ebeam=4.3MeV": {"gamma": 4.069e7, "Ka": 5.654e7, "Kb": 3.589e8},
-    "Ebeam=4.7MeV": {"gamma": 7.565e7, "Ka": 1.048e8, "Kb": 6.756e8},
-    "Ebeam=5.0MeV": {"gamma": 1.521e8, "Ka": 2.063e8, "Kb": 1.340e9},} ## Using photopeak channel by channel yield sum
+    "Ebeam=3.2MeV": {"gamma": 2.308e6, "Ka": 3.223e6, "Kb": 1.987e7},
+    "Ebeam=3.5MeV": {"gamma": 9.176e6, "Ka": 1.278e7, "Kb": 7.905e7},
+    "Ebeam=3.9MeV": {"gamma": 2.085e7, "Ka": 2.901e7, "Kb": 1.805e8},
+    "Ebeam=4.3MeV": {"gamma": 4.069e7, "Ka": 5.647e7, "Kb": 3.500e8},
+    "Ebeam=4.7MeV": {"gamma": 7.582e7, "Ka": 1.048e8, "Kb": 6.566e8},
+    "Ebeam=5.0MeV": {"gamma": 1.519e8, "Ka": 2.063e8, "Kb": 1.303e9},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD = {
-                      "Ebeam=3.2MeV": {"Ka": 2.658e6, "Kb": 1.267e7},
-                      "Ebeam=3.5MeV": {"Ka": 1.062e7, "Kb": 5.441e7},
-                      "Ebeam=3.9MeV": {"Ka": 2.585e7, "Kb": 1.265e8},
-                      "Ebeam=4.3MeV": {"Ka": 5.020e7, "Kb": 2.591e8},
-                      "Ebeam=4.7MeV": {"Ka": 1.052e8, "Kb": 4.834e8},
-                      "Ebeam=5.0MeV": {"Ka": 2.114e8, "Kb": 1.014e9},} ## Using photopeak channel by channel yield sum
+                      "Ebeam=3.2MeV": {"Ka": 2.650e6, "Kb": 1.268e7},
+                      "Ebeam=3.5MeV": {"Ka": 1.075e7, "Kb": 5.043e7},
+                      "Ebeam=3.9MeV": {"Ka": 2.526e7, "Kb": 1.263e8},
+                      "Ebeam=4.3MeV": {"Ka": 5.132e7, "Kb": 2.526e8},
+                      "Ebeam=4.7MeV": {"Ka": 1.020e8, "Kb": 5.026e8},
+                      "Ebeam=5.0MeV": {"Ka": 2.139e8, "Kb": 1.057e9},} ## Using photopeak channel by channel yield sum
 
 ## Error values of N_Dirr from the fit
 N_D_irr_HPGe_err = {
-    "Ebeam=3.2MeV": {"gamma": 4e2, "Ka": 9e2, "Kb": 1e4},
+    "Ebeam=3.2MeV": {"gamma": 4e2, "Ka": 9e2, "Kb": 9e3},
     "Ebeam=3.5MeV": {"gamma": 3e3, "Ka": 3e3, "Kb": 3e4},
     "Ebeam=3.9MeV": {"gamma": 9e3, "Ka": 6e3, "Kb": 7e4},
     "Ebeam=4.3MeV": {"gamma": 2e4, "Ka": 1e4, "Kb": 1e5},
     "Ebeam=4.7MeV": {"gamma": 2e4, "Ka": 2e4, "Kb": 1e5},
-    "Ebeam=5.0MeV": {"gamma": 6e4, "Ka": 3e4, "Kb": 5e5},} ## Using photopeak channel by channel yield sum
+    "Ebeam=5.0MeV": {"gamma": 6e4, "Ka": 3e4, "Kb": 4e5},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD_err = {
     "Ebeam=3.2MeV": {"Ka": 2e3, "Kb": 4e4},
     "Ebeam=3.5MeV": {"Ka": 1e4, "Kb": 6e4},
     "Ebeam=3.9MeV": {"Ka": 2e4, "Kb": 2e5},
-    "Ebeam=4.3MeV": {"Ka": 4e4, "Kb": 2e5},
+    "Ebeam=4.3MeV": {"Ka": 5e4, "Kb": 2e5},
     "Ebeam=4.7MeV": {"Ka": 4e4, "Kb": 2e5},
     "Ebeam=5.0MeV": {"Ka": 9e4, "Kb": 4e5},} ## Using photopeak channel by channel yield sum
 
@@ -155,7 +155,7 @@ for i, energy in enumerate(energies):
             ## Cross-Section calculation
             sigma = (ruthCrossSection[i] *
                 (4 * np.pi * N_D * epsilon_p) / (decayFactor) *
-                (decayConstant * t_irr / (wA * Np)))
+                (decayConstant * t_irr / (Np)))
             
             ## Compute error propagation
             sigma_err = np.sqrt(sigma**2/Np + 
@@ -172,6 +172,8 @@ for i, energy in enumerate(energies):
 
             print(f"{rad_type}: ({sigma:.2f} +- {sigma_err:.2f}) mb")
     print()
+
+print(f" ------------------------- \n ------------------------- \n")
 
 for i, energy in enumerate(energies):
     key = f"Ebeam={energy:.1f}MeV"
@@ -196,7 +198,7 @@ for i, energy in enumerate(energies):
             ## Cross-Section calculation
             sigma = (ruthCrossSection[i] *
                 (4 * np.pi * N_D * epsilon_p) / (decayFactor) *
-                (decayConstant * t_irr / (wA * Np)))
+                (decayConstant * t_irr / (Np)))
             
                         ## Compute error propagation
             sigma_err = np.sqrt(sigma**2/Np + 

@@ -106,7 +106,7 @@ def AccumulateGe_BgRemove(gePath):
     roiUp_Ka = int(84)
 
     ## Kb
-    roiDown_Kb = int(84)
+    roiDown_Kb = int(85)
     roiUp_Kb = int(94)
 
     ## gamma
@@ -189,12 +189,12 @@ def AccumulateSDD(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(796)
+    roiDown_Ka = int(797)
     roiUp_Ka = int(827)
 
     ## Kb
-    roiDown_Kb = int(907)
-    roiUp_Kb = int(928)
+    roiDown_Kb = int(908)
+    roiUp_Kb = int(927)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1

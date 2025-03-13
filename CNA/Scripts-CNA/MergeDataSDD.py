@@ -16,7 +16,7 @@ def MergeYield_MCA(Dir):
     """
     ConvYield = [0 for i in range(2048)]
     for file in os.listdir(Dir):
-        Path = str(Dir+"\\"+file)
+        Path = str(Dir+file)
         Yield = MCA2Lists(Path)[0]
         ConvYield = [ConvYield[i] + Yield[i] for i in range(len(ConvYield))]
     return ConvYield

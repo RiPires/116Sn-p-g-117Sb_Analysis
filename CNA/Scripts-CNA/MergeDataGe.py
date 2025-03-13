@@ -18,7 +18,7 @@ def MergeYieldGe(Dir):
     """
     ConvYield = [0 for i in range(4096)]
     for file in os.listdir(Dir):
-        Path = str(Dir+"\\"+file)
+        Path = str(Dir+file)
         Yield = Ge2ListsBgRm(Path)[0]
         ConvYield = [ConvYield[i] + Yield[i] for i in range(len(ConvYield))]
     return ConvYield

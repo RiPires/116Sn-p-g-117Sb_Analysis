@@ -244,12 +244,12 @@ def NpeakHPGe(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'gamma': (0.8590, 0.1754), 'Ka': (0.6750, 0.1575), 'Kb': (0.1164, 0.03447)},
-    'Ebeam=3.5MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1571), 'Kb': (0.1164, 0.03458)},
-    'Ebeam=3.9MeV': {'gamma': (0.8590, 0.1759), 'Ka': (0.6750, 0.1576), 'Kb': (0.1164, 0.03456)},
-    'Ebeam=4.3MeV': {'gamma': (0.8590, 0.1760), 'Ka': (0.6750, 0.1573), 'Kb': (0.1164, 0.03452)},
-    'Ebeam=4.7MeV': {'gamma': (0.8590, 0.1767), 'Ka': (0.6750, 0.1577), 'Kb': (0.1164, 0.03423)},
-    'Ebeam=5.0MeV': {'gamma': (0.8590, 0.1760), 'Ka': (0.6750, 0.1575), 'Kb': (0.1164, 0.03435)}
+    'Ebeam=3.2MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02860)},
+    'Ebeam=3.5MeV': {'gamma': (0.8590, 0.1761), 'Ka': (0.6750, 0.1574), 'Kb': (0.1419, 0.02848)},
+    'Ebeam=3.9MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1576), 'Kb': (0.1419, 0.02844)},
+    'Ebeam=4.3MeV': {'gamma': (0.8590, 0.1760), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02853)},
+    'Ebeam=4.7MeV': {'gamma': (0.8590, 0.1763), 'Ka': (0.6750, 0.1577), 'Kb': (0.1419, 0.02837)},
+    'Ebeam=5.0MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02842)}
     }
 
     ## Transportation time (in minutes) for each activation energy
@@ -304,12 +304,12 @@ def NpeakSDD(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.835e-3), 'Kb': (0.1164, 4.61e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.892e-3), 'Kb': (0.1164, 4.19e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.782e-3), 'Kb': (0.1164, 4.37e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.918e-3), 'Kb': (0.1164, 4.40e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.765e-3), 'Kb': (0.1164, 4.68e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.856e-3), 'Kb': (0.1164, 4.61e-4)}
+    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1419, 3.733e-4)},
+    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1419, 3.658e-4)},
+    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1419, 3.553e-4)},
+    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1419, 3.658e-4)},
+    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1419, 3.642e-4)},
+    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1419, 3.577e-4)}
     }
 
     ## Transportation time (in minutes) for each activation energy
