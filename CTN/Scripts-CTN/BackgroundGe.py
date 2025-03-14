@@ -1,32 +1,15 @@
-#RiP######################################
-from matplotlib.pylab import *
-import matplotlib.pyplot as plt
-from ReadData import*
-##########################################
+#################### RiP #########################
+## Script for plotting detector background runs ##
+##################################################
 
-##########################################
-def PlotBgGe(File):
-    """
-    Plots yield vs channel data from our .mca files
-    INPUTS: "FileName.mca"
-    OUTPUTS: yield vs channel plot
-    """
-    y, ch = Ge2Lists(File) 
-    lab = str(File).replace('.TXT','')
-    fig, ax = plt.subplots()
-    ax.plot(ch,y,'.-', color ='xkcd:black', label=(str(lab)+' - Ge'))
-    legend = ax.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
-    legend.get_frame().set_facecolor('#DAEBF2')
-    tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Channel',fontsize=22)
-    ylabel('Yield', fontsize=22)
-    show()
+## ---------------------------- ##
+from include.ReadData import*
+from include.PlotData import *
+## ---------------------------- ##
 
-    return
-###############################################
 
-#############################
-## Plot raw background run ##
-#############################
-bgFile = 'DataFilesGe/Background/415114G2.TXT'
-PlotBgGe(bgFile)
+## Background before the decay
+bgFile = '../Calibration/BEGe-Calib/Background/415114G2.TXT'
+ch_hpge = [(i+1) for i in range(1024)]
+bg_yield = Ge2Lists(bgFile)[0]
+Plot(ch_hpge, bg_yield, 'BEGe background')

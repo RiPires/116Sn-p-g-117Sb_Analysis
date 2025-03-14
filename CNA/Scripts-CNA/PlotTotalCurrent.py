@@ -2,10 +2,10 @@
 ## Script to plot total current for each activation ##
 ######################################################
 
-## -------------------- ##
+## -------------------------- ##
 from include.PlotData import *
 from include.ReadData import *
-## -------------------- ##
+## -------------------------- ##
 
 ## Paths for each activation energy
 iPath32 = '../Activations/Ebeam=3.2MeV/1_Irradiation/DataFiles/240708/Counter/'
