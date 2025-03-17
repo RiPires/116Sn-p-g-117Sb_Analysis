@@ -14,9 +14,13 @@ zTarget = 50
 eCharge = 1.60217663e-19 # C
 epsilon0 = 8.8541878e-12 # F/m
 scattAngDeg = 165 # deg
+scattAngDeg_CTN = 155 # deg
 scattAngDeg_err = 2.3 # deg
+scattAngDeg_CTN_err = 2. # deg # VERIFICAR ESTE VALOR !!!
 scattAngRad = np.deg2rad(scattAngDeg) # radians
+scattAng_CTN_Rad = np.deg2rad(scattAngDeg_CTN) # radians
 scattAngRad_err = np.deg2rad(scattAngDeg_err) # radians
+scattAngRad_CTN_err = np.deg2rad(scattAngDeg_CTN_err) # radians
 cSpeed = 2.99792458e8 # m/s
 ## ___________________________________ ## 
 
@@ -39,11 +43,17 @@ cSpeed = 2.99792458e8 # m/s
 energies = np.array([3.2, 3.5, 3.9, 4.3, 4.7, 5.0]) # MeV
 ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6*np.sin(scattAngRad/2)**2) )**2 *1e31 # mb/sr
 #print(ruthCrossSection)
+ruthCrossSection_CTN = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*3.2*10**6*np.sin(scattAng_CTN_Rad/2)**2) )**2 *1e31
+#print(ruthCrossSection_CTN)
 
 ## Compute Ruth cross-section error
-alfa = ((zBeam*zTarget*eCharge)/(16*np.pi*epsilon0*10**6))**2 * 10**31
-ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattAngRad/2))**3) * scattAngRad_err ## mbarn
+#alfa = ((zBeam*zTarget*eCharge)/(16*np.pi*epsilon0*10**6))**2 * 10**31
+#ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattAngRad/2))**3) * scattAngRad_err ## mbarn
+ruthCrossSection_err = np.sqrt((2*ruthCrossSection*np.cos(scattAngRad/2)/np.sin(scattAngRad/2)*scattAngRad_err)**2 +
+                                (2*ruthCrossSection*0.0001/energies)**2)
 #print(ruthCrossSection_err)
+ruthCrossSection_CTN_err = np.sqrt((2*ruthCrossSection_CTN*np.cos(scattAng_CTN_Rad/2)/np.sin(scattAng_CTN_Rad/2)*scattAngRad_CTN_err)**2 +
+                                    (2*ruthCrossSection_CTN*0.0001/3.2)**2)
 
 
 ## 2 - Determine the total number of radioactive nuclei in the target at the end of the irradiation,
@@ -75,6 +85,11 @@ N_D_irr_SDD = {
                       "Ebeam=4.7MeV": {"Ka": 1.020e8, "Kb": 5.026e8},
                       "Ebeam=5.0MeV": {"Ka": 2.139e8, "Kb": 1.057e9},} ## Using photopeak channel by channel yield sum
 
+N_D_irr_SDD_CTN = {"Ka": 1.069e6, "Kb": 5.521e6}
+
+N_D_irr_SDD_CTN_err = {"Ka": 1.000e5, "Kb": 1.000e5} ## VERIFICAR ESTES VALORES !!!
+
+
 ## Error values of N_Dirr from the fit
 N_D_irr_HPGe_err = {
     "Ebeam=3.2MeV": {"gamma": 4e2, "Ka": 9e2, "Kb": 9e3},
@@ -97,6 +112,7 @@ N_D_irr_SDD_err = {
 
 ## RBS detector efficiency
 epsilon_p = 4.409e-4
+epsilon_p_CTN = 2.91e-4 ## VERIFICAR VALOR CORRETO !!!!
 
 ## Tin 116 atomic weight enrichment
 wA = 0.978
@@ -118,6 +134,9 @@ t_irr_min = {"Ebeam=3.2MeV": 358,
              "Ebeam=5.0MeV": 344,}
 t_irr_err = 1. # minute
 
+t_irr_CTN = 5*60 + 9 # minutes
+t_irr_CTN_err = 1 # min
+
 ## Total number of backscattered protons, Np
 N_p = {"Ebeam=3.2MeV": 8.41e7,
        "Ebeam=3.5MeV": 1.03e8,
@@ -126,11 +145,17 @@ N_p = {"Ebeam=3.2MeV": 8.41e7,
        "Ebeam=4.7MeV": 2.64e7,
        "Ebeam=5.0MeV": 2.64e7,}
 
+N_p_CTN = 2.77e7
+
 ## ---------------- Cross-Section Calculation ---------------- ##
 crossSections_HPGe = {}
 crossSections_HPGe_err = {}
 crossSections_SDD = {}
 crossSections_SDD_err = {}
+crossSections_BEGe = {}
+crossSections_BEGe_err = {}
+crossSections_SDD_CTN = {}
+crossSections_SDD_CTN_err = {}
 
 for i, energy in enumerate(energies):
     key = f"Ebeam={energy:.1f}MeV"
@@ -158,13 +183,14 @@ for i, energy in enumerate(energies):
                 (decayConstant * t_irr / (Np)))
             
             ## Compute error propagation
-            sigma_err = np.sqrt(sigma**2/Np + 
+            sigma_err = np.sqrt((sigma/ruthCrossSection[i]/ruthCrossSection_err[i])**2 +
+                                sigma**2/Np + 
                                 (sigma*ruthCrossSection_err[i]/ruthCrossSection[i])**2 +
                                 (sigma/N_D)**2 * N_D_err**2 + 
                                 ((decayConstant*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
-                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * t_irr_err**2 + 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np))**2 * t_irr_err**2 + 
                                 ((t_irr*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
-                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * decayConstant_err**2)
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np))**2 * decayConstant_err**2)
             
             ## Store the results
             crossSections_HPGe[key][rad_type] = sigma
@@ -201,12 +227,13 @@ for i, energy in enumerate(energies):
                 (decayConstant * t_irr / (Np)))
             
                         ## Compute error propagation
-            sigma_err = np.sqrt(sigma**2/Np + 
+            sigma_err = np.sqrt((sigma/ruthCrossSection[i]/ruthCrossSection_err[i])**2 +
+                                sigma**2/Np + 
                                 (sigma/N_D)**2 * N_D_err**2 + 
                                 ((decayConstant*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
-                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * t_irr_err**2 + 
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np))**2 * t_irr_err**2 + 
                                 ((t_irr*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
-                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np*wA))**2 * decayConstant_err**2)
+                                (4*np.pi * epsilon_p * N_D * ruthCrossSection[i])/(Np))**2 * decayConstant_err**2)
             
             # Store result
             crossSections_SDD[key][rad_type] = sigma
@@ -215,4 +242,45 @@ for i, energy in enumerate(energies):
             print(f"{rad_type}: ({sigma:.2f} +- {sigma_err:.2f}) mb")
     print()
 
-PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err)
+    key = "Ebeam=3.2MeV"
+    print(f"HERE {key}")
+
+    crossSections_SDD_CTN[key] = {}
+    crossSections_SDD_CTN_err[key] = {}
+
+    Np = N_p_CTN
+    t_irr = t_irr_CTN
+    t_irr_err = t_irr_CTN_err
+    epsilon_p = epsilon_p_CTN
+
+    # Compute the decay factor
+    decayFactor = 1 - np.exp(-decayConstant * t_irr)
+    
+    for rad_type, N_D in N_D_irr_SDD_CTN.items():
+
+        ## Get N_D_irr errors
+        N_D_err = N_D_irr_SDD_CTN_err[rad_type]
+
+        ## Cross-Section calculation
+        sigma = (ruthCrossSection_CTN *
+            (4 * np.pi * N_D * epsilon_p) / (decayFactor) *
+            (decayConstant * t_irr / (Np)))
+        
+        ## Compute error propagation
+        sigma_err = np.sqrt((sigma/ruthCrossSection_CTN/ruthCrossSection_CTN_err)**2 +
+                            sigma**2/Np + 
+                            (sigma/N_D)**2 * N_D_err**2 + 
+                            ((decayConstant*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                            (4*np.pi * epsilon_p * N_D * ruthCrossSection_CTN)/(Np))**2 * t_irr_err**2 + 
+                            ((t_irr*np.exp(decayConstant*t_irr)*(-decayConstant*t_irr + np.exp(decayConstant * t_irr) - 1))/(np.exp(decayConstant * t_irr)-1)**2 * 
+                            (4*np.pi * epsilon_p * N_D * ruthCrossSection_CTN)/(Np))**2 * decayConstant_err**2)
+        
+        # Store result
+        crossSections_SDD_CTN[key][rad_type] = sigma
+        crossSections_SDD_CTN_err[key][rad_type] = sigma_err
+
+        print(f"{rad_type}: ({sigma:.2f} +- {sigma_err:.2f}) mb")
+    print()
+
+
+PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err)

@@ -112,12 +112,12 @@ def NpeakBEGe(time, *params, radType):
     """    
 
     ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'gamma': (0.8590, 0.1762), 
-                         'Ka':    (0.6750, 0.1575), 
-                         'Kb':    (0.1419, 0.02842)}
+    efficiency_params = {'gamma': (0.8590, 0.08082), 
+                         'Ka':    (0.6750, 0.08246), 
+                         'Kb':    (0.1419, 0.01817)}
 
     ## Transportation time (in minutes) for each activation energy
-    t_transMin = 22.
+    t_transMin = 22. # minutes
     
     try:
         Ndirr = float(params[0])  # Force conversion to float
@@ -160,22 +160,11 @@ def NpeakSDD(time, *params, radType):
     """    
 
     ## Efficiency and emission probabilities for each energy
-    efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1419, 3.733e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1419, 3.658e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1419, 3.553e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1419, 3.658e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1419, 3.642e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1419, 3.577e-4)}
-    }
+    efficiency_params = {'Ka': (0.6750, 2.842e-3),
+                         'Kb': (0.1419, 3.733e-4)}
 
     ## Transportation time (in minutes) for each activation energy
-    t_transMin_key ={'Ebeam=3.2MeV': 28,
-                     'Ebeam=3.5MeV': 29,
-                     'Ebeam=3.9MeV': 32,
-                     'Ebeam=4.3MeV': 40,
-                     'Ebeam=4.7MeV': 31,
-                     'Ebeam=5.0MeV': 29}
+    t_transMin = 15. # minutes
     
     try:
         Ndirr = float(params[0])  # Force conversion to float
@@ -187,10 +176,9 @@ def NpeakSDD(time, *params, radType):
     ## Get efficiency and emission probability for the given energy and radiation type
     ## and the corresponding trasportation time
     try:
-        eta, epsilonD = efficiency_params[energy_key][radType]
-        t_transMin = t_transMin_key[energy_key]
+        eta, epsilonD = efficiency_params[radType]
     except KeyError:
-        raise ValueError(f"Invalid energy '{energy_key}' or radType '{radType}'. Check input values.")
+        raise ValueError(f"Invalid radType '{radType}'. Check input values.")
 
     ## Constants
     halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
@@ -233,34 +221,6 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakBEGe(t, *p, radType='Kb'), 
                                time, countsKb, p0=init[2][0:2])
-
-    """     ## Calculate the half-life
-    # Gamma line
-    halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
-    halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
-    # Ka line
-    halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
-    halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
-    # Kb line
-    halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
-    halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
-
-    ## Calculate lambda uncertainty
-    # Gamma line
-    lambGamma_uncertainty_minutes = np.sqrt(np.diag(pcovGamma))[1] ## minutes^-1
-    lambGamma_uncertainty_hours = lambGamma_uncertainty_minutes/60 ## hours^-1 
-    # Ka line
-    lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
-    lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
-    # Kb line
-    lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
-    lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
-
-    ## Calculate half-life uncertainty in hours
-    halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)   # Gamma line
-    halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)            # Ka line
-    halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)            # Kb line
-    """
     
     ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
     NdirrGamma, NdirrGamma_err  = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]  # Gamma line
@@ -306,7 +266,7 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
 ## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD) ##
 ## and transportation time (t_trans), for the HPGe detector                             ##
 ## ************************************************************************************ ##
-def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_key):
+def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -325,11 +285,11 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
     countsKb = np.array(countsKb)
 
     ## Fit the data, passing radType explicitly    
-    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka', energy_key=energy_key), 
-                               time, countsKa, p0=init[0][0:2])
+    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka'), 
+                               time, countsKa, p0=init[0:2])
     
-    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb', energy_key=energy_key), 
-                               time, countsKb, p0=init[1][0:2])
+    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb'), 
+                               time, countsKb, p0=init[0:2])
     
     ## Get fit parameters
     NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line
@@ -344,8 +304,8 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
     print()
 
     ## Fit function for plotting
-    fittedKa = NpeakSDD(time, *poptKa, radType='Ka', energy_key=energy_key)
-    fittedKb = NpeakSDD(time, *poptKb, radType='Kb', energy_key=energy_key)
+    fittedKa = NpeakSDD(time, *poptKa, radType='Ka')
+    fittedKb = NpeakSDD(time, *poptKb, radType='Kb')
 
     # Plot the results
     fig, ax = plt.subplots()

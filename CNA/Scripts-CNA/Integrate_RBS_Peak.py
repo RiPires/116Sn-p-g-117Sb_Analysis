@@ -50,7 +50,7 @@ for beam_energy, path in Paths.items():
     valid_rois = rois.get(beam_energy, [])
 
     # Loop over the activation runs
-    for file in os.listdir(path):
+    for file in sorted(os.listdir(path)):
         if file.endswith(".SI2.dat"):
             # Extract the run label (e.g., "2407084" from "2407084.SI2.dat")
             label = file.replace(".SI2.dat", "")

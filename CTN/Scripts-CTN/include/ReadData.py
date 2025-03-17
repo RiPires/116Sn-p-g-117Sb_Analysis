@@ -25,13 +25,15 @@ def MCA2Lists(File):
     ch = []
     y = []
     aux = []
-    for i in range(12, 2060):
+    for i in range(2060):
         aux.append(data[i][0].split())
-    for i in range(len(aux)):
+    ## Get acquisition time
+    time = float(aux[7][2])
+    for i in range(12, len(aux)):
         ch.append(float(i)) ## axes in channel
         y.append(float(aux[i][0]))
 
-    return y, ch
+    return y, ch, time
 
 #######################################################
 #######################################################
@@ -88,9 +90,14 @@ def Read_TANDEM_RBS_Data(data, det):
 
 #######################################################
 #######################################################
-def ReadActivationRBS(data, det):
-    Data_x = []
-    Data_y = []
+def ReadActivationRBS(File, det):
+
+    with open(File, 'r') as file:
+        reader = csv.reader(file, delimiter="\n", skipinitialspace=True)
+        data = list(reader)
+
+    channel = []
+    y = []
     aux = []
 
     if det == 1:
@@ -104,10 +111,10 @@ def ReadActivationRBS(data, det):
             aux.append(data[i][0].split())
 
     for i in range(len(aux)):
-        Data_x.append(float(i)) ## axes in channel
-        Data_y.append(float(aux[i][0]))
+        channel.append(float(i)) ## axes in channel
+        y.append(float(aux[i][0]))
 
-    return Data_x, Data_y
+    return channel, y
 
 #######################################################
 #######################################################

@@ -35,18 +35,10 @@ def PlotLogy(x, y, lab):
 
     return '-------------------'
 
-def PlotRBS(File, Label):
-
-    with open(File, 'r') as file:
-        reader = csv.reader(file, delimiter="\n", skipinitialspace=True)
-        data = list(reader)
-    
-    Data1_x, Data1_y = ReadActivationRBS(data, 1) ## Detector MOV E
-    Data3_x, Data3_y = ReadActivationRBS(data, 4) ## Detector MOV D
+def PlotRBS(ch, y, Label):
     
     fig, ax = plt.subplots()
-    #ax.semilogy(Data1_x,Data1_y,'.',markersize=10, color ='xkcd:black', label=str(Label+' - MOV E'))
-    ax.semilogy(Data3_x,Data3_y,'.-', markersize=10, color ='xkcd:magenta', label=str('Online RBS @ 155$^{\\circ}$'))
+    ax.semilogy(ch, y,'.-', markersize=10, color ='xkcd:magenta', label=str('Online RBS @ 155$^{\\circ}$'))
     ax.vlines(x=530, ymin=2e3, ymax=2e5, colors='red', ls='--', lw=2, label='Sn')
     ax.vlines(x=465, ymin=2e3, ymax=2e4, colors='green', ls=':', lw=2, label='Al')
     ax.vlines(x=420, ymin=2e3, ymax=2e4, colors='blue', ls='-.', lw=2, label='O')
@@ -57,6 +49,7 @@ def PlotRBS(File, Label):
     #xlim(350, 550)
     ylabel('Yield', fontsize=22)
     #ylim(bottom=2e3)
+    title(Label)
     show()
 
     return

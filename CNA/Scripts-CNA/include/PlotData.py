@@ -107,7 +107,7 @@ def PlotRBS(ch, y, lab):
 
     return '-------------------'
 
-def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err):
+def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
     
@@ -193,7 +193,10 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     colorsHPGe = {"gamma": "xkcd:aqua", "Ka": "xkcd:light blue", "Kb": "xkcd:light green"}
     markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^"}
     colorsSDD = {"Ka": "xkcd:blue", "Kb": "xkcd:green"}
+    colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
     markersSDD = {"Ka": ".", "Kb": "v"}
+    markersSDD_CTN = {"Ka": "<", "Kb": ">"}
+
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
     energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
@@ -227,6 +230,17 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     color=colorsSDD[rad_type], 
                     label=rad_type+" SDD")
         
+    ## SDD data CTN
+    for rad_type in ["Ka", "Kb"]:
+        cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
+        sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
+        ax.errorbar([3.2], cross_section_SDD_CTN, 
+                    yerr=sdd_ctn_err,
+                    marker=markersSDD_CTN[rad_type],
+                    linestyle='-.', 
+                    color=colorsSDD_CTN[rad_type], 
+                    label=rad_type+" SDD @ CTN")
+        
     ## Famiano data
     cross_sections_Famiano = [famiano[key] for key in famiano.keys()]
     famiano_errs = [famiano_err[key] for key in famiano_err.keys()]
@@ -247,7 +261,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     harissopulos_errs = [harissopulos_err[key] for key in harissopulos_err.keys()]
     ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
 
-    legend = ax.legend(loc="best",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=4,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("Energy (MeV)", fontsize=22)

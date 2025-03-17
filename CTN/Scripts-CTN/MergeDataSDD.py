@@ -16,4 +16,4 @@ Yield_Ge = Merge(sddDir,"sdd")
 
 ### Plot
 lab = 'SDD data merged'
-PlotLogy(Channel, Yield_Ge, lab)
+Plot(Channel, Yield_Ge, lab)

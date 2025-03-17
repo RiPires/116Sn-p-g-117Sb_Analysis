@@ -102,16 +102,16 @@ def AccumulateGe_BgRemove(gePath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(36)
-    roiUp_Ka = int(39)
+    roiDown_Ka = int(35)
+    roiUp_Ka = int(37)
 
     ## Kb
     roiDown_Kb = int(39)
-    roiUp_Kb = int(42)
+    roiUp_Kb = int(40)
 
     ## gamma
-    roiDown_g = int(161)
-    roiUp_g = int(166)
+    roiDown_g = int(160)
+    roiUp_g = int(165)
 
     ## 511 keV
     roiDown_511 = int()
@@ -145,7 +145,7 @@ def AccumulateGe_BgRemove(gePath):
             accu_511 += y[c]
 
         ## Increment accumulation time and counter
-        accu_t += 15 * 60 # s = 15 minutes
+        accu_t += 15 # minutes
         #print(f"Acumulation time = {accu_t:.0f} min \n")
         counter += 1
 
@@ -188,11 +188,11 @@ def AccumulateSDD(sddPath):
     ## Set ROI for each peak, in channel
     ## Ka
     roiDown_Ka = int(797)
-    roiUp_Ka = int(827)
+    roiUp_Ka = int(826)
 
     ## Kb
     roiDown_Kb = int(908)
-    roiUp_Kb = int(927)
+    roiUp_Kb = int(925)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1
