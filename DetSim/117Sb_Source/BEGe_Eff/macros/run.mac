@@ -10,17 +10,13 @@
 
 ## Set GunParticleSource properties
 /gps/particle ion                       ## particle type: gamma, ion
-/gps/ion 55 137                         ## if ion: Z, A
+/gps/ion 51 117                         ## if ion: Z, A
 /gps/ang/type iso
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/radius 1.5 mm
-/gps/pos/centre 0. 0. -10. mm
-#/gps/ene/mono 200. keV
-
-# Print a summary of particles/regions/cuts
-#/run/dumpCouples
+/gps/pos/radius 0.4 mm
+/detector/setSnThickness 1.220 um
+/detector/setSourcePosition -20. mm
 
 ## Run loop macro or just beamOn
-#/control/loop loop.mac eKin 5 500 50   ## run loop.mac for multiple gamma energies 
 /run/beamOn 1000000                     ## run beamOn NUM for ion or single gamma energy

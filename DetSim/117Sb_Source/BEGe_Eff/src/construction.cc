@@ -1,16 +1,26 @@
 #include "construction.hh"
 #include "G4PhysicalConstants.hh"
 
+void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *generator){
+    fPrimaryGenerator = generator;
+}
 
-MyDetectorConstruction::MyDetectorConstruction()
+MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(-20*mm), 
+                                                   snTargetThickness(1*um),
+                                                   messenger(nullptr)
 {
-    fMessenger = new G4GenericMessenger(this, "/detector/", "DetectorConstruction");
-    
+    // Define materials and other necessary initializations
     DefineMaterial();
+
+    // Initialize the messenger object
+    messenger = new DetectorMessenger(this);
 }
 
 MyDetectorConstruction::~MyDetectorConstruction()
-{}
+{
+    delete messenger;
+    delete setSourcePositionCmd;
+}
 
 void MyDetectorConstruction::DefineMaterial()
 {
@@ -25,9 +35,10 @@ void MyDetectorConstruction::DefineMaterial()
     Epoxy->AddElement(nist->FindOrBuildElement("O"), 5);
     
     //  Elements  //
-    Al = nist->FindOrBuildElement("Al");
     C = nist->FindOrBuildElement("C");
+    Al = nist->FindOrBuildElement("Al");
     Ge = nist->FindOrBuildElement("Ge");
+    Sn = nist->FindOrBuildElement("Sn");
 
     //  Defines world material as Air  //
     worldMat = nist->FindOrBuildMaterial("G4_AIR");
@@ -39,6 +50,9 @@ void MyDetectorConstruction::DefineMaterial()
     //  Defines detector material as Ge  //
     detMat =  new G4Material("Germanium", 5.323*g/cm3, 1);
     detMat->AddElement(Ge, 1.);
+
+    targetMat = new G4Material("Tin", 7.31*g/cm3, 1);
+    targetMat->AddElement(Sn, 1);
     
 }
 ///OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO///
@@ -51,6 +65,14 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); 
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "LogicWorld");
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "PhysWorld", 0, false, 0, true);
+    
+    // Defines Sn target
+    G4double Rout_SnTarget = 5 * mm;
+    G4double thickSnTarget = snTargetThickness;
+    G4ThreeVector targetPosition(0., 0., sourcePosition); // the source is in the middle of the target
+    solidSnTarget = new G4Tubs("solidSnTarget", 0., Rout_SnTarget, thickSnTarget/2, 0., 2*pi);
+    logicSnTarget = new G4LogicalVolume(solidSnTarget, targetMat, "LogicSnTarget");
+    physSnTarget = new G4PVPlacement(0, targetPosition, logicSnTarget, "PhysSnTarget", logicWorld, false, 0., true); 
     
     //  Defines Case volume for detector active volume  ///
     G4double Rin_Case = 41.*mm;
@@ -83,4 +105,35 @@ void MyDetectorConstruction::ConstructSDandField()
 {
     MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
     logicDetector->SetSensitiveDetector(sensDet); 
+}
+
+// Method to set the source position
+void MyDetectorConstruction::SetSourcePosition(G4double position)
+{
+    sourcePosition = position;  // Update the source position
+
+    // Update the GPS source position (via the General Particle Source)
+    G4UImanager::GetUIpointer()->ApplyCommand("/gps/pos/centre 0. 0. " + std::to_string(sourcePosition) + " mm");
+
+    // Update Mylar position based on the source position (75 um behind)
+    if (physSnTarget) {
+        G4ThreeVector newTargetPosition(0., 0., sourcePosition);  // in the middle of the target
+        physSnTarget->SetTranslation(newTargetPosition);  // Move the Mylar volume
+    }
+
+    // Notify Geant4 that the geometry has been modified
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+// Method to set the Sn target thickness
+void MyDetectorConstruction::SetSnThickness(G4double thickness)
+{
+    snTargetThickness = thickness;
+
+    if (physSnTarget) {
+        solidSnTarget->SetZHalfLength(snTargetThickness/2.0);
+        G4cout << "Sn target thickness updated to: " << snTargetThickness / um << " um" << G4endl;        
+    }
+
+    G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
