@@ -35,9 +35,3 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
         detector->SetSnThickness(newThick);  // Update the Sn target thickness
     }
 }
-
-
-
-
-
-

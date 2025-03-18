@@ -304,12 +304,12 @@ def NpeakSDD(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1419, 3.733e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1419, 3.658e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1419, 3.553e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1419, 3.658e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1419, 3.642e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1419, 3.577e-4)}
+    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1507, 3.733e-4)},
+    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1507, 3.658e-4)},
+    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1507, 3.553e-4)},
+    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1507, 3.658e-4)},
+    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1507, 3.642e-4)},
+    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1507, 3.577e-4)}
     }
 
     ## Transportation time (in minutes) for each activation energy
@@ -652,6 +652,7 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.3e}")
     print()
 
     ## Fit function for plotting

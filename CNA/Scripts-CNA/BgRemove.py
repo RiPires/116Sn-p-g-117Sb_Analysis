@@ -20,23 +20,25 @@ def RemoveBg(dataFile):
     print('Removing background from file: ', dataFile)
 
     ## Check detector HPGe or SDD from file name
-    if "HPGe" in dataFile:        
+    if "HPGe" in dataFile:     
+        ch = [(i+1) for i in range(4096)]   
         calibYield, _, acquiTime = Ge2Lists(dataFile)
         ## Background runs path
         bgPath = '../Calibrations/HPGe/Background/'
         ## Merge background yield
-        mergeBgYield = Merge(bgPath, 'ge')
+        mergeBgYield = Merge(bgPath, 'ge')[0]
         ## Background acquisition time
         bgTime = 35*1800 + 777 ## seconds: 35 full runs * 1800 sec each + 777 sec last run
 
     elif "SDD" in dataFile:
+        ch = [(i+1) for i in range(2048)]
         calibYield, _, acquiTime = MCA2Lists(dataFile)
         ## Background runs path
         bgPath = '../Calibrations/SDD/Background/'
         ## Merge background yield
-        mergeBgYield = Merge(bgPath, 'sdd')
-        ## Background acquisition time
-        bgTime = 45954 ## seconds
+        mergeBgYield, bgTime = Merge(bgPath, 'sdd')
+
+    print(f"Time = {bgTime:.0f}")
         
     ## Converts data counts to count rate (in s^-1)
     calibRate = [calibYield[i]/acquiTime for i in range(len(calibYield))]
@@ -44,10 +46,6 @@ def RemoveBg(dataFile):
     bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
     ## Remove background rate from file 
     calibRateBgRem = [(calibRate[i] - bgRate[i]) for i in range(len(calibRate))]
-
-    ## Set Energy axes
-    ch_hpge = [(i+1) for i in range(4096)]
-    ch_sdd = [(i+1) for i in range(2048)]
 
     ## Set label
     lab = dataFile[-63:-51] + ': ' + dataFile[-26:-4]
@@ -58,7 +56,7 @@ def RemoveBg(dataFile):
     ## Background rate
 
     ## Plot both calib, bg rate and calib with bg removed 
-    Plot3RateLogy(ch_hpge, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
+    Plot3RateLogy(ch, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
 
     ## Save calibration rate with background removed values to file 
     """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
@@ -93,10 +91,10 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/',]
 
 ## For specific data file
-filePath = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/116Sn-C3_Decay_HPGe-089.mca'
+filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_084.mca'
 RemoveBg(filePath)
-
+ 
 ## For each path, remove background for every data file
-for path in gePaths:
-    for file in os.listdir(path):
+for path in sddPaths:
+    for file in sorted(os.listdir(path)):
         RemoveBg(str(path+file))

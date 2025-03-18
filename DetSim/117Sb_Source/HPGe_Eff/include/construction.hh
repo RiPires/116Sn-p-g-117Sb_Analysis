@@ -41,8 +41,7 @@ public:
     
 private:
     
-    G4double sourcePosition;
-    G4double snTargetThickness;
+    G4double sourcePosition, snTargetThickness;
     G4Box *solidWorld;
     G4Tubs *solidHole, *solidGe, *solidWindow, *solidMylar, *solidSnTarget, *solidCase;
     G4LogicalVolume *logicWorld, *logicWindow, *logicMylar, *logicSnTarget, *logicDetector, *logicCase;
@@ -62,6 +61,3 @@ private:
 };
 
 #endif
-
-
-

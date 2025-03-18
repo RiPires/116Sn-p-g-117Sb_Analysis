@@ -10,12 +10,12 @@ from include.Fits import *
 ## -------------------------- ##
 
 ## Paths for different energy decays
-sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/',
-            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/',
-            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/',
-            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/',
-            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/',
-            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/',]
+sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved/SDD/',]
 
 ## Define initial guess N_Dirr for each beam energy
 ##                  [[ Ka  ], [ Kb  ]] 
@@ -40,7 +40,7 @@ for files in sddPaths:
         initParamsNpeak = initParamsDict[energy_key]  # Get the correct values
 
     ## Extract data from file
-    accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_time = AccumulateSDD(files)
+    accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_time = AccumulateSDD_BgRemoved(files)
 
     ## Fit the data for Npeak
     FitNpeakSDD(NpeakSDD,   accu_time, accu_Ka, accu_Ka_err, 

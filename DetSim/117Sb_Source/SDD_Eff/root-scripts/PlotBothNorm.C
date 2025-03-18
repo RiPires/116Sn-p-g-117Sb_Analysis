@@ -96,7 +96,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
 
     // Read the file and skip the first 12 lines
     std::string line;
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 0; i++) {
         std::getline(infile, line);
     }
 
@@ -158,9 +158,10 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
 }
 
 void Run(){
-    PlotBothNorm("../data-files_SDD/output_Run11_152Eu_16mm.root", "../data-files_SDD/Run11_152Eu_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run12_137Cs_16mm.root", "../data-files_SDD/Run12_137Cs_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run13_133Ba_16mm.root", "../data-files_SDD/Run13_133Ba_detSDD_16mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run14_152Eu_2mm.root", "../data-files_SDD/Run14_152Eu_detSDD_2mm.mca");
-    PlotBothNorm("../data-files_SDD/output_Run15_133Ba_2mm.root", "../data-files_SDD/Run15_133Ba_detSDD_2mm.mca");
+    PlotBothNorm("../data-files_SDD/output_Ebeam32.root","../data-files_SDD/Ebeam=3.2MeV_116Sn-C3_Decay_SDD_Merged.txt");
+    PlotBothNorm("../data-files_SDD/output_Ebeam35.root","../data-files_SDD/Ebeam=3.5MeV_116Sn-C10_Decay_SDD_Merged.txt");
+    PlotBothNorm("../data-files_SDD/output_Ebeam39.root","../data-files_SDD/Ebeam=3.9MeV_116Sn-D4_Decay_SDD_Merged.txt");
+    PlotBothNorm("../data-files_SDD/output_Ebeam43.root","../data-files_SDD/Ebeam=4.3MeV_116Sn-G1_Decay_SDD_Merged.txt");
+    PlotBothNorm("../data-files_SDD/output_Ebeam47.root","../data-files_SDD/Ebeam=4.7MeV_116Sn-D8_Decay_SDD_Merged.txt");
+    PlotBothNorm("../data-files_SDD/output_Ebeam50.root","../data-files_SDD/Ebeam=5.0MeV_116Sn-D5_Decay_SDD_Merged.txt");
 }

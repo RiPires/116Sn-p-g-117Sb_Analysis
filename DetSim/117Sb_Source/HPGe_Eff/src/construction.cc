@@ -5,7 +5,9 @@ void MyDetectorConstruction::RegisterPrimaryGenerator(MyPrimaryGenerator *genera
     fPrimaryGenerator = generator;
 }
 
-MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(-50 * mm), snTargetThickness(1*um), messenger(nullptr)
+MyDetectorConstruction::MyDetectorConstruction() : sourcePosition(-50 * mm), 
+                                                   snTargetThickness(1*um), 
+                                                   messenger(nullptr)
 {   
     // Define materials and other necessary initializations
     DefineMaterial();
@@ -74,7 +76,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double thickSnTarget = snTargetThickness;
     G4ThreeVector targetPosition(0., 0., sourcePosition); // the source is in the middle of the target
     solidSnTarget = new G4Tubs("solidSnTarget", 0., Rout_SnTarget, thickSnTarget/2, 0., 2*pi);
-    logicSnTarget = new G4LogicalVolume(solidSnTarget, mylar, "LogicSnTarget");
+    logicSnTarget = new G4LogicalVolume(solidSnTarget, targetMat, "LogicSnTarget");
     physSnTarget = new G4PVPlacement(0, targetPosition, logicSnTarget, "PhysSnTarget", logicWorld, false, 0., true); 
 
     //  Defines cylinder for Ge crystal hole  //

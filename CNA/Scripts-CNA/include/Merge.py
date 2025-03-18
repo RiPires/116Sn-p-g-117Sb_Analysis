@@ -18,7 +18,7 @@ def Merge(dir, det):
             array of merged yield
     """
     
-    ## check which detector is being used
+    ## Check which detector is being used
     if det == 'ge':
         nrCh = int(4096)
     elif det == 'sdd':
@@ -26,18 +26,23 @@ def Merge(dir, det):
     else:
         print('Detector not recognized')
     
-    ## set up array of zeros for merge yield depending on the detector
+    ## Set up array of zeros for merge yield depending on the detector
     mergeYield = [0 for i in range(nrCh)]
+    totTime_sec = 0.
 
-    ## loop over the datafiles and merge yield
+    ## Loop over the data files and merge yield
     for file in os.listdir(dir):
+
         if det == 'ge':
             y = Ge2Lists(str(dir+file))[0]
-        elif det == 'sdd':
-            y = MCA2Lists(str(dir+file))[0]
-        mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
 
-    return mergeYield
+        elif det == 'sdd':
+            y, _, runTime = MCA2Lists(str(dir+file))
+
+        mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
+        totTime_sec += runTime # seconds
+
+    return mergeYield, totTime_sec
 
 def MergeAndRate(dir, totTime):
     """

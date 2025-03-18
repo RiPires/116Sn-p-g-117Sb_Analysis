@@ -211,8 +211,13 @@ def AccumulateSDD(sddPath):
 
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
-            accu_Kb += y[c]
-            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
+
+            if y[c] <= 1:
+                accu_Kb += 0
+                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
+            else:
+                accu_Kb += y[c]
+                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
         ## Increment accumulation time and counter
         accu_t += live_time/60 # minutes

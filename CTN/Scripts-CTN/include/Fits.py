@@ -160,8 +160,8 @@ def NpeakSDD(time, *params, radType):
     """    
 
     ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'Ka': (0.6750, 2.842e-3),
-                         'Kb': (0.1419, 3.733e-4)}
+    efficiency_params = {'Ka': (0.6750, 3.598e-3),
+                         'Kb': (0.1507, 4.290e-4)}
 
     ## Transportation time (in minutes) for each activation energy
     t_transMin = 15. # minutes
@@ -286,10 +286,10 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab):
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka'), 
-                               time, countsKa, p0=init[0:2])
+                               time, countsKa, p0=init[0:2], sigma=errKa, absolute_sigma=True)
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb'), 
-                               time, countsKb, p0=init[0:2])
+                               time, countsKb, p0=init[0:2], sigma=errKb, absolute_sigma=True)
     
     ## Get fit parameters
     NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line

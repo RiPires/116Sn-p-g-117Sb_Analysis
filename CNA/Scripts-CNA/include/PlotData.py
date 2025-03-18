@@ -67,9 +67,9 @@ def PlotBothRateLogy(x, y1, y2, lab1, lab2):
 def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 
     fig, ax = plt.subplots()
-    ax.semilogy(x, y1, '^-', color='k', label=lab1)
-    ax.semilogy(x, y2, '*-', color='b', label=lab2)
-    ax.semilogy(x, y3, '+-', color='r', label=lab3)
+    ax.plot(x, y1, '^-', color='k', label=lab1)
+    ax.plot(x, y2, '*-', color='b', label=lab2)
+    ax.plot(x, y3, '+-', color='r', label=lab3)
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
@@ -208,7 +208,8 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     # Loop over each radiation type to plot separately
     fig, ax = plt.subplots()
     ax.set_yscale("log")
-    ## HPGe data
+
+    ## HPGe at CNA data
     for rad_type in ["gamma", "Ka", "Kb"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
@@ -218,8 +219,8 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     linestyle='--', 
                     linewidth=2,
                     color=colorsHPGe[rad_type], 
-                    label=rad_type+" HPGe")
-    ## SDD data
+                    label=rad_type+" HPGe @ CNA")
+    ## SDD at CNA data
     for rad_type in ["Ka", "Kb"]:
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
         sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
@@ -228,28 +229,28 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     marker=markersSDD[rad_type],
                     linestyle='-.', 
                     color=colorsSDD[rad_type], 
-                    label=rad_type+" SDD")
+                    label=rad_type+" SDD @ CNA")
         
-    ## SDD data CTN
+    ## SDD at CTN data
     for rad_type in ["Ka", "Kb"]:
         cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
         sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
-        ax.errorbar([3.2], cross_section_SDD_CTN, 
+        ax.errorbar([3.215], cross_section_SDD_CTN, 
                     yerr=sdd_ctn_err,
                     marker=markersSDD_CTN[rad_type],
-                    linestyle='-.', 
+                    linestyle='', 
                     color=colorsSDD_CTN[rad_type], 
                     label=rad_type+" SDD @ CTN")
         
     ## Famiano data
     cross_sections_Famiano = [famiano[key] for key in famiano.keys()]
     famiano_errs = [famiano_err[key] for key in famiano_err.keys()]
-    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, marker='2', linestyle='', color="xkcd:magenta", label="Famiano 2008")
+    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
 
     ## Ozkan data
     cross_sections_Ozkan = [ozkan[key] for key in ozkan.keys()]
     ozkan_errs = [ozkan_err[key] for key in ozkan_err.keys()]
-    ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, marker='3', linestyle='', color="xkcd:lilac", label="Ozkan 2002")
+    ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label="Ozkan 2002")
 
     ## Xarepe data
     cross_sections_Xarepe = [xarepe[key] for key in xarepe.keys()]
@@ -261,11 +262,21 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     harissopulos_errs = [harissopulos_err[key] for key in harissopulos_err.keys()]
     ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
 
-    legend = ax.legend(loc="best",ncol=4,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    handles,labels = ax.get_legend_handles_labels()
+
+    handles = [handles[0], handles[10], handles[9], handles[1],
+                handles[2], handles[7], handles[3], handles[4],
+                handles[8], handles[5], handles[6]]
+    labels = [labels[0], labels[10], labels[9], labels[1], 
+              labels[2], labels[7], labels[3], labels[4], 
+              labels[8], labels[5], labels[6]]
+
+    legend = ax.legend(handles, labels, loc="best",ncol=4,shadow=False,fancybox=True,framealpha = 0.0,fontsize=16)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("Energy (MeV)", fontsize=22)
     ylabel("Cross-Section (mb)", fontsize=22)
+    ylim(0, 1e3)
     title("Relative Method", fontsize=22)
     show()
 

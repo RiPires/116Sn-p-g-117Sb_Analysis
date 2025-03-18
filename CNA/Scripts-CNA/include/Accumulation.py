@@ -189,12 +189,12 @@ def AccumulateSDD(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(797)
-    roiUp_Ka = int(827)
+    roiDown_Ka = int(802)
+    roiUp_Ka = int(822)
 
     ## Kb
-    roiDown_Kb = int(908)
-    roiUp_Kb = int(927)
+    roiDown_Kb = int(911)
+    roiUp_Kb = int(925)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1
@@ -248,9 +248,12 @@ def AccumulateSDD_BgRemoved(sddPath):
     accu_t = 0.
 
     ## Set empty lists to store accumulation points and time
-    Accu_Ka = []
-    Accu_Kb = []
+    Accu_Ka = [0]
+    Accu_Kb = [0]
     Accu_t = []
+
+    Accu_Ka_err, Accu_Kb_err = [0], [0]
+    counter = 1
 
     ## Set ROI for each peak, in channel
     ## Ka
@@ -262,19 +265,39 @@ def AccumulateSDD_BgRemoved(sddPath):
     roiUp_Kb = int(925)
 
     ## Loop over Ge data
-    for file in os.listdir(sddPath):
+    for file in sorted(os.listdir(sddPath)):
+
         y = MCA2ListsBgRm(str(sddPath+file))[0]
+        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
+
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
-            accu_Ka += y[c]
+            if y[c] <= 1:
+                accu_Ka += 0
+                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
+            else:
+                accu_Ka += y[c]
+                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
+
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
-            accu_Kb += y[c]
+            if y[c] <= 1:
+                accu_Kb += 0
+                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
+            else:
+                accu_Kb += y[c]
+                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
+
         ## Increment time
-        accu_t += 30 # minutes
+        accu_t += live_time/60 # minutes
+        #print(f"Accumulation time = {accu_t:.0f} min \n")
+        counter += 1
+
         ## Save integral at this point
         Accu_Ka.append(accu_Ka)
+        Accu_Ka_err.append(accu_Ka_err)
         Accu_Kb.append(accu_Kb)
+        Accu_Kb_err.append(accu_Kb_err)
         Accu_t.append(accu_t)
 
-    return Accu_Ka, Accu_Kb, Accu_t
+    return Accu_Ka[1:], Accu_Ka_err[1:], Accu_Kb[1:], Accu_Kb_err[1:], Accu_t

@@ -24,13 +24,17 @@ def MCA2Lists(File):
     with open(File, 'r', encoding='iso8859-4') as file:
         reader = csv.reader(file, delimiter="\n", skipinitialspace=True)
         data = list(reader)
+
     ch = []
     y = []
     aux = []
+
     for i in range(2060):
         aux.append(data[i][0].split())
+
     ## Acquisition time    
-    time = float(aux[7][2])
+    time = float(aux[7][2]) # seconds
+    
     for i in range(12, len(aux)):
         ch.append(float(i)) ## axes in channel
         y.append(float(aux[i][0]))
