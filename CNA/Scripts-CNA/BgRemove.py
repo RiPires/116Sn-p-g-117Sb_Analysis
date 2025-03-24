@@ -38,36 +38,34 @@ def RemoveBg(dataFile):
         ## Merge background yield
         mergeBgYield, bgTime = Merge(bgPath, 'sdd')
 
-    print(f"Time = {bgTime:.0f}")
+    #print(f"Background Live Time = {bgTime:.0f}")
         
     ## Converts data counts to count rate (in s^-1)
     calibRate = [calibYield[i]/acquiTime for i in range(len(calibYield))]
+
     ## Converts background counts to background count rate (in s^-1)
     bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
-    ## Remove background rate from file 
+
+    ## Remove background rate from run data 
     calibRateBgRem = [(calibRate[i] - bgRate[i]) for i in range(len(calibRate))]
 
-    ## Set label
+    ## Set data label
     lab = dataFile[-63:-51] + ': ' + dataFile[-26:-4]
-    ## Set label
+    ## Set background label
     bgLab = 'Background Rate'
-    ## Set label
+    ## Set data-bakcground label
     rateLab = lab +'_BG removed'
-    ## Background rate
 
     ## Plot both calib, bg rate and calib with bg removed 
-    Plot3RateLogy(ch, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
+    #Plot3RateLogy(ch, calibRate, bgRate, calibRateBgRem, lab, bgLab, rateLab)
 
     ## Save calibration rate with background removed values to file 
-    """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
+    with open(dataFile.replace(".mca","_BgRemoved_LiveTime.mca"), 'w') as outFile:
         counts = 0
         for rate in calibRateBgRem:
-            if rate <= 0:
-                outFile.write(f"{counts:.0f}\n")
-            elif rate > 0:
-                counts = int(rate * acquiTime)      ## convert count rate back to counts
-                outFile.write(f"{counts:.0f}\n")
-    outFile.close() """
+            counts = int(rate * acquiTime)      ## convert count rate back to counts
+            outFile.write(f"{counts:.0f}\n")
+    outFile.close()
 
     return
 
@@ -77,11 +75,11 @@ def RemoveBg(dataFile):
 
 ## Choose paths for data files
 sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/',
-           '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/',]
+            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_SDD/',
+            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/',]
 
 gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_HPGe/',
@@ -91,8 +89,8 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/',]
 
 ## For specific data file
-filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_084.mca'
-RemoveBg(filePath)
+#filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_084.mca'
+#RemoveBg(filePath)
  
 ## For each path, remove background for every data file
 for path in sddPaths:

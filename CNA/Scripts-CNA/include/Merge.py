@@ -25,9 +25,11 @@ def Merge(dir, det):
         nrCh = int(2048)
     else:
         print('Detector not recognized')
+        det = input("Select detector (type 'ge' or 'sdd'): ")
     
-    ## Set up array of zeros for merge yield depending on the detector
+    ## Set up array of zeros to merge yield depending on the detector
     mergeYield = [0 for i in range(nrCh)]
+    ## Set total accumulation time in seconds as zero
     totTime_sec = 0.
 
     ## Loop over the data files and merge yield
@@ -39,7 +41,9 @@ def Merge(dir, det):
         elif det == 'sdd':
             y, _, runTime = MCA2Lists(str(dir+file))
 
+        ## Accumulate the yield, channel by channel
         mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
+        ## Add the run live time to the total accumulation time
         totTime_sec += runTime # seconds
 
     return mergeYield, totTime_sec

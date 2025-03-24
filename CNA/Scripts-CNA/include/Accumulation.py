@@ -257,36 +257,28 @@ def AccumulateSDD_BgRemoved(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(802)
-    roiUp_Ka = int(822)
+    roiDown_Ka = int(793)
+    roiUp_Ka = int(830)
 
     ## Kb
-    roiDown_Kb = int(911)
-    roiUp_Kb = int(925)
+    roiDown_Kb = int(903)
+    roiUp_Kb = int(947)
 
     ## Loop over Ge data
     for file in sorted(os.listdir(sddPath)):
 
         y = MCA2ListsBgRm(str(sddPath+file))[0]
-        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
+        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/","DataFiles_SDD/").replace("_BgRemoved_LiveTime.mca",".mca"))[2]
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
-            if y[c] <= 0:
-                accu_Ka += 0
-                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
-            else:
-                accu_Ka += y[c]
-                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
+            accu_Ka += y[c]
+            accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
 
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
-            if y[c] <= 0:
-                accu_Kb += 0
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
-            else:
-                accu_Kb += y[c]
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
+            accu_Kb += y[c]
+            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
 
         ## Increment time
         accu_t += live_time/60 # minutes

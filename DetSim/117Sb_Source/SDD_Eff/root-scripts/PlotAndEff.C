@@ -50,8 +50,8 @@ void PlotAndEff(const char* filename){
         int binMinKa = hist1->FindBin(0.0246);
         int binMaxKa = hist1->FindBin(0.0253);
         // Kb
-        int binMinKb = hist1->FindBin(0.0281);
-        int binMaxKb = hist1->FindBin(0.0288);
+        int binMinKb = hist1->FindBin(0.0283);
+        int binMaxKb = hist1->FindBin(0.0292);
 
     // Calculate the area under each photopeak
         double area_Ka = hist1->Integral(binMinKa, binMaxKa);

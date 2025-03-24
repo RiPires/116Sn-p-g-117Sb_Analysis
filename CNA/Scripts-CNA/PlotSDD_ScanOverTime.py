@@ -13,7 +13,7 @@ import itertools
 def PlotAll():
 
     ch = [(i+1) for i in range(2048)]
-    path = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/'
+    path = '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved_LiveTime/'
     
     nr_colors = len(os.listdir(path))
     colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
@@ -25,7 +25,7 @@ def PlotAll():
     fig, ax= plt.subplots()
     #ax.set_yscale("log")
     for file in sorted(os.listdir(path)):
-        y = MCA2Lists(path+file)[0]
+        y = MCA2ListsBgRm(path+file)[0]
         ax.plot(ch, y, linestyle=":", marker=next(markers), color =colors[counter], label=file.replace(".mca","").replace("116Sn-C3_Decay_SDD","Run"))
         counter+=1
     #legend = ax.legend(loc="upper right",ncol=3, shadow=False,fancybox=True,framealpha = 0.0,fontsize=10)

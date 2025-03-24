@@ -304,25 +304,25 @@ def NpeakSDD(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 3.842e-3), 'Kb': (0.1507, 4.733e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 3.851e-3), 'Kb': (0.1507, 4.658e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 3.844e-3), 'Kb': (0.1507, 4.553e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 3.850e-3), 'Kb': (0.1507, 4.658e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 3.846e-3), 'Kb': (0.1507, 4.642e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 3.820e-3), 'Kb': (0.1507, 4.577e-4)}
+    'Ebeam=3.2MeV': {'Ka': (0.6750, 3.842e-3), 'Kb': (0.17155, 5.733e-4)},
+    'Ebeam=3.5MeV': {'Ka': (0.6750, 3.851e-3), 'Kb': (0.17155, 5.658e-4)},
+    'Ebeam=3.9MeV': {'Ka': (0.6750, 3.844e-3), 'Kb': (0.17155, 5.553e-4)},
+    'Ebeam=4.3MeV': {'Ka': (0.6750, 3.850e-3), 'Kb': (0.17155, 5.658e-4)},
+    'Ebeam=4.7MeV': {'Ka': (0.6750, 3.846e-3), 'Kb': (0.17155, 5.642e-4)},
+    'Ebeam=5.0MeV': {'Ka': (0.6750, 3.820e-3), 'Kb': (0.17155, 5.577e-4)}
     }
 
     ## Transportation time (in minutes) for each activation energy
-    t_transMin_key ={'Ebeam=3.2MeV': 28,
-                     'Ebeam=3.5MeV': 29,
-                     'Ebeam=3.9MeV': 32,
-                     'Ebeam=4.3MeV': 40,
-                     'Ebeam=4.7MeV': 31,
-                     'Ebeam=5.0MeV': 29}
+    t_transMin_key ={'Ebeam=3.2MeV': 27,
+                     'Ebeam=3.5MeV': 28,
+                     'Ebeam=3.9MeV': 31,
+                     'Ebeam=4.3MeV': 39,
+                     'Ebeam=4.7MeV': 30,
+                     'Ebeam=5.0MeV': 28}
     
     ## Get initial parameters to be fitted
     try:
-        Ndirr, bgRate = float(params[0]),float(params[1])  # Force conversion to float
+        Ndirr, bgRate, alfa = float(params[0]),float(params[1]), float(params[2]) # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, bgRate but got {params[0]} (type: {type(params[0])}), and {params[1]} (type: {type(params[1])})")
 
@@ -343,7 +343,7 @@ def NpeakSDD(time, *params, radType, energy_key):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + alfa * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
@@ -640,28 +640,46 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka', energy_key=energy_key), 
-                               time, countsKa, p0=init[0][0:3])
+                               time, countsKa, p0=init[0][0:4])
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb', energy_key=energy_key), 
-                               time, countsKb, p0=init[1][0:3])
+                               time, countsKb, p0=init[1][0:4])
     
     ## Get fit parameters
     # Ka line
     NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0]
     bgRateKa, bgRateKa_err = poptKa[1], np.sqrt(np.diag(pcovKa))[1]
+    alfaKa, alfaKa_err = poptKa[2], np.sqrt(np.diag(pcovKa))[2]
+    #lambda_decayKa, lambda_decayKa_err = poptKa[2], np.sqrt(np.diag(pcovKa))[2]
+
     # Kb line
     NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
     bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1]
+    #lambda_decayKb, lambda_decayKb_err = poptKb[2], np.sqrt(np.diag(pcovKb))[2]
+    alfaKb, alfaKb_err = poptKb[2], np.sqrt(np.diag(pcovKb))[2]
 
+    ## Calculate fitted half-live
+    ## Ka fit
+    #half_liveKa_min = np.log(2)/lambda_decayKa ## minutes
+    #half_liveKa_hour = half_liveKa_min/60      ## hours 
+    #half_liveKa_hour_err = np.log(2)* lambda_decayKa_err*60 / (lambda_decayKa*60)**2
+    ## Kb fit
+    #half_liveKb_min = np.log(2)/lambda_decayKb ## minutes
+    #half_liveKb_hour = half_liveKb_min/60      ## hours 
+    #half_liveKb_hour_err = np.log(2)* lambda_decayKb_err*60 / (lambda_decayKb*60)**2
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
     print(f"\t \t bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/30 min")
+    print(f"Emission yield = {alfaKa:.3f}+-{alfaKa_err:.3f}")
+    #print(f"half-live = ({half_liveKa_hour:.3f}+-{half_liveKa_hour_err:.3f}) hours")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
     print(f"\t \t bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/30 min")
-    print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.3e}")
+    print(f"Emission yield = {alfaKb:.3f}+-{alfaKb_err:.3f}")
+    #print(f"half-live = ({half_liveKb_hour:.3f}+-{half_liveKb_hour_err:.3f}) hours")
+    print(f"Kb/Ka ratio = \t {(NdirrKb/NdirrKa):.2f}")
     print()
 
     ## Fit function for plotting
@@ -678,7 +696,7 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel("Time (minutes)", fontsize=22)
+    xlabel("Acquisition Time (minutes)", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
     title("Accumulation Fit Npeak: "+lab, fontsize=24)
     show()

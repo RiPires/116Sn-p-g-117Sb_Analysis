@@ -10,22 +10,22 @@ from include.Fits import *
 ## -------------------------- ##
 
 ## Paths for different energy decays
-sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/SDD/',
-            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/SDD/',
-            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved/SDD/',
-            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved/SDD/',
-            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/SDD/',
-            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved/SDD/',]
+sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',
+            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',
+            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',
+            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',
+            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',
+            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved_LiveTime/',]
 
 ## Define initial guess N_Dirr for each beam energy
-##                  [[Ka, bgRate], [Kb, bgRate]] 
+##                  [[Ka, bgRate, alfa], [Kb, bgRate, alfa]] 
 initParamsDict = {
-    'Ebeam=3.2MeV': [[2.0e6, 1.], [2.5e6, 1.]],  # Example values for 3.2 MeV
-    'Ebeam=3.5MeV': [[2.2e6, 1.], [2.5e6, 1.]],  # Example values for 3.5 MeV
-    'Ebeam=3.9MeV': [[3.0e6, 1.], [6.0e6, 1.]],  # Example values for 3.9 MeV
-    'Ebeam=4.3MeV': [[5.0e6, 1.], [1.0e6, 1.]],  # Example values for 4.3 MeV
-    'Ebeam=4.7MeV': [[1.0e7, 1.], [2.0e7, 1.]],  # Example values for 4.7 MeV
-    'Ebeam=5.0MeV': [[2.0e7, 1.], [4.0e7, 1.]],  # Example values for 5.0 MeV
+    'Ebeam=3.2MeV': [[2.0e6, 0.1, 0.65], [2.5e6, 0.1, 0.2]],  # Example values for 3.2 MeV
+    'Ebeam=3.5MeV': [[2.2e6, 0.1, 0.65], [2.5e6, 0.1, 0.2]],  # Example values for 3.5 MeV
+    'Ebeam=3.9MeV': [[3.0e6, 0.1, 0.65], [6.0e6, 0.1, 0.2]],  # Example values for 3.9 MeV
+    'Ebeam=4.3MeV': [[5.0e6, 0.1, 0.65], [1.0e6, 0.1, 0.2]],  # Example values for 4.3 MeV
+    'Ebeam=4.7MeV': [[1.0e7, 0.1, 0.65], [2.0e7, 0.1, 0.2]],  # Example values for 4.7 MeV
+    'Ebeam=5.0MeV': [[2.0e7, 0.1, 0.65], [4.0e7, 1., 0.2]],  # Example values for 5.0 MeV
 }
 
 ## Loop over different activation energies
