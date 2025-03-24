@@ -97,7 +97,7 @@ def PlotI(t, i, lab):
 def PlotRBS(ch, y, lab):
 
     fig, ax = plt.subplots()
-    ax.semilogy(ch, y,'+-', color ='xkcd:black', label=str(lab))
+    ax.plot(ch, y,'+-', color ='xkcd:black', label=str(lab))
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
@@ -141,11 +141,13 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                   "Ebeam=3.9MeV": 0.2200,
                   "Ebeam=4.2MeV": 0.2700}
     
-    xarepe = {  "Ebeam=3.29MeV": 0.21,
-                "Ebeam=3.66MeV": 0.7}
+    xarepe = {  "Ebeam=2.80MeV": 0.023,  ## Paper values, that are different from the thesis
+                "Ebeam=3.29MeV": 0.15,
+                "Ebeam=3.66MeV": 0.51}
 
-    xarepe_err = {  "Ebeam=3.29MeV": 0.02,
-                    "Ebeam=3.66MeV": 0.1}
+    xarepe_err = {  "Ebeam=2.80MeV": 0.005,
+                    "Ebeam=3.29MeV": 0.005,
+                    "Ebeam=3.66MeV": 0.03}
     
     harissopulos = {"Ebeam=2.30MeV": 0.00195,
                     "Ebeam=2.50MeV": 0.0067,
@@ -197,20 +199,25 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     markersSDD = {"Ka": ".", "Kb": "v"}
     markersSDD_CTN = {"Ka": "<", "Kb": ">"}
 
-
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
     energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
     eFamiano = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in famiano.keys()])
     eOzkan = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in ozkan.keys()])
     eXarepe = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in xarepe.keys()])
     eHarissopulos = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in harissopulos.keys()])
-
+    
     # Loop over each radiation type to plot separately
     fig, ax = plt.subplots()
     ax.set_yscale("log")
 
     ## HPGe at CNA data
     for rad_type in ["gamma", "Ka", "Kb"]:
+        if rad_type == "gamma":
+            lab = "$\\gamma$"
+        elif rad_type == "Ka":
+            lab = "$K_{\\alpha}$"
+        elif rad_type == "Kb":
+            lab = "$K_{\\beta}$"
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
         ax.errorbar(energies, cross_section_values_HPGe,
@@ -219,9 +226,13 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     linestyle='--', 
                     linewidth=2,
                     color=colorsHPGe[rad_type], 
-                    label=rad_type+" HPGe @ CNA")
+                    label=lab+" - HPGe @ CNA")
     ## SDD at CNA data
     for rad_type in ["Ka", "Kb"]:
+        if rad_type == "Ka":
+            lab = "$K_{\\alpha}$"
+        elif rad_type == "Kb":
+            lab = "$K_{\\beta}$"
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
         sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
         ax.errorbar(energies, cross_section_values_SDD, 
@@ -229,10 +240,14 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     marker=markersSDD[rad_type],
                     linestyle='-.', 
                     color=colorsSDD[rad_type], 
-                    label=rad_type+" SDD @ CNA")
+                    label=lab+" - SDD @ CNA")
         
     ## SDD at CTN data
     for rad_type in ["Ka", "Kb"]:
+        if rad_type == "Ka":
+            lab = "$K_{\\alpha}$"
+        elif rad_type == "Kb":
+            lab = "$K_{\\beta}$"
         cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
         sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
         ax.errorbar([3.215], cross_section_SDD_CTN, 
@@ -240,7 +255,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     marker=markersSDD_CTN[rad_type],
                     linestyle='', 
                     color=colorsSDD_CTN[rad_type], 
-                    label=rad_type+" SDD @ CTN")
+                    label=lab+" - SDD @ CTN")
         
     ## Famiano data
     cross_sections_Famiano = [famiano[key] for key in famiano.keys()]
@@ -277,7 +292,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     xlabel("Energy (MeV)", fontsize=22)
     ylabel("Cross-Section (mb)", fontsize=22)
     ylim(0, 1e3)
-    title("Relative Method", fontsize=22)
+    title("$^{116}\\rm{Sn}(p,\\gamma)^{117}\\rm{Sb}$ - Relative Method", fontsize=22)
     show()
 
     return '-------------------'

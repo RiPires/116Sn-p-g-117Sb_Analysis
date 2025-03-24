@@ -126,7 +126,12 @@ def Ge2ListsBgRm(File):
 #######################################################
 #######################################################
 def ReadActivationRBS(File):
-
+    """
+    Reads data from File and extracs lists of channel and counts per channel.
+    
+    INPUTS: File[str] - path to the file to read;
+    OUPUTS: ch, cts[arrays]
+    """
     ch = []
     cts = []
     aux = []

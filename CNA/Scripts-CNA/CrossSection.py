@@ -49,12 +49,12 @@ N_D_irr_HPGe = {
     "Ebeam=5.0MeV": {"gamma": 1.519e8, "Ka": 2.063e8, "Kb": 1.303e9},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD = {
-                      "Ebeam=3.2MeV": {"Ka": 2.500e6, "Kb": 9.924e6},
-                      "Ebeam=3.5MeV": {"Ka": 1.022e7, "Kb": 4.355e7},
-                      "Ebeam=3.9MeV": {"Ka": 2.411e7, "Kb": 1.096e8},
-                      "Ebeam=4.3MeV": {"Ka": 4.896e7, "Kb": 2.186e8},
-                      "Ebeam=4.7MeV": {"Ka": 9.752e7, "Kb": 4.380e8},
-                      "Ebeam=5.0MeV": {"Ka": 2.045e8, "Kb": 9.244e8},} ## Using photopeak channel by channel yield sum
+                      "Ebeam=3.2MeV": {"Ka": 1.756e6, "Kb": 6.674e6},
+                      "Ebeam=3.5MeV": {"Ka": 7.422e6, "Kb": 3.109e7},
+                      "Ebeam=3.9MeV": {"Ka": 1.760e7, "Kb": 8.142e7},
+                      "Ebeam=4.3MeV": {"Ka": 3.569e7, "Kb": 1.694e8},
+                      "Ebeam=4.7MeV": {"Ka": 7.151e7, "Kb": 3.366e8},
+                      "Ebeam=5.0MeV": {"Ka": 1.498e8, "Kb": 7.159e8},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD_CTN = {"Ka": 8.441e5, "Kb": 1.804e6}
 
@@ -70,12 +70,12 @@ N_D_irr_HPGe_err = {
     "Ebeam=5.0MeV": {"gamma": 6e4, "Ka": 3e4, "Kb": 4e5},} ## Using photopeak channel by channel yield sum
 
 N_D_irr_SDD_err = {
-    "Ebeam=3.2MeV": {"Ka": 2e3, "Kb": 3e4},
-    "Ebeam=3.5MeV": {"Ka": 8e3, "Kb": 7e4},
-    "Ebeam=3.9MeV": {"Ka": 2e4, "Kb": 2e5},
-    "Ebeam=4.3MeV": {"Ka": 4e4, "Kb": 7e4},
+    "Ebeam=3.2MeV": {"Ka": 8e3, "Kb": 7e4},
+    "Ebeam=3.5MeV": {"Ka": 9e3, "Kb": 1e5},
+    "Ebeam=3.9MeV": {"Ka": 1e4, "Kb": 1e5},
+    "Ebeam=4.3MeV": {"Ka": 4e4, "Kb": 2e5},
     "Ebeam=4.7MeV": {"Ka": 3e4, "Kb": 2e5},
-    "Ebeam=5.0MeV": {"Ka": 8e4, "Kb": 3e5},} ## Using photopeak channel by channel yield sum
+    "Ebeam=5.0MeV": {"Ka": 8e4, "Kb": 2e5},} ## Using photopeak channel by channel yield sum
 
 ## Compute the reaction cross-section using the known values for epsilon_P (RBS detector resolution),
 ## t_irr (irradiation time), w_A (isotopic enrichement of the target), t_irr (irradiation time), and lambda (decay constant)

@@ -13,7 +13,7 @@ import itertools
 def PlotAll():
 
     ch = [(i+1) for i in range(2048)]
-    path = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/'
+    path = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/'
     
     nr_colors = len(os.listdir(path))
     colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])

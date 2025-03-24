@@ -54,7 +54,7 @@ def PlotAll():
     ax2.plot((-d, +d), (1-d, 1+d), **kwargs)
     ax2.plot((-d, +d), (-d, +d), **kwargs)
 
-    legend1 = ax1.legend(loc="upper left",ncol=1, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    #legend1 = ax1.legend(loc="upper left",ncol=1, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
@@ -152,6 +152,6 @@ def Plot():
     return
 
 ## Plot
-Plot()
+#Plot()
 
 

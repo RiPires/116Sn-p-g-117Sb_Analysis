@@ -304,12 +304,12 @@ def NpeakSDD(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1507, 3.733e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1507, 3.658e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1507, 3.553e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1507, 3.658e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1507, 3.642e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1507, 3.577e-4)}
+    'Ebeam=3.2MeV': {'Ka': (0.6750, 3.842e-3), 'Kb': (0.1507, 4.733e-4)},
+    'Ebeam=3.5MeV': {'Ka': (0.6750, 3.851e-3), 'Kb': (0.1507, 4.658e-4)},
+    'Ebeam=3.9MeV': {'Ka': (0.6750, 3.844e-3), 'Kb': (0.1507, 4.553e-4)},
+    'Ebeam=4.3MeV': {'Ka': (0.6750, 3.850e-3), 'Kb': (0.1507, 4.658e-4)},
+    'Ebeam=4.7MeV': {'Ka': (0.6750, 3.846e-3), 'Kb': (0.1507, 4.642e-4)},
+    'Ebeam=5.0MeV': {'Ka': (0.6750, 3.820e-3), 'Kb': (0.1507, 4.577e-4)}
     }
 
     ## Transportation time (in minutes) for each activation energy
@@ -320,12 +320,15 @@ def NpeakSDD(time, *params, radType, energy_key):
                      'Ebeam=4.7MeV': 31,
                      'Ebeam=5.0MeV': 29}
     
+    ## Get initial parameters to be fitted
     try:
-        Ndirr = float(params[0])  # Force conversion to float
+        Ndirr, bgRate = float(params[0]),float(params[1])  # Force conversion to float
     except ValueError:
-        raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
+        raise TypeError(f"Expected a numeric value for Ndirr, bgRate but got {params[0]} (type: {type(params[0])}), and {params[1]} (type: {type(params[1])})")
 
-    time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
+
+    ## Ensure time is a NumPy array
+    time = np.asarray(time, dtype=np.float64)  
 
     ## Get efficiency and emission probability for the given energy and radiation type
     ## and the corresponding trasportation time
@@ -340,7 +343,7 @@ def NpeakSDD(time, *params, radType, energy_key):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
@@ -637,21 +640,27 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka', energy_key=energy_key), 
-                               time, countsKa, p0=init[0][0:2])
+                               time, countsKa, p0=init[0][0:3])
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb', energy_key=energy_key), 
-                               time, countsKb, p0=init[1][0:2])
+                               time, countsKb, p0=init[1][0:3])
     
     ## Get fit parameters
-    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line
-    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0] # Kb line
+    # Ka line
+    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0]
+    bgRateKa, bgRateKa_err = poptKa[1], np.sqrt(np.diag(pcovKa))[1]
+    # Kb line
+    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
+    bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1]
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"\t \t bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/30 min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"\t \t bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/30 min")
     print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.3e}")
     print()
 

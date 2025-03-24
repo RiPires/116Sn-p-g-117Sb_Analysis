@@ -272,7 +272,7 @@ def AccumulateSDD_BgRemoved(sddPath):
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
-            if y[c] <= 1:
+            if y[c] <= 0:
                 accu_Ka += 0
                 accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
             else:
@@ -281,7 +281,7 @@ def AccumulateSDD_BgRemoved(sddPath):
 
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
-            if y[c] <= 1:
+            if y[c] <= 0:
                 accu_Kb += 0
                 accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
             else:
