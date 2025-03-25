@@ -7,6 +7,7 @@ import os
 from include.ReadData import*
 ## ---------------------------- ##
 
+# ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 def Merge(dir, det):
     """
     Merges data from different runs into a single yield
@@ -25,16 +26,17 @@ def Merge(dir, det):
         nrCh = int(2048)
     else:
         print('Detector not recognized')
+        det = input("Enter valid detector (either 'ge' or 'sdd'): ")
     
     ## Set up array of zeros for merge yield depending on the detector
-    mergeYield = [0 for i in range(nrCh)]
+    mergeYield = [0 for _ in range(nrCh)]
     totTime_sec = 0.
 
     ## Loop over the data files and merge yield
-    for file in os.listdir(dir):
+    for file in sorted(os.listdir(dir)):
 
         if det == 'ge':
-            y = Ge2Lists(str(dir+file))[0]
+            y, _, runTime = Ge2Lists(str(dir+file))
 
         elif det == 'sdd':
             y, _, runTime = MCA2Lists(str(dir+file))
@@ -43,7 +45,9 @@ def Merge(dir, det):
         totTime_sec += runTime # seconds
 
     return mergeYield, totTime_sec
+# ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 def MergeAndRate(dir, totTime):
     """
     Merges data from different runs of the Ge detector 
@@ -68,3 +72,4 @@ def MergeAndRate(dir, totTime):
     mergeRate = [mergeYield[i]/totTime for i in range(len(mergeYield))] ## s-1
     
     return mergeRate
+# ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
