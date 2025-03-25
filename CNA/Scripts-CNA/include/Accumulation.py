@@ -102,16 +102,16 @@ def AccumulateGe_BgRemove(gePath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(72)
-    roiUp_Ka = int(84)
+    roiDown_Ka = int(67)
+    roiUp_Ka = int(85)
 
     ## Kb
     roiDown_Kb = int(85)
-    roiUp_Kb = int(94)
+    roiUp_Kb = int(97)
 
     ## gamma
-    roiDown_g = int(486)
-    roiUp_g = int(498)
+    roiDown_g = int(485)
+    roiUp_g = int(501)
 
     ## 511 keV
     roiDown_511 = int(1577)
@@ -123,8 +123,9 @@ def AccumulateGe_BgRemove(gePath):
     ## Loop over Ge data files
     for file in sorted(os.listdir(gePath)):
 
+        ## Get run yield and live time
         y = Ge2ListsBgRm(str(gePath+file))[0]
-        live_time = Ge2Lists(str(gePath.replace("BgRemoved/","")+file.replace("_BgRemoved","")))[2]
+        live_time = Ge2Lists(str(gePath.replace("BgRemoved_LiveTime/","")+file.replace("_BgRemoved","")))[2]
         #print(f"live-time = {live_time:.0f} s = {live_time/60:.1f} min")
 
         ## Add Ka counts
@@ -256,37 +257,30 @@ def AccumulateSDD_BgRemoved(sddPath):
     counter = 1
 
     ## Set ROI for each peak, in channel
-    ## Ka
+    ## Ka1,2 lines
     roiDown_Ka = int(802)
     roiUp_Ka = int(822)
 
-    ## Kb
+    ## Kb1,3 lines
     roiDown_Kb = int(911)
     roiUp_Kb = int(925)
 
-    ## Loop over Ge data
+    ## Loop over SDD runs
     for file in sorted(os.listdir(sddPath)):
 
+        ## Get run yield background removed and run live time
         y = MCA2ListsBgRm(str(sddPath+file))[0]
-        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
+        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
 
-        ## Add Ka counts
+        ## Perform Ka accumulation
         for c in range(roiDown_Ka, roiUp_Ka):
-            if y[c] <= 1:
-                accu_Ka += 0
-                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
-            else:
-                accu_Ka += y[c]
-                accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
+            accu_Ka += y[c]
+            accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
 
-        ## Add Kb counts
+        ## Perform Kb accumulation
         for c in range(roiDown_Kb, roiUp_Kb):
-            if y[c] <= 1:
-                accu_Kb += 0
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
-            else:
-                accu_Kb += y[c]
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
+            accu_Kb += y[c]
+            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
 
         ## Increment time
         accu_t += live_time/60 # minutes

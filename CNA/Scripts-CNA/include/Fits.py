@@ -244,12 +244,12 @@ def NpeakHPGe(time, *params, radType, energy_key):
 
     ## Efficiency and emission probabilities for each energy
     efficiency_params = {
-    'Ebeam=3.2MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02860)},
-    'Ebeam=3.5MeV': {'gamma': (0.8590, 0.1761), 'Ka': (0.6750, 0.1574), 'Kb': (0.1419, 0.02848)},
-    'Ebeam=3.9MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1576), 'Kb': (0.1419, 0.02844)},
-    'Ebeam=4.3MeV': {'gamma': (0.8590, 0.1760), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02853)},
-    'Ebeam=4.7MeV': {'gamma': (0.8590, 0.1763), 'Ka': (0.6750, 0.1577), 'Kb': (0.1419, 0.02837)},
-    'Ebeam=5.0MeV': {'gamma': (0.8590, 0.1762), 'Ka': (0.6750, 0.1575), 'Kb': (0.1419, 0.02842)}
+    'Ebeam=3.2MeV': {'gamma': (1., 0.1625), 'Ka': (1., 0.1527), 'Kb': (1., 0.03318)},
+    'Ebeam=3.5MeV': {'gamma': (1., 0.1625), 'Ka': (1., 0.1528), 'Kb': (1., 0.03332)},
+    'Ebeam=3.9MeV': {'gamma': (1., 0.1626), 'Ka': (1., 0.1527), 'Kb': (1., 0.03337)},
+    'Ebeam=4.3MeV': {'gamma': (1., 0.1626), 'Ka': (1., 0.1528), 'Kb': (1., 0.03325)},
+    'Ebeam=4.7MeV': {'gamma': (1., 0.1625), 'Ka': (1., 0.1529), 'Kb': (1., 0.03330)},
+    'Ebeam=5.0MeV': {'gamma': (1., 0.1627), 'Ka': (1., 0.1529), 'Kb': (1., 0.03336)}
     }
 
     ## Transportation time (in minutes) for each activation energy
@@ -260,11 +260,13 @@ def NpeakHPGe(time, *params, radType, energy_key):
                      'Ebeam=4.7MeV': 31,
                      'Ebeam=5.0MeV': 29}
     
+    ## Set parameters to fit
     try:
-        Ndirr = float(params[0])  # Force conversion to float
+        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
+    ## Set time array
     time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
 
     ## Get efficiency and emission probability for the given energy and radiation type
@@ -280,7 +282,7 @@ def NpeakHPGe(time, *params, radType, energy_key):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
 def NpeakSDD(time, *params, radType, energy_key):
@@ -303,25 +305,37 @@ def NpeakSDD(time, *params, radType, energy_key):
     """    
 
     ## Efficiency and emission probabilities for each energy
+    ## Parameters for the detector at 8 mm
     efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (0.6750, 2.842e-3), 'Kb': (0.1507, 3.733e-4)},
-    'Ebeam=3.5MeV': {'Ka': (0.6750, 2.851e-3), 'Kb': (0.1507, 3.658e-4)},
-    'Ebeam=3.9MeV': {'Ka': (0.6750, 2.844e-3), 'Kb': (0.1507, 3.553e-4)},
-    'Ebeam=4.3MeV': {'Ka': (0.6750, 2.850e-3), 'Kb': (0.1507, 3.658e-4)},
-    'Ebeam=4.7MeV': {'Ka': (0.6750, 2.846e-3), 'Kb': (0.1507, 3.642e-4)},
-    'Ebeam=5.0MeV': {'Ka': (0.6750, 2.820e-3), 'Kb': (0.1507, 3.577e-4)}
+    'Ebeam=3.2MeV': {'Ka': (1., 2.842e-3), 'Kb': (1., 3.733e-4)},
+    'Ebeam=3.5MeV': {'Ka': (1., 2.851e-3), 'Kb': (1., 3.658e-4)},
+    'Ebeam=3.9MeV': {'Ka': (1., 2.844e-3), 'Kb': (1., 3.553e-4)},
+    'Ebeam=4.3MeV': {'Ka': (1., 2.850e-3), 'Kb': (1., 3.658e-4)},
+    'Ebeam=4.7MeV': {'Ka': (1., 2.846e-3), 'Kb': (1., 3.642e-4)},
+    'Ebeam=5.0MeV': {'Ka': (1., 2.820e-3), 'Kb': (1., 3.577e-4)}
     }
 
+    ## Parameters for detector at 7 mm
+    """     efficiency_params = {
+    'Ebeam=3.2MeV': {'Ka': (1., 3.536e-3), 'Kb': (1., 4.500e-4)},
+    'Ebeam=3.5MeV': {'Ka': (1., 3.512e-3), 'Kb': (1., 4.717e-4)},
+    'Ebeam=3.9MeV': {'Ka': (1., 3.522e-3), 'Kb': (1., 4.649e-4)},
+    'Ebeam=4.3MeV': {'Ka': (1., 3.561e-3), 'Kb': (1., 4.554e-4)},
+    'Ebeam=4.7MeV': {'Ka': (1., 3.552e-3), 'Kb': (1., 4.393e-4)},
+    'Ebeam=5.0MeV': {'Ka': (1., 3.504e-3), 'Kb': (1., 4.603e-4)}
+    } """
+
+
     ## Transportation time (in minutes) for each activation energy
-    t_transMin_key ={'Ebeam=3.2MeV': 28,
-                     'Ebeam=3.5MeV': 29,
-                     'Ebeam=3.9MeV': 32,
-                     'Ebeam=4.3MeV': 40,
-                     'Ebeam=4.7MeV': 31,
-                     'Ebeam=5.0MeV': 29}
+    t_transMin_key ={'Ebeam=3.2MeV': 27,
+                     'Ebeam=3.5MeV': 28,
+                     'Ebeam=3.9MeV': 31,
+                     'Ebeam=4.3MeV': 39,
+                     'Ebeam=4.7MeV': 30,
+                     'Ebeam=5.0MeV': 28}
     
     try:
-        Ndirr = float(params[0])  # Force conversion to float
+        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
@@ -340,7 +354,7 @@ def NpeakSDD(time, *params, radType, energy_key):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Funtion to fit accumulation curve of number of decays to experimental data
 ## extracting decay half-life (T_1/2) and total nr. of radioactive nuclei 
@@ -537,54 +551,35 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
 
     ## Fit the data, passing radType explicitly
     poptGamma, pcovGamma = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='gamma', energy_key=energy_key), 
-                                     time, countsGamma, p0=init[0][0:2])
+                                     time, countsGamma, p0=init[0][0:3])
     
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='Ka', energy_key=energy_key), 
-                               time, countsKa, p0=init[1][0:2])
+                               time, countsKa, p0=init[1][0:3])
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakHPGe(t, *p, radType='Kb', energy_key=energy_key), 
-                               time, countsKb, p0=init[2][0:2])
-
-    """     ## Calculate the half-life
-    # Gamma line
-    halfLifeGamma_minutes = np.log(2)/poptGamma[1] ## minutes
-    halfLifeGamma_hours = halfLifeGamma_minutes/60 ## hours
-    # Ka line
-    halfLifeKa_minutes = np.log(2)/poptKa[1] ## minutes
-    halfLifeKa_hours = halfLifeKa_minutes/60 ## hours
-    # Kb line
-    halfLifeKb_minutes = np.log(2)/poptKb[1] ## minutes
-    halfLifeKb_hours = halfLifeKb_minutes/60 ## hours
-
-    ## Calculate lambda uncertainty
-    # Gamma line
-    lambGamma_uncertainty_minutes = np.sqrt(np.diag(pcovGamma))[1] ## minutes^-1
-    lambGamma_uncertainty_hours = lambGamma_uncertainty_minutes/60 ## hours^-1 
-    # Ka line
-    lambKa_uncertainty_minutes = np.sqrt(np.diag(pcovKa))[1] ## minutes^-1
-    lambKa_uncertainty_hours = lambKa_uncertainty_minutes/60 ## hours^-1 
-    # Kb line
-    lambKb_uncertainty_minutes = np.sqrt(np.diag(pcovKb))[1] ## minutes^-1
-    lambKb_uncertainty_hours = lambKb_uncertainty_minutes/60 ## hours^-1 
-
-    ## Calculate half-life uncertainty in hours
-    halfLifeGamma_hours_uncertainty = np.log(2)*lambGamma_uncertainty_hours/(poptGamma[1]**2)   # Gamma line
-    halfLifeKa_hours_uncertainty = np.log(2)*lambKa_uncertainty_hours/(poptKa[1]**2)            # Ka line
-    halfLifeKb_hours_uncertainty = np.log(2)*lambKb_uncertainty_hours/(poptKb[1]**2)            # Kb line
-    """
+                               time, countsKb, p0=init[2][0:3])
     
     ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
-    NdirrGamma, NdirrGamma_err  = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]  # Gamma line
-    NdirrKa, NdirrKa_err        = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]     # Ka line
-    NdirrKb, NdirrKb_err        = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]     # Kb line
+    # Gamma line
+    NdirrGamma, NdirrGamma_err   = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]
+    bgRateGamma, bgRateGamma_err = poptGamma[1], np.sqrt(np.diag(pcovGamma))[1]
+    # Ka line 
+    NdirrKa, NdirrKa_err         = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]
+    bgRateKa, bgRateKa_err       = poptKa[1],    np.sqrt(np.diag(pcovKa))[1]
+    # Kb line   
+    NdirrKb, NdirrKb_err         = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]  
+    bgRateKb, bgRateKb_err       = poptKb[1],    np.sqrt(np.diag(pcovKb))[1]
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e}")
+    print(f"bgRate = ({bgRateGamma:.3f}+-{bgRateGamma_err:.3f})/ 15 min")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 15 min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 15 min")
     print()
 
     ## Fit function for plotting
@@ -637,21 +632,27 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab, energy_
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka', energy_key=energy_key), 
-                               time, countsKa, p0=init[0][0:2])
+                               time, countsKa, p0=init[0][0:3])
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb', energy_key=energy_key), 
-                               time, countsKb, p0=init[1][0:2])
+                               time, countsKb, p0=init[1][0:3])
     
     ## Get fit parameters
-    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line
-    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0] # Kb line
+    # Ka line
+    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] 
+    bgRateKa, bgRateKa_err = poptKa[1], np.sqrt(np.diag(pcovKa))[1]
+    # Kb line
+    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
+    bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1] 
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 30 min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 30 min")
     print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.3e}")
     print()
 

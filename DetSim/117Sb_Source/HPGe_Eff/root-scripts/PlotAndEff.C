@@ -54,7 +54,7 @@ void PlotAndEff(const char* filename){
         int binMaxKa = hist1->FindBin(0.0253);
         // Kb
         int binMinKb = hist1->FindBin(0.0281);
-        int binMaxKb = hist1->FindBin(0.0288);
+        int binMaxKb = hist1->FindBin(0.0292);
 
     // Calculate the area under each photopeak
         double area_Gamma = hist1->Integral(binMinGamma, binMaxGamma);
@@ -72,4 +72,13 @@ void PlotAndEff(const char* filename){
     cout << "Gamma = \t" << eff_Gamma << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
+}
+
+void RunPlotAndEff(){
+    PlotAndEff("../data-files_HPGe/output32_10mm.root");
+    PlotAndEff("../data-files_HPGe/output35_10mm.root");
+    PlotAndEff("../data-files_HPGe/output39_10mm.root");
+    PlotAndEff("../data-files_HPGe/output43_10mm.root");
+    PlotAndEff("../data-files_HPGe/output47_10mm.root");
+    PlotAndEff("../data-files_HPGe/output50_10mm.root");
 }

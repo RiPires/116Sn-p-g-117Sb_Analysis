@@ -112,15 +112,15 @@ def NpeakBEGe(time, *params, radType):
     """    
 
     ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'gamma': (0.8590, 0.08082), 
-                         'Ka':    (0.6750, 0.08246), 
-                         'Kb':    (0.1419, 0.01817)}
+    efficiency_params = {'gamma': (1., 0.08082), 
+                         'Ka':    (1., 0.08246), 
+                         'Kb':    (1., 0.01817)}
 
     ## Transportation time (in minutes) for each activation energy
     t_transMin = 22. # minutes
     
     try:
-        Ndirr = float(params[0])  # Force conversion to float
+        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
@@ -137,7 +137,7 @@ def NpeakBEGe(time, *params, radType):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate * time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
 def NpeakSDD(time, *params, radType):
@@ -160,14 +160,14 @@ def NpeakSDD(time, *params, radType):
     """    
 
     ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'Ka': (0.6750, 3.598e-3),
-                         'Kb': (0.1507, 4.290e-4)}
+    efficiency_params = {'Ka': (1., 2.842e-3),
+                         'Kb': (1., 3.733e-4)}
 
     ## Transportation time (in minutes) for each activation energy
     t_transMin = 15. # minutes
     
     try:
-        Ndirr = float(params[0])  # Force conversion to float
+        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
@@ -185,7 +185,7 @@ def NpeakSDD(time, *params, radType):
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
 
 ## ************************************************************************************ ##
 ## Funtion to fit accumulation curve of area under a photo-peak to experimental data    ##
@@ -223,17 +223,26 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
                                time, countsKb, p0=init[2][0:2])
     
     ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
-    NdirrGamma, NdirrGamma_err  = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]  # Gamma line
-    NdirrKa, NdirrKa_err        = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]     # Ka line
-    NdirrKb, NdirrKb_err        = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]     # Kb line
+    # Gamma line
+    NdirrGamma, NdirrGamma_err   = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]
+    bgRateGamma, bgRateGamma_err = poptGamma[1], np.sqrt(np.diag(pcovGamma))[1]
+    # Ka line 
+    NdirrKa, NdirrKa_err         = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]
+    bgRateKa, bgRateKa_err       = poptKa[1],    np.sqrt(np.diag(pcovKa))[1]
+    # Kb line   
+    NdirrKb, NdirrKb_err         = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]  
+    bgRateKb, bgRateKb_err       = poptKb[1],    np.sqrt(np.diag(pcovKb))[1]
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e}")
+    print(f"bgRate = ({bgRateGamma:.3f}+-{bgRateGamma_err:.3f})/ 15 min")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 15 min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 15 min")
     print()
 
     ## Fit function for plotting
@@ -286,21 +295,27 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab):
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka'), 
-                               time, countsKa, p0=init[0:2], sigma=errKa, absolute_sigma=True)
+                               time, countsKa, p0=init[0][0:2], sigma=errKa, absolute_sigma=True)
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb'), 
-                               time, countsKb, p0=init[0:2], sigma=errKb, absolute_sigma=True)
+                               time, countsKb, p0=init[1][0:2], sigma=errKb, absolute_sigma=True)
     
     ## Get fit parameters
-    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] # Ka line
-    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0] # Kb line
+    # Ka line
+    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] 
+    bgRateKa, bgRateKa_err = poptKa[1], np.sqrt(np.diag(pcovKa))[1]
+    # Kb line
+    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
+    bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1] 
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 30 min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 30 min")
     print()
 
     ## Fit function for plotting

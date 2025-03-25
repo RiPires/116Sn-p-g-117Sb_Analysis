@@ -11,9 +11,9 @@ from include.Fits import *
 
 ## Paths for SDD decay data files
 sddPath = "../2_Decay/DataFilesSDD/Decay/"
-## Define initial guess N_Dirr for each beam energy
-##                  [[ Ka  ], [ Kb  ]] 
-initParams = [1.0e6, 2.5e5]  # Example values for 3.2 MeV
+## Define initial guess N_Dirr and bgRate for each beam energy
+##           [[Ka]       , [Kb]] 
+initParams = [[1.0e6, 1.], [2.5e5, 1.]]  # Example values for 3.2 MeV
 
 ## Extract data from files
 accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_time = AccumulateSDD(sddPath)

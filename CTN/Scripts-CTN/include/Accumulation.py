@@ -187,12 +187,12 @@ def AccumulateSDD(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(797)
+    roiDown_Ka = int(795)
     roiUp_Ka = int(826)
 
     ## Kb
-    roiDown_Kb = int(908)
-    roiUp_Kb = int(925)
+    roiDown_Kb = int(907)
+    roiUp_Kb = int(926)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1
@@ -211,13 +211,8 @@ def AccumulateSDD(sddPath):
 
         ## Add Kb counts
         for c in range(roiDown_Kb, roiUp_Kb):
-
-            if y[c] <= 1:
-                accu_Kb += 0
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
-            else:
-                accu_Kb += y[c]
-                accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
+            accu_Kb += y[c]
+            accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
         ## Increment accumulation time and counter
         accu_t += live_time/60 # minutes

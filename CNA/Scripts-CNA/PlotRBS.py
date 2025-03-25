@@ -27,7 +27,7 @@ Paths = ['../Activations/Ebeam=3.2MeV/1_Irradiation/DataFiles/240708/RBS/',
 ## Loop over each activation
 for path in Paths:
     ## Loop over the files of each activation
-    for file in os.listdir(path):
+    for file in sorted(os.listdir(path)):
         ch, y = ReadActivationRBS(str(path+file))
         lab = str(file).replace('.SI2.dat', '')
         lab = path[15:27] + ' - Run: ' + lab

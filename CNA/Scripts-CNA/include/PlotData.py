@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.pylab import *
 ## ---------------------------- ##
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def Plot(x, y, lab):
 
     fig, ax = plt.subplots()
@@ -20,7 +21,9 @@ def Plot(x, y, lab):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotLogy(x, y, lab):
 
     fig, ax = plt.subplots()
@@ -34,7 +37,9 @@ def PlotLogy(x, y, lab):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotRateLogy(x, y, lab):
 
     fig, ax = plt.subplots()
@@ -48,7 +53,9 @@ def PlotRateLogy(x, y, lab):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotBothRateLogy(x, y1, y2, lab1, lab2):
 
     fig, ax = plt.subplots()
@@ -63,7 +70,9 @@ def PlotBothRateLogy(x, y1, y2, lab1, lab2):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 
     fig, ax = plt.subplots()
@@ -79,7 +88,9 @@ def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
     
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotI(t, i, lab):
 
     fig, ax = plt.subplots()
@@ -93,7 +104,9 @@ def PlotI(t, i, lab):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotRBS(ch, y, lab):
 
     fig, ax = plt.subplots()
@@ -106,7 +119,9 @@ def PlotRBS(ch, y, lab):
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
@@ -281,3 +296,4 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     show()
 
     return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #

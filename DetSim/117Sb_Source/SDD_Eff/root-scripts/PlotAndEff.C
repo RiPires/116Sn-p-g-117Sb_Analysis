@@ -68,3 +68,12 @@ void PlotAndEff(const char* filename){
     cout << "Kb = \t\t" << eff_Kb << endl;
 
 }
+
+void RunPlotAndEff(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_8mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_8mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_8mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_8mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_8mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_8mm.root");
+}

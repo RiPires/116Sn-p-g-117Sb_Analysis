@@ -29,12 +29,12 @@ sn116Files = {
 }
 
 # Define the file endings for each beam energy that should be processed
-rois = {"Ebeam=3.2MeV": [389, 448],
-        "Ebeam=3.5MeV": [426, 494],  
-        "Ebeam=3.9MeV": [370, 425],
-        "Ebeam=4.3MeV": [434, 468],
-        "Ebeam=4.7MeV": [407, 448],
-        "Ebeam=5.0MeV": [434, 476],}
+rois = {"Ebeam=3.2MeV": [410, 439],
+        "Ebeam=3.5MeV": [454, 484],  
+        "Ebeam=3.9MeV": [392, 416],
+        "Ebeam=4.3MeV": [436, 460],
+        "Ebeam=4.7MeV": [417, 440],
+        "Ebeam=5.0MeV": [445, 468],}
 
 # Loop over each activation energy
 for beam_energy, path in Paths.items():
