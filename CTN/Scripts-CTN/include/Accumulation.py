@@ -38,16 +38,16 @@ def AccumulateGe(gePath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(74)
-    roiUp_Ka = int(84)
+    roiDown_Ka = int(36)
+    roiUp_Ka = int(38)
 
     ## Kb
-    roiDown_Kb = int(86)
-    roiUp_Kb = int(94)
+    roiDown_Kb = int(39)
+    roiUp_Kb = int(42)
 
     ## gamma
-    roiDown_g = int(488)
-    roiUp_g = int(498)
+    roiDown_g = int(161)
+    roiUp_g = int(165)
 
     ## Loop over Ge data
     for file in os.listdir(gePath):
@@ -68,7 +68,6 @@ def AccumulateGe(gePath):
         Accu_g.append(accu_g)
         Accu_t.append(accu_t)
     return Accu_Ka, Accu_Kb, Accu_g, Accu_t
-
 
 #######################################################################
 #######################################################################
@@ -97,20 +96,17 @@ def AccumulateGe_BgRemove(gePath):
     Accu_511 = []
     Accu_t = []
 
-    ## Set channels list
-    ch = [(i+1) for i in range(1024)]
-
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(35)
-    roiUp_Ka = int(37)
+    roiDown_Ka = int(36)
+    roiUp_Ka = int(38)
 
     ## Kb
     roiDown_Kb = int(39)
-    roiUp_Kb = int(40)
+    roiUp_Kb = int(42)
 
     ## gamma
-    roiDown_g = int(160)
+    roiDown_g = int(161)
     roiUp_g = int(165)
 
     ## 511 keV
@@ -187,12 +183,12 @@ def AccumulateSDD(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(795)
-    roiUp_Ka = int(826)
+    roiDown_Ka = int(793)
+    roiUp_Ka = int(830)
 
     ## Kb
-    roiDown_Kb = int(907)
-    roiUp_Kb = int(926)
+    roiDown_Kb = int(906)
+    roiUp_Kb = int(927)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1

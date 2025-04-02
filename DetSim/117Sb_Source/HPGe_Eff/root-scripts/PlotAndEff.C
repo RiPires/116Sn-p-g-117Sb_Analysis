@@ -44,41 +44,67 @@ void PlotAndEff(const char* filename){
      canvas->Draw();
      gPad->Update();
 
-
      // ROIs for each photopeak area calculation
         // gamma 158 keV
-        int binMinGamma = hist1->FindBin(0.1585);
-        int binMaxGamma = hist1->FindBin(0.1589);
+        int binMinGamma = hist1->FindBin(0.15853);
+        int binMaxGamma = hist1->FindBin(0.15887);
         // Ka
-        int binMinKa = hist1->FindBin(0.0246);
+        int binMinKa = hist1->FindBin(0.0247);
         int binMaxKa = hist1->FindBin(0.0253);
         // Kb
-        int binMinKb = hist1->FindBin(0.0281);
-        int binMaxKb = hist1->FindBin(0.0292);
+        int binMinKb = hist1->FindBin(0.02833);
+        int binMaxKb = hist1->FindBin(0.0293);
+        // gamma 511 keV
+        int binMin511 = hist1->FindBin(0.5108);
+        int binMax511 = hist1->FindBin(0.511); 
+        // gamma 861 keV
+        int binMin861 = hist1->FindBin(0.86108);
+        int binMax861 = hist1->FindBin(0.86142);
+        // gamma 1004 keV
+        int binMin1004 = hist1->FindBin(1.00448);
+        int binMax1004 = hist1->FindBin(1.00484);
 
     // Calculate the area under each photopeak
         double area_Gamma = hist1->Integral(binMinGamma, binMaxGamma);
         double area_Ka = hist1->Integral(binMinKa, binMaxKa);
         double area_Kb = hist1->Integral(binMinKb, binMaxKb);
+        double area511 = hist1->Integral(binMin511, binMax511);
+        double area861 = hist1->Integral(binMin861, binMax861);
+        double area1004 = hist1->Integral(binMin1004, binMax1004);
 
     // Calculate the detetcor efficiency for each peak energy
-        double eff_Gamma, eff_Ka, eff_Kb, nTot;
+        double eff_Gamma, eff_Ka, eff_Kb, eff511, eff861, eff1004, nTot;
         nTot = 1e7;
         eff_Gamma = area_Gamma/nTot;
         eff_Ka = area_Ka/nTot;
         eff_Kb = area_Kb/nTot;
+        eff511 = area511/nTot;
+        eff861 = area861/nTot;
+        eff1004 = area1004/nTot;
 
     cout << "Efficiencies: " << endl;
+    cout << "1004 keV \t" << eff1004 << endl;
+    cout << "861 keV \t" << eff861 << endl;
+    cout << "511 keV \t" << eff511 << endl;
     cout << "Gamma = \t" << eff_Gamma << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
 }
 
-void RunPlotAndEff(){
+void RunPlotAndEff10mm(){
     PlotAndEff("../data-files_HPGe/output32_10mm.root");
     PlotAndEff("../data-files_HPGe/output35_10mm.root");
     PlotAndEff("../data-files_HPGe/output39_10mm.root");
     PlotAndEff("../data-files_HPGe/output43_10mm.root");
     PlotAndEff("../data-files_HPGe/output47_10mm.root");
     PlotAndEff("../data-files_HPGe/output50_10mm.root");
+}
+
+void RunPlotAndEff12mm(){
+    PlotAndEff("../data-files_HPGe/output_Ebeam32_12mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam35_12mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam39_12mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam43_12mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam47_12mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam50_12mm.root");
 }

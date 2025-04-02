@@ -23,7 +23,7 @@ PlotLogy(ch_hpge, mergeYieldHPGe, str(lab_hpge))
 ## SDD background runs path
 bgPathSDD =  '../Calibrations/SDD/Background/'
 ## Merge SDD background runs
-mergeYieldSDD = Merge(bgPathSDD, 'sdd')
+mergeYieldSDD, _ = Merge(bgPathSDD, 'sdd')
 ## Plot merged yield SDD
 lab_sdd = 'SDD background'
 Plot(ch_sdd, mergeYieldSDD, str(lab_sdd))

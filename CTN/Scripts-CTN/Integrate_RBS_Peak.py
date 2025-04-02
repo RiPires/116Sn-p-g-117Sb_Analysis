@@ -13,7 +13,7 @@ from include.PlotData import PlotRBS
 rbsPath = "../1_Irradiation/DataFiles/Activation/RBS/"
 
 ## Lower and Upper Region of Interest limits
-rois = [500, 535]
+rois = [505, 535]
 
 ## Initialize total integral
 peakIntegral = 0.

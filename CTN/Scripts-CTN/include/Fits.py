@@ -91,8 +91,11 @@ def FitData(func, x, y, init, lab, roid, roiu):
 ## Accumulation fits ##
 #######################
 
-## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
-def NpeakBEGe(time, *params, radType):
+## ************************************************************************************ ##
+## Defines Accumulation function for the area under a photo-peak as                     ##   
+## N_peak(t_acqui) = bgRate*t_acqui + N0 * (1-exp(-lamb t_acqui))                       ##
+## ************************************************************************************ ##
+def Npeak(time, *params):
     """
     Function that models the accumulation of radioactive decays over the acquisition time.
 
@@ -111,89 +114,26 @@ def NpeakBEGe(time, *params, radType):
     OUPUTS: adjusted Npeak curve
     """    
 
-    ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'gamma': (1., 0.08082), 
-                         'Ka':    (1., 0.08246), 
-                         'Kb':    (1., 0.01817)}
-
-    ## Transportation time (in minutes) for each activation energy
-    t_transMin = 22. # minutes
-    
+    ## Set parameters to fit    
     try:
-        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
+        N0, bgRate = float(params[0]), float(params[1])  # Force conversion to float
     except ValueError:
         raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
 
     time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
-
-    ## Get efficiency and emission probability for the given radiation type
-    try:
-        eta, epsilonD = efficiency_params[radType]
-    except KeyError:
-        raise ValueError(f"Invalid radType '{radType}'. Check input values.")
 
     ## Constants
     halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
 
     ## Compute accumulation
-    return bgRate * time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
+    return bgRate*time + N0 * (1 - np.exp(-lambda_decay * time))
 
-## Defines Accumulation function for the area under a photo-peak as N_peak(t_acqui) = \eta \epsilon_D exp(-lambda t_trans) N_Dirr (1-exp(-lamb t_acqui))
-def NpeakSDD(time, *params, radType):
-    """
-    Function that models the accumulation of radioactive decays over the acquisition time.
-
-    INPUTS:
-    time : ndarray
-        The x-axis variable, time of acquisition.
-    *params : tuple
-        A flattened list of parameters for the function:
-        - N_Dirr (int): total number of radioactive nuclei in the target after the irradiation and the transportation time.
-        - lamb (float): the decay caracteristic time, depending on the radioactive decay.
-        - eta (float): photo-peak decay branching;
-        - epsilon_D (float): detector resolution at the photo-peak energy;
-        - t_trans (float): time of transportation of the activated target, since the end of the activation,
-          from the irradiation chamber, into the decay station at the begining of the decay measurement;
-
-    OUPUTS: adjusted Npeak curve
-    """    
-
-    ## Efficiency and emission probabilities for each energy
-    efficiency_params = {'Ka': (1., 2.842e-3),
-                         'Kb': (1., 3.733e-4)}
-
-    ## Transportation time (in minutes) for each activation energy
-    t_transMin = 15. # minutes
-    
-    try:
-        Ndirr, bgRate = float(params[0]), float(params[1])  # Force conversion to float
-    except ValueError:
-        raise TypeError(f"Expected a numeric value for Ndirr, but got {params[0]} (type: {type(params[0])})")
-
-    time = np.asarray(time, dtype=np.float64)  # Ensure time is a NumPy array
-
-    ## Get efficiency and emission probability for the given energy and radiation type
-    ## and the corresponding trasportation time
-    try:
-        eta, epsilonD = efficiency_params[radType]
-    except KeyError:
-        raise ValueError(f"Invalid radType '{radType}'. Check input values.")
-
-    ## Constants
-    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
-    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
-
-    ## Compute accumulation
-    return bgRate*time + eta * epsilonD * np.exp(-lambda_decay * t_transMin) * Ndirr * (1 - np.exp(-lambda_decay * time))
-
-## ************************************************************************************ ##
-## Funtion to fit accumulation curve of area under a photo-peak to experimental data    ##
-## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of    ##
-## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD) ##
-## and transportation time (t_trans), for the HPGe detector                             ##
-## ************************************************************************************ ##
-def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, errKb, init, lab):
+## ***************************************************************************************************** ##
+## Funtion to fit accumulation curve to experimental data, extracting total nr. of radioactive nuclei at ##
+## the end of the irradiation (N_Dirr) for the HPGe detector                                             ##
+## ***************************************************************************************************** ##
+def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, errKb, init, efficiency, t_trans, lab, radtype):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -213,42 +153,67 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     countsKb = np.array(countsKb)
 
     ## Fit the data, passing radType explicitly
-    poptGamma, pcovGamma = curve_fit(lambda t, *p: NpeakBEGe(t, *p, radType='gamma'), 
+    poptGamma, pcovGamma = curve_fit(lambda t, *p: Npeak(t, *p), 
                                      time, countsGamma, p0=init[0][0:2])
     
-    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakBEGe(t, *p, radType='Ka'), 
+    poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p), 
                                time, countsKa, p0=init[1][0:2])
     
-    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakBEGe(t, *p, radType='Kb'), 
+    poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p), 
                                time, countsKb, p0=init[2][0:2])
     
     ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
     # Gamma line
-    NdirrGamma, NdirrGamma_err   = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]
-    bgRateGamma, bgRateGamma_err = poptGamma[1], np.sqrt(np.diag(pcovGamma))[1]
+    N0Gamma, N0Gamma_err            = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]
+    bgRateGamma, bgRateGamma_err    = poptGamma[1], np.sqrt(np.diag(pcovGamma))[1]
     # Ka line 
-    NdirrKa, NdirrKa_err         = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]
-    bgRateKa, bgRateKa_err       = poptKa[1],    np.sqrt(np.diag(pcovKa))[1]
+    N0Ka, N0Ka_err                  = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]
+    bgRateKa, bgRateKa_err          = poptKa[1],    np.sqrt(np.diag(pcovKa))[1]
     # Kb line   
-    NdirrKb, NdirrKb_err         = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]  
-    bgRateKb, bgRateKb_err       = poptKb[1],    np.sqrt(np.diag(pcovKb))[1]
+    N0Kb, N0Kb_err                  = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]  
+    bgRateKb, bgRateKb_err          = poptKb[1],    np.sqrt(np.diag(pcovKb))[1]
+
+    ## Constants
+    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
+    halfLife_min_err = 0.01*60 # minutes
+    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
+    lambda_decay_err = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
+    t_trans_err = 1.
+
+    ## Calculate N_Dirr and error propagation
+    ## Gamma line
+    NdirrGamma      = N0Gamma/(efficiency[0][0] * np.exp(-lambda_decay*t_trans))
+    NdirrGamma_err  = np.sqrt((np.exp(lambda_decay*t_trans)*N0Gamma_err/efficiency[0][0])**2 + 
+                            (N0Gamma*np.exp(lambda_decay*t_trans)*efficiency[0][1]/efficiency[0][0]**2)**2 + 
+                            (t_trans*N0Gamma*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[0][0])**2 + 
+                            (lambda_decay*N0Gamma*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[0][0])**2)
+    ## Ka line
+    NdirrKa         = N0Ka/(efficiency[1][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKa_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0Ka_err/efficiency[1][0])**2 + 
+                            (N0Ka*np.exp(lambda_decay*t_trans)*efficiency[1][1]/efficiency[1][0]**2)**2 + 
+                            (t_trans*N0Ka*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[1][0])**2 + 
+                            (lambda_decay*N0Ka*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[1][0])**2)
+    ## Kb line
+    NdirrKb         = N0Kb/(efficiency[2][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKb_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0Kb_err/efficiency[2][0])**2 + 
+                            (N0Kb*np.exp(lambda_decay*t_trans)*efficiency[2][1]/efficiency[2][0]**2)**2 + 
+                            (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[2][0])**2 + 
+                            (lambda_decay*N0Kb*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
+
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e}")
-    print(f"bgRate = ({bgRateGamma:.3f}+-{bgRateGamma_err:.3f})/ 15 min")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
-    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 15 min")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
-    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 15 min")
+    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | bgRate = ({bgRateGamma:.3f}+-{bgRateGamma_err:.3f}) cnts/min")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f}) cnts/min")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f}) cnts/min")
     print()
 
     ## Fit function for plotting
-    fittedGamma = NpeakBEGe(time, *poptGamma, radType='gamma')
-    fittedKa = NpeakBEGe(time, *poptKa, radType='Ka')
-    fittedKb = NpeakBEGe(time, *poptKb, radType='Kb')
+    fittedGamma = Npeak(time, *poptGamma)
+    fittedKa = Npeak(time, *poptKa)
+    fittedKb = Npeak(time, *poptKb)
 
     # Plot the results
     fig, ax = plt.subplots()
@@ -269,13 +234,11 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
 
     return
 
-## ************************************************************************************ ##
-## Funtion to fit accumulation curve of area under a photo-peak to experimental data    ##
-## extracting decay half-life (T_1/2), total nr. of radioactive nuclei at the end of    ##
-## the activation (N_Dirr), decay branching ratio (eta), detector efficiency (epsilonD) ##
-## and transportation time (t_trans), for the HPGe detector                             ##
-## ************************************************************************************ ##
-def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab):
+## ***************************************************************************************************** ##
+## Funtion to fit accumulation curve to experimental data, extracting total nr. of radioactive nuclei at ##
+## the end of the irradiation (N_Dirr) for the SDD detector                                              ##
+## ***************************************************************************************************** ##
+def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, t_trans, lab):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -293,34 +256,53 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, lab):
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
 
-    ## Fit the data, passing radType explicitly    
-    poptKa, pcovKa = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Ka'), 
+    ## Fit the data for each radiation type   
+    poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p), 
                                time, countsKa, p0=init[0][0:2], sigma=errKa, absolute_sigma=True)
     
-    poptKb, pcovKb = curve_fit(lambda t, *p: NpeakSDD(t, *p, radType='Kb'), 
+    poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p), 
                                time, countsKb, p0=init[1][0:2], sigma=errKb, absolute_sigma=True)
     
     ## Get fit parameters
     # Ka line
-    NdirrKa, NdirrKa_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] 
+    N0Ka, N0Ka_err = poptKa[0], np.sqrt(np.diag(pcovKa))[0] 
     bgRateKa, bgRateKa_err = poptKa[1], np.sqrt(np.diag(pcovKa))[1]
     # Kb line
-    NdirrKb, NdirrKb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
+    N0Kb, N0Kb_err = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
     bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1] 
+
+    ## Constants
+    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
+    halfLife_min_err = 0.01*60 # minutes
+    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
+    lambda_decay_err = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
+    t_trans_err = 1.
+
+    ## Calculate N_Dirr and error propagation
+    NdirrKa = N0Ka/(efficiency[0][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKa_err = np.sqrt((np.exp(lambda_decay*t_trans)*N0Ka_err/efficiency[0][0])**2 + 
+                          (N0Ka*np.exp(lambda_decay*t_trans)*efficiency[0][1]/efficiency[0][0]**2)**2 + 
+                          (t_trans*N0Ka*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[0][0])**2 + 
+                          (lambda_decay*N0Ka*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[0][0])**2)
+    
+    NdirrKb = N0Kb/(efficiency[1][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKb_err = np.sqrt((np.exp(lambda_decay*t_trans)*N0Kb_err/efficiency[1][0])**2 + 
+                          (N0Kb*np.exp(lambda_decay*t_trans)*efficiency[1][1]/efficiency[1][0]**2)**2 + 
+                          (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[1][0])**2 + 
+                          (lambda_decay*N0Kb*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[1][0])**2)
 
     ## Print results
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
-    print(f"bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f})/ 30 min")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
-    print(f"bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f})/ 30 min")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | \t bgRate = ({bgRateKa:.3f}+-{bgRateKa_err:.3f}) cnts/min")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | \t bgRate = ({bgRateKb:.3f}+-{bgRateKb_err:.3f}) cnts/min")
+    print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.2f}")
     print()
 
     ## Fit function for plotting
-    fittedKa = NpeakSDD(time, *poptKa, radType='Ka')
-    fittedKb = NpeakSDD(time, *poptKb, radType='Kb')
+    fittedKa = Npeak(time, *poptKa)
+    fittedKb = Npeak(time, *poptKb)
 
     # Plot the results
     fig, ax = plt.subplots()

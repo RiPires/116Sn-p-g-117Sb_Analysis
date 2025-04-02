@@ -13,7 +13,7 @@ import itertools
 def PlotAll():
 
     ch = [(i+1) for i in range(1024)]
-    path = '../2_Decay/DataFilesGe/BgRemoved/'
+    path = '../2_Decay/DataFilesGe/Decay/'
     
     nr_colors = len(os.listdir(path))
     colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
@@ -54,7 +54,7 @@ def PlotAll():
     ax2.plot((-d, +d), (1-d, 1+d), **kwargs)
     ax2.plot((-d, +d), (-d, +d), **kwargs)
 
-    legend1 = ax1.legend(loc="upper left",ncol=1, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    #legend1 = ax1.legend(loc="upper left",ncol=1, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
 
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)

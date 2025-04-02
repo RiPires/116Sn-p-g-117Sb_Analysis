@@ -69,11 +69,29 @@ void PlotAndEff(const char* filename){
 
 }
 
-void RunPlotAndEff(){
-	PlotAndEff("../data-files_SDD/output_Ebeam32_8mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam35_8mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam39_8mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam43_8mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam47_8mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam50_8mm.root");
+void RunPlotAndEff_7mm(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_7mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_7mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_7mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_7mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_7mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_7mm.root");
+}
+
+void RunPlotAndEff_9mm(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_9mm.root");
+}
+
+void RunPlotAndEff_12mm(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_12mm.root");
 }

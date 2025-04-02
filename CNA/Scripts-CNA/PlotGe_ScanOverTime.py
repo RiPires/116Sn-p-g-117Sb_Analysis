@@ -1,5 +1,5 @@
 ############### RiP ##################
-## Plot every SDD run of a specific ##
+## Plot every Ge run of a specific  ##
 ## activation in the same axes      ##
 ######################################
 
@@ -16,8 +16,8 @@ import itertools
 ##########################################
 def PlotAll():
 
-    ch = [(i+1) for i in range(2048)]
-    path = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/'
+    ch = [(i+1) for i in range(4096)]
+    path = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_HPGe/'
     
     nr_colors = len(os.listdir(path))
     colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
@@ -29,8 +29,8 @@ def PlotAll():
     fig, ax= plt.subplots()
     #ax.set_yscale("log")
     for file in sorted(os.listdir(path)):
-        y = MCA2Lists(path+file)[0]
-        ax.plot(ch, y, linestyle=":", marker=next(markers), color =colors[counter], label=file.replace(".mca","").replace("116Sn-C3_Decay_SDD","Run"))
+        y = Ge2Lists(path+file)[0]
+        ax.semilogy(ch, y, linestyle=":", marker=next(markers), color =colors[counter], label=file.replace(".mca","").replace("116Sn-C3_Decay_SDD","Run"))
         counter+=1
     #legend = ax.legend(loc="upper right",ncol=3, shadow=False,fancybox=True,framealpha = 0.0,fontsize=10)
     #legend.get_frame().set_facecolor('#DAEBF2')

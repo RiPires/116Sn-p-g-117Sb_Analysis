@@ -47,14 +47,14 @@ void PlotAndEff(const char* filename){
 
      // ROIs for each photopeak area calculation
         // gamma 158 keV
-        int binMinGamma = hist1->FindBin(0.1585);
-        int binMaxGamma = hist1->FindBin(0.1589);
+        int binMinGamma = hist1->FindBin(0.1580);
+        int binMaxGamma = hist1->FindBin(0.1591);
         // Ka
-        int binMinKa = hist1->FindBin(0.0246);
-        int binMaxKa = hist1->FindBin(0.0253);
+        int binMinKa = hist1->FindBin(0.0242);
+        int binMaxKa = hist1->FindBin(0.0254);
         // Kb
-        int binMinKb = hist1->FindBin(0.0281);
-        int binMaxKb = hist1->FindBin(0.0288);
+        int binMinKb = hist1->FindBin(0.0275);
+        int binMaxKb = hist1->FindBin(0.0296);
 
     // Calculate the area under each photopeak
         double area_Gamma = hist1->Integral(binMinGamma, binMaxGamma);
@@ -63,7 +63,7 @@ void PlotAndEff(const char* filename){
 
     // Calculate the detetcor efficiency for each peak energy
         double eff_Gamma, eff_Ka, eff_Kb, nTot;
-        nTot = 1e6;
+        nTot = 1e7;
         eff_Gamma = area_Gamma/nTot;
         eff_Ka = area_Ka/nTot;
         eff_Kb = area_Kb/nTot;
