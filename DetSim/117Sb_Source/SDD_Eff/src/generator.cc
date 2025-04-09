@@ -15,7 +15,7 @@ MyPrimaryGenerator::MyPrimaryGenerator() {
 
     // Get initial source position from the detector
     fSourcePosition = detector->GetSourcePosition();
-    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., fSourcePosition));  // Set initial particle position
+    fParticleGun->SetParticlePosition(G4ThreeVector(-0.56*mm, 1.03*mm, fSourcePosition));  // Set initial particle position
     G4cout << "Primary generator initialized at position: " << fSourcePosition / mm << " mm" << G4endl;
 
     // Set default particle type to geantino

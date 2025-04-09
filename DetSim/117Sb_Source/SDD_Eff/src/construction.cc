@@ -197,6 +197,8 @@ void MyDetectorConstruction::SetSourcePosition(G4double position)
 
     // Notify Geant4 that the geometry has been modified
     G4RunManager::GetRunManager()->GeometryHasBeenModified();
+
+    G4cout << "GPS zz position updated to: " << sourcePosition/mm << " mm" << G4endl;
 }
 
 // Method to set the Sn target thickness
