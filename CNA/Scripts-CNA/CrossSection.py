@@ -37,6 +37,7 @@ decayConstant_err = np.log(2) * halfLife_min_err / halfLife_min**2  # in min^-1
 
 ## Calculate Rutherford Differential Cross-Section
 energies = np.array([3.2, 3.5, 3.9, 4.3, 4.7, 5.0]) # MeV
+dE = np.array([0.046, 0.043, 0.038, 0.035, 0.042, 0.042])
 ruthCrossSection = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*energies*10**6*np.sin(scattAngRad/2)**2) )**2 *1e31 # mb/sr
 ruthCrossSection_CTN = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*3.215*10**6*np.sin(scattAng_CTN_Rad/2)**2) )**2 *1e31 # mb/sr
 
@@ -44,19 +45,19 @@ ruthCrossSection_CTN = ( (zBeam*zTarget*eCharge) / (16*np.pi*epsilon0*3.215*10**
 #alfa = ((zBeam*zTarget*eCharge)/(16*np.pi*epsilon0*10**6))**2 * 10**31
 #ruthCrossSection_err = (alfa * np.cos(scattAngRad/2))/(energies * (np.sin(scattAngRad/2))**3) * scattAngRad_err ## mbarn
 ruthCrossSection_err = np.sqrt((2*ruthCrossSection*np.cos(scattAngRad/2)/np.sin(scattAngRad/2)*scattAngRad_err)**2 +
-                                (2*ruthCrossSection*0.0001/energies)**2)
+                                (2*ruthCrossSection*dE/energies)**2)
 ruthCrossSection_CTN_err = np.sqrt((2*ruthCrossSection_CTN*np.cos(scattAng_CTN_Rad/2)/np.sin(scattAng_CTN_Rad/2)*scattAngRad_CTN_err)**2 +
                                     (2*ruthCrossSection_CTN*0.0001/3.215)**2)
 
 # The number of radioactive nuclei at the end  of the irradiation, from the Npeak fit, 
 # for each beam energy, and each radiation type
 N_D_irr_HPGe = {
-    "Ebeam=3.2MeV": {"gamma": 2.250e6, "Ka": 2.322e6, "Kb": 2.461e6, "511 keV": 2.773e6, "861 keV": 1.723e6, "1004 keV": 1.081e6},
-    "Ebeam=3.5MeV": {"gamma": 9.018e6, "Ka": 9.198e6, "Kb": 9.807e6, "511 keV": 1.044e7, "861 keV": 7.715e6, "1004 keV": 7.753e6},
-    "Ebeam=3.9MeV": {"gamma": 2.054e7, "Ka": 2.091e7, "Kb": 2.237e7, "511 keV": 2.735e7, "861 keV": 1.832e7, "1004 keV": 1.367e7},
-    "Ebeam=4.3MeV": {"gamma": 4.017e7, "Ka": 4.073e7, "Kb": 4.362e7, "511 keV": 5.329e7, "861 keV": 4.039e7, "1004 keV": 3.574e7},
-    "Ebeam=4.7MeV": {"gamma": 7.437e7, "Ka": 7.492e7, "Kb": 8.045e7, "511 keV": 1.118e8, "861 keV": 6.933e7, "1004 keV": 6.361e7},
-    "Ebeam=5.0MeV": {"gamma": 1.502e8, "Ka": 1.481e8, "Kb": 1.481e8, "511 keV": 2.332e8, "861 keV": 1.583e8, "1004 keV": 1.373e8}}
+    "Ebeam=3.2MeV": {"gamma": 2.879e6, "Ka": 2.754e6, "Kb": 2.908e6, "511 keV": 3.162e6, "861 keV": 1.990e6, "1004 keV": 1.471e6},
+    "Ebeam=3.5MeV": {"gamma": 1.153e7, "Ka": 1.094e7, "Kb": 1.167e7, "511 keV": 1.209e7, "861 keV": 9.367e6, "1004 keV": 9.896e6},
+    "Ebeam=3.9MeV": {"gamma": 2.630e7, "Ka": 2.490e7, "Kb": 2.662e7, "511 keV": 3.168e7, "861 keV": 2.126e7, "1004 keV": 1.877e7},
+    "Ebeam=4.3MeV": {"gamma": 5.135e7, "Ka": 4.849e7, "Kb": 5.174e7, "511 keV": 6.151e7, "861 keV": 4.807e7, "1004 keV": 4.559e7},
+    "Ebeam=4.7MeV": {"gamma": 9.499e7, "Ka": 8.922e7, "Kb": 9.537e7, "511 keV": 1.256e8, "861 keV": 8.266e7, "1004 keV": 8.243e7},
+    "Ebeam=5.0MeV": {"gamma": 1.923e8, "Ka": 1.764e8, "Kb": 1.923e8, "511 keV": 2.668e8, "861 keV": 1.787e8, "1004 keV": 1.712e8}}
 
 ## Error values of N_Dirr from the fit of HPGe data
 N_D_irr_HPGe_err = {
@@ -67,7 +68,7 @@ N_D_irr_HPGe_err = {
     "Ebeam=4.7MeV": {"gamma": 3e6, "Ka": 2e6, "Kb": 2e6, "511 keV": 2e6, "861 keV": 4e5, "1004 keV": 2e6},
     "Ebeam=5.0MeV": {"gamma": 6e6, "Ka": 3e6, "Kb": 5e6, "511 keV": 7e6, "861 keV": 8e5, "1004 keV": 9e6}} 
 
-## Parameters for the detector at mean position of (9+7)/2 mm
+## Parameters for the detector at mean position of (12+10)/2 mm
 N_D_irr_SDD = {
                       "Ebeam=3.2MeV": {"Ka": 2.430e6, "Kb": 1.925e6},
                       "Ebeam=3.5MeV": {"Ka": 1.023e7, "Kb": 9.097e6},
@@ -303,4 +304,4 @@ print()
 print(f" ------------------------- \n ------------------------- \n")
 
 ## Plot the experimental data alongside different author's results
-PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err)
+PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)

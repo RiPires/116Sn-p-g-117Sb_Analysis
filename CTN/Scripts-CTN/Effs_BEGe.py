@@ -6,9 +6,9 @@
 import numpy as np
 ## ---------------- ##
 
-effs_22mm = [7.540e-2, 7.773e-2, 1.724e-2]
+effs_22mm = [8.073e-2, 8.655e-2, 1.922e-2]
 
-effs_20mm = [8.106e-2, 8.338e-2, 1.857e-2]
+effs_20mm = [8.696e-2, 9.273e-2, 2.072e-2]
 
 effs_mean, d_effs = np.zeros(3), np.zeros(3)
 

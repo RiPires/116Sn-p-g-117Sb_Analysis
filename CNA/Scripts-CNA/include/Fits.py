@@ -214,13 +214,13 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     """
 
     ## Convert input arrays into numpy arrays
-    time = np.array(time)
+    time        = np.array(time)
     countsGamma = np.array(countsGamma)
-    countsKa = np.array(countsKa)
-    countsKb = np.array(countsKb)
-    counts511 = np.array(counts511)
-    counts861 = np.array(counts861)
-    counts1004 = np.array(counts1004)
+    countsKa    = np.array(countsKa)
+    countsKb    = np.array(countsKb)
+    counts511   = np.array(counts511)
+    counts861   = np.array(counts861)
+    counts1004  = np.array(counts1004)
 
     ## Fit the data, passing radType explicitly
     # Gamma line
@@ -263,11 +263,11 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     bgRate1004, bgRate1004_err      = popt1004[1],   np.sqrt(np.diag(pcov1004))[1]
 
     ## Constants
-    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
-    halfLife_min_err = 0.01*60 # minutes
-    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
-    lambda_decay_err = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
-    t_trans_err = 1.
+    halfLifeMin         = 2.8 * 60  # Decay half-life (minutes)
+    halfLife_min_err    = 0.01*60 # minutes
+    lambda_decay        = np.log(2) / halfLifeMin  # Decay constant
+    lambda_decay_err    = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
+    t_trans_err         = 1. # minute
 
     ## Calculate N_Dirr and error propagation
     ## Gamma line
@@ -289,20 +289,20 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
                             (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[2][0])**2 + 
                             (lambda_decay*N0Kb*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
     ## 511 keV line
-    Ndirr511         = N0511/(efficiency[3][0] * np.exp(-lambda_decay*t_trans))
-    Ndirr511_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0511_err/efficiency[3][0])**2 + 
+    Ndirr511        = N0511/(efficiency[3][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr511_err    = np.sqrt((np.exp(lambda_decay*t_trans)*N0511_err/efficiency[3][0])**2 + 
                             (N0511*np.exp(lambda_decay*t_trans)*efficiency[3][1]/efficiency[3][0]**2)**2 + 
                             (t_trans*N0511*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[3][0])**2 + 
                             (lambda_decay*N0511*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[3][0])**2)
     ## 861 keV line
-    Ndirr861         = N0861/(efficiency[4][0] * np.exp(-lambda_decay*t_trans))
-    Ndirr861_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0861_err/efficiency[4][0])**2 + 
+    Ndirr861        = N0861/(efficiency[4][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr861_err    = np.sqrt((np.exp(lambda_decay*t_trans)*N0861_err/efficiency[4][0])**2 + 
                             (N0861*np.exp(lambda_decay*t_trans)*efficiency[4][1]/efficiency[4][0]**2)**2 + 
                             (t_trans*N0861*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[4][0])**2 + 
                             (lambda_decay*N0861*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[4][0])**2)
     ## 1004 keV line
-    Ndirr1004         = N01004/(efficiency[5][0] * np.exp(-lambda_decay*t_trans))
-    Ndirr1004_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N01004_err/efficiency[5][0])**2 + 
+    Ndirr1004       = N01004/(efficiency[5][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr1004_err   = np.sqrt((np.exp(lambda_decay*t_trans)*N01004_err/efficiency[5][0])**2 + 
                             (N01004*np.exp(lambda_decay*t_trans)*efficiency[5][1]/efficiency[5][0]**2)**2 + 
                             (t_trans*N01004*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[5][0])**2 + 
                             (lambda_decay*N01004*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[5][0])**2)
@@ -311,21 +311,21 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
-    print(f"1004 keV line: \t Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e} | \t bgRate = ({bgRate1004:.2f} +- {bgRate1004_err:.2f}) counts/min")
-    print(f"861 keV line: \t Ndirr = {Ndirr861:.3e} +- {Ndirr861_err:.0e} | \t bgRate = ({bgRate861:.2f} +- {bgRate861_err:.2f}) counts/min")
-    print(f"511 keV line: \t Ndirr = {Ndirr511:.3e} +- {Ndirr511_err:.0e} | \t bgRate = ({bgRate511:.2f} +- {bgRate511_err:.2f}) counts/min")
-    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | \t bgRate = ({bgRateGamma:.2f} +- {bgRateGamma_err:.2f}) counts/min")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | \t bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | \t bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | N0 = {N0Gamma:.3e} +- {N0Gamma_err:.0e} | bgRate = ({bgRateGamma:.2f} +- {bgRateGamma_err:.2f}) counts/min")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | N0 = {N0Ka:.3e} +- {N0Ka_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | N0 = {N0Kb:.3e} +- {N0Kb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    print(f"511 keV line: \t Ndirr = {Ndirr511:.3e} +- {Ndirr511_err:.0e} | N0 = {N0511:.3e} +- {N0511_err:.0e} | bgRate = ({bgRate511:.2f} +- {bgRate511_err:.2f}) counts/min")
+    print(f"861 keV line: \t Ndirr = {Ndirr861:.3e} +- {Ndirr861_err:.0e} | N0 = {N0861:.3e} +- {N0861_err:.0e} | bgRate = ({bgRate861:.2f} +- {bgRate861_err:.2f}) counts/min")
+    print(f"1004 keV line: \t Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e} | N0 = {N01004:.3e} +- {N01004_err:.0e} | bgRate = ({bgRate1004:.2f} +- {bgRate1004_err:.2f}) counts/min")
     print()
 
     ## Fited function for plotting
     fittedGamma = Npeak(time, *poptGamma)
-    fittedKa = Npeak(time, *poptKa)
-    fittedKb = Npeak(time, *poptKb)
-    fitted511 = Npeak(time, *popt511)
-    fitted861 = Npeak(time, *popt861)
-    fitted1004 = Npeak(time, *popt1004)
+    fittedKa    = Npeak(time, *poptKa)
+    fittedKb    = Npeak(time, *poptKb)
+    fitted511   = Npeak(time, *popt511)
+    fitted861   = Npeak(time, *popt861)
+    fitted1004  = Npeak(time, *popt1004)
 
     # Plot the results
     fig, ax = plt.subplots()
@@ -370,7 +370,7 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     """
 
     ## Convert input arrays into numpy arrays
-    time = np.array(time)
+    time     = np.array(time)
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
 
@@ -390,20 +390,20 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1] 
 
     ## Constants
-    halfLifeMin = 2.8 * 60  # Decay half-life (minutes)
-    halfLife_min_err = 0.01*60 # minutes
-    lambda_decay = np.log(2) / halfLifeMin  # Decay constant
-    lambda_decay_err = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
-    t_trans_err = 1.
+    halfLifeMin         = 2.8 * 60  # Decay half-life (minutes)
+    halfLife_min_err    = 0.01*60 # minutes
+    lambda_decay        = np.log(2) / halfLifeMin  # Decay constant
+    lambda_decay_err    = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
+    t_trans_err         = 1. # minute
 
     ## Calculate N_Dirr and error propagation
-    NdirrKa = N0Ka/(efficiency[0][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKa     = N0Ka/(efficiency[0][0] * np.exp(-lambda_decay*t_trans))
     NdirrKa_err = np.sqrt((np.exp(lambda_decay*t_trans)*N0Ka_err/efficiency[0][0])**2 + 
                           (N0Ka*np.exp(lambda_decay*t_trans)*efficiency[0][1]/efficiency[0][0]**2)**2 + 
                           (t_trans*N0Ka*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[0][0])**2 + 
                           (lambda_decay*N0Ka*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[0][0])**2)
     
-    NdirrKb = N0Kb/(efficiency[1][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKb     = N0Kb/(efficiency[1][0] * np.exp(-lambda_decay*t_trans))
     NdirrKb_err = np.sqrt((np.exp(lambda_decay*t_trans)*N0Kb_err/efficiency[1][0])**2 + 
                           (N0Kb*np.exp(lambda_decay*t_trans)*efficiency[1][1]/efficiency[1][0]**2)**2 + 
                           (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[1][0])**2 + 

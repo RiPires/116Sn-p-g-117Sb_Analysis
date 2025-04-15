@@ -122,7 +122,7 @@ def PlotRBS(ch, y, lab):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
-def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err):
+def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
     
@@ -243,13 +243,13 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     5.500000E+00]
                 
     # Define colors and markers for different radiation types
-    colorsHPGe = {"gamma": "xkcd:aqua", "Ka": "xkcd:light blue", "Kb": "xkcd:light green", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:red orange"}
+    colorsHPGe = {"gamma": "xkcd:aqua", "Ka": "xkcd:blue violet", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:red orange"}
     markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
     colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
     markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
-    colorsSDD = {"Ka": "xkcd:blue", "Kb": "xkcd:green"}
+    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:light magenta"}
     colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
-    markersSDD = {"Ka": ".", "Kb": "v"}
+    markersSDD = {"Ka": "*", "Kb": "v"}
     markersSDD_CTN = {"Ka": "<", "Kb": ">"}
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
@@ -265,15 +265,16 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     ax.set_yscale("log")
 
     ## HPGe at CNA data
-    for rad_type in ["gamma", "Ka", "Kb", "511 keV", "861 keV", "1004 keV"]:
+    for rad_type in ["gamma", "Ka", "Kb"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
         ax.errorbar(energies, cross_section_values_HPGe,
+                    #xerr=dE,
                     yerr=hpge_err,
                     capsize=4,
                     marker=markersHPGe[rad_type],
                     linestyle='--', 
-                    linewidth=1,
+                    linewidth=2,
                     color=colorsHPGe[rad_type], 
                     label=labs[rad_type]+" HPGe@CNA")
         
@@ -282,11 +283,12 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
         sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
         ax.errorbar(energies, cross_section_values_SDD, 
+                    #xerr=dE,
                     yerr=sdd_err,
                     capsize=4,
                     marker=markersSDD[rad_type],
                     linestyle='-.', 
-                    linewidth=1,
+                    linewidth=2,
                     color=colorsSDD[rad_type], 
                     label=labs[rad_type]+" SDD@CNA")
     
@@ -299,7 +301,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     capsize=4,
                     marker=markersBEGe_CTN[rad_type],
                     linestyle='', 
-                    linewidth=1,
+                    linewidth=2,
                     color=colorsBEGe_CTN[rad_type], 
                     label=labs[rad_type]+" BEGe@CTN")
         
@@ -312,29 +314,29 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     capsize=4,
                     marker=markersSDD_CTN[rad_type],
                     linestyle='', 
-                    linewidth=1,
+                    linewidth=2,
                     color=colorsSDD_CTN[rad_type], 
                     label=labs[rad_type]+" SDD@CTN")
         
     ## Famiano data
     cross_sections_Famiano = [famiano[key][0] for key in famiano.keys()]
     famiano_errs = [famiano[key][1] for key in famiano.keys()]
-    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
+    #ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
 
     ## Ozkan data
     cross_sections_Ozkan = [ozkan[key][0] for key in ozkan.keys()]
     ozkan_errs = [ozkan[key][1] for key in ozkan.keys()]
-    ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, capsize=4, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label='$\\rm{\\"{O}}$zkan 2002')
+    #ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, capsize=4, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label='$\\rm{\\"{O}}$zkan 2002')
 
     ## Xarepe data
     cross_sections_Xarepe = [xarepe[key][0] for key in xarepe.keys()]
     xarepe_errs = [xarepe[key][1] for key in xarepe.keys()]
-    ax.errorbar(eXarepe, cross_sections_Xarepe, yerr=xarepe_errs, capsize=4, marker='*', linestyle='', color="xkcd:browny orange", label="Xarepe 2021")
+    #ax.errorbar(eXarepe, cross_sections_Xarepe, yerr=xarepe_errs, capsize=4, marker='*', linestyle='', color="xkcd:browny orange", label="Xarepe 2021")
 
     ## Harissopulos data
     cross_sections_Harissopulos = [harissopulos[key][0] for key in harissopulos.keys()]
     harissopulos_errs = [harissopulos[key][1] for key in harissopulos.keys()]
-    ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, capsize=4, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
+    #ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, capsize=4, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
 
     ## Talys data
     ax.plot(talysEnergies, talys, linestyle='-', color="xkcd:black", label="Talys 2.0")

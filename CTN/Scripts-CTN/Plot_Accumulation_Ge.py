@@ -17,7 +17,7 @@ gePath = '../2_Decay/DataFilesGe/Decay/'
 initParamsNpeak = [[9.0e5, 1.], [8.0e5, 1.], [2.0e5, 1.]]
 
 ## Efficiency and emission probabilities
-efficiency_params = [[7.823e-2, 2.83e-3], [8.055e-2, 2.83e-3], [1.790e-2, 6.7e-4]]
+efficiency_params = [[8.385e-2, 3.11e-3], [8.964e-2, 3.09e-3], [1.997e-2, 7.5e-4]]
 
 ## Transportation time
 t_transMin = 22. #minutes

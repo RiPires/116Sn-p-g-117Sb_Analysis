@@ -165,3 +165,23 @@ def ReadCurrent(iPath):
             current.append(float(aux[i][2]))
     
     return time, current
+
+#######################################################
+#######################################################
+def Material2List(File):
+
+    density = 7.31 # g/cm3 for Sn
+    with open(File, 'r') as file:
+        reader = csv.reader(file, delimiter='\n', skipinitialspace=True)
+        data = list(reader)
+
+    energies, stopPower, aux = [], [], []
+
+    for i in range(1, len(data)):
+        aux.append(data[i][0].split('|'))
+
+    for i in range(len(aux)):
+        energies.append(float(aux[i][0]))
+        stopPower.append(float(aux[i][1])*density) # MeV/cm
+    
+    return energies, stopPower

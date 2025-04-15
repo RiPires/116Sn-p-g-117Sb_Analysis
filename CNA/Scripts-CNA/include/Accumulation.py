@@ -126,12 +126,9 @@ def AccumulateGe_BgRemove(gePath):
     Accu_Ka_err, Accu_Kb_err, Accu_g_err, Accu_511_err, Accu_861_err, Accu_1004_err = [0], [0], [0], [0], [0], [0]
     counter = 1
 
-    ## Set channels list
-    ch = [(i+1) for i in range(4096)]
-
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(71)
+    roiDown_Ka = int(66)
     roiUp_Ka = int(85)
 
     ## Kb
