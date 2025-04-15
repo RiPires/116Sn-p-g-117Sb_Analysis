@@ -93,7 +93,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //  Defines Ge DETECTOR active volume  //
     solidDetector = new G4Tubs("SolidDetector", 0.*m, 2.985*cm, 25/2.*mm, 0., 2*pi); // radius of 2.985 cm lead to ~ 28 cm² of active area
     logicDetector = new G4LogicalVolume(solidDetector, detMat, "LogicDetector");
-    physDetector = new G4PVPlacement(0, G4ThreeVector(0., 0., 33.*mm), logicDetector, "PhysDetector", logicWorld, false, 0., true);
+    physDetector = new G4PVPlacement(0, G4ThreeVector(0., 0., 17.5*mm), logicDetector, "PhysDetector", logicWorld, false, 0., true);
     
     ScoringVolume = logicDetector;
         
