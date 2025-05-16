@@ -76,7 +76,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         }
     }
 
-    // FInd maximum yield of the resolution broadened spectrum
+    // Find maximum yield of the resolution broadened spectrum
     double maxYield = histRes->GetMaximum();
 
     // Normalize the bin content  by the maximum yield
@@ -84,7 +84,6 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         double binContent = histRes->GetBinContent(i);
         histRes->SetBinContent(i, binContent/maxYield);
     }
-
 
     // Open the experimental data file
     std::ifstream infile(expFilename);
@@ -94,7 +93,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         return;
     }
 
-    // Read the file and skip the first 12 lines
+    // Read the experimental file
     std::string line;
     for (int i = 0; i < 0; i++) {
         std::getline(infile, line);
@@ -124,7 +123,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         histExp->SetBinContent(histExp->FindBin(energy), dataValues[i]/expMaxYield);  // ROOT histograms are 1-indexed
     }
     
-    // Create a canvas to plot both histograms
+    /*// Create a canvas to plot both histograms
     TCanvas* canvas = new TCanvas("canvas", "Exp vs Sim SDD Calib", 1200, 900);
 
     histRes->SetLineColor(kBlue);
@@ -154,18 +153,93 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     string s = lab+"_Normalized.root";
     const char *figName = s.c_str();
     canvas->SaveAs(figName);
-    gPad->Update();
+    gPad->Update();*/
+
+    //
+    // Calculate Sim to Exp peak area ratio
+    //
+
+    // ROIs for each photopeak area calculation
+    // Simulated:
+    // gamma 158 keV
+    int binMinGamma = histRes->FindBin(0.15853);
+    int binMaxGamma = histRes->FindBin(0.15887);
+    // Ka
+    int binMinKa = histRes->FindBin(0.0247);
+    int binMaxKa = histRes->FindBin(0.0253);
+    // Kb
+    int binMinKb = histRes->FindBin(0.02833);
+    int binMaxKb = histRes->FindBin(0.0293);
+    // gamma 511 keV
+    int binMin511 = histRes->FindBin(0.5108);
+    int binMax511 = histRes->FindBin(0.511); 
+    // gamma 861 keV
+    int binMin861 = histRes->FindBin(0.86108);
+    int binMax861 = histRes->FindBin(0.86142);
+    // gamma 1004 keV
+    int binMin1004 = histRes->FindBin(1.00448);
+    int binMax1004 = histRes->FindBin(1.00484);
+
+    // Experimental:
+    // gamma 158 keV
+    int binMinGammaExp = histExp->FindBin(0.15853);
+    int binMaxGammaExp = histExp->FindBin(0.15887);
+    // Ka
+    int binMinKaExp = histExp->FindBin(0.0247);
+    int binMaxKaExp = histExp->FindBin(0.0253);
+    // Kb
+    int binMinKbExp = histExp->FindBin(0.02833);
+    int binMaxKbExp = histExp->FindBin(0.0293);
+    // gamma 511 keV
+    int binMin511Exp = histExp->FindBin(0.5108);
+    int binMax511Exp = histExp->FindBin(0.511); 
+    // gamma 861 keV
+    int binMin861Exp = histExp->FindBin(0.86108);
+    int binMax861Exp = histExp->FindBin(0.86142);
+    // gamma 1004 keV
+    int binMin1004Exp = histExp->FindBin(1.00448);
+    int binMax1004Exp = histExp->FindBin(1.00484);
+
+    // Calculate the area under each photopeak
+    // Simulated:
+    double area_GammaSim = histRes->Integral(binMinGamma, binMaxGamma);
+    double area_KaSim = histRes->Integral(binMinKa, binMaxKa);
+    double area_KbSim = histRes->Integral(binMinKb, binMaxKb);
+    double area_511Sim = histRes->Integral(binMin511, binMax511);
+    double area_861Sim = histRes->Integral(binMin861, binMax861);
+    double area_1004Sim = histRes->Integral(binMin1004, binMax1004);
+    // Experimental:
+    double area_GammaExp = histExp->Integral(binMinGammaExp, binMaxGamma);
+    double area_KaExp = histExp->Integral(binMinKaExp, binMaxKaExp);
+    double area_KbExp = histExp->Integral(binMinKbExp, binMaxKbExp);
+    double area_511Exp = histExp->Integral(binMin511Exp, binMax511Exp);
+    double area_861Exp = histExp->Integral(binMin861Exp, binMax861Exp);
+    double area_1004Exp = histExp->Integral(binMin1004Exp, binMax1004Exp);
+
+    // Calculate Sim/Exp peak area ratio
+    double ratio_Gamma, ratio_Ka, ratio_Kb, ratio_511, ratio_861, ratio_1004;
+    ratio_Gamma = area_GammaSim/area_GammaExp;
+    ratio_Ka = area_KaSim/area_KaExp;
+    ratio_Kb = area_KbSim/area_KbExp;
+    ratio_511 = area_511Sim/area_511Exp;
+    ratio_861 = area_861Sim/area_861Exp;
+    ratio_1004 = area_1004Sim/area_1004Exp;
+
+    cout << "Sim/Exp peak area ratio for: " << lab << "\n" << endl;
+    cout << "Ka: \t\t " << ratio_Ka << endl;
+    cout << "Kb: \t\t " << ratio_Kb << endl;
+    cout << "158 keV: \t " << ratio_Gamma << endl;
+    cout << "511 keV: \t " << ratio_511 << endl;
+    cout << "861 keV: \t " << ratio_861 << endl;
+    cout << "1004 keV: \t " << ratio_1004 << endl;
+    cout << "## ------------------------------------- ##\n" << endl;
 }
 
 void Run(){
-    PlotBothNorm("../data-files_HPGe/output_Run01_137Cs_8mm.root", "../data-files_HPGe/Run01_137Cs_8mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run02_137Cs_50mm.root", "../data-files_HPGe/Run02_137Cs_50mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run03_152Eu_50mm.root", "../data-files_HPGe/Run03_152Eu_50mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run04_133Ba_50mm.root", "../data-files_HPGe/Run04_133Ba_50mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run05_60Co_50mm.root", "../data-files_HPGe/Run05_60Co_50mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run06_137Cs_100mm.root", "../data-files_HPGe/Run06_137Cs_100mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run07_152Eu_100mm.root", "../data-files_HPGe/Run07_152Eu_100mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run08_133Ba_100mm.root", "../data-files_HPGe/Run08_133Ba_100mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run09_133Ba_8mm.root", "../data-files_HPGe/Run09_133Ba_8mm_BgRemoved.mca");
-    PlotBothNorm("../data-files_HPGe/output_Run10_152Eu_8mm.root", "../data-files_HPGe/Run10_152Eu_8mm_BgRemoved.mca");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam32_18mm.root", "../data-files_HPGe/Ebeam=3.2MeV_116Sn-C3_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam39_18mm.root", "../data-files_HPGe/Ebeam=3.9MeV_116Sn-D4_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam43_18mm.root", "../data-files_HPGe/Ebeam=4.3MeV_116Sn-G1_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam47_18mm.root", "../data-files_HPGe/Ebeam=4.7MeV_116Sn-D8_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam50_18mm.root", "../data-files_HPGe/Ebeam=5.0MeV_116Sn-D5_Decay_HPGe_BgRemoved_Merged.txt");
+
 }

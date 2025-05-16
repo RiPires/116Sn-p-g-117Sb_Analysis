@@ -27,7 +27,7 @@ void PlotAndEff(const char* filename){
      ////////////////////////////////////////////////////
      // Create a canvas for plotting deposited energy  //
      ////////////////////////////////////////////////////
-     TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
+     //TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
      // Create a histogram
      TH1D* hist1 = new TH1D("hist", "Ge energy scoring", nrCh, intercept, nrCh*slope);
      // Project the variable into the histogram
@@ -38,11 +38,11 @@ void PlotAndEff(const char* filename){
      hist1->GetXaxis()->SetTitle("Energy (MeV)");
      hist1->GetYaxis()->SetTitle("Counts");
      // Draw the histogram on the canvas
-     hist1->Draw();
+     //hist1->Draw();
      // Display the canvas
-     canvas->SetLogy();
-     canvas->Draw();
-     gPad->Update();
+     //canvas->SetLogy();
+     //canvas->Draw();
+     //gPad->Update();
 
      // ROIs for each photopeak area calculation
         // gamma 158 keV
@@ -50,7 +50,7 @@ void PlotAndEff(const char* filename){
         int binMaxGamma = hist1->FindBin(0.15887);
         // Ka
         int binMinKa = hist1->FindBin(0.0247);
-        int binMaxKa = hist1->FindBin(0.0253);
+        int binMaxKa = hist1->FindBin(0.02546);
         // Kb
         int binMinKb = hist1->FindBin(0.02833);
         int binMaxKb = hist1->FindBin(0.0293);
@@ -83,12 +83,12 @@ void PlotAndEff(const char* filename){
         eff1004 = area1004/nTot;
 
     cout << "Efficiencies: " << endl;
-    cout << "1004 keV \t" << eff1004 << endl;
-    cout << "861 keV \t" << eff861 << endl;
-    cout << "511 keV \t" << eff511 << endl;
     cout << "Gamma = \t" << eff_Gamma << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
+    cout << "511 keV \t" << eff511 << endl;
+    cout << "861 keV \t" << eff861 << endl;
+    cout << "1004 keV \t" << eff1004 << endl;
 }
 
 void RunPlotAndEff10mm(){
@@ -107,4 +107,22 @@ void RunPlotAndEff12mm(){
     PlotAndEff("../data-files_HPGe/output_Ebeam43_12mm.root");
     PlotAndEff("../data-files_HPGe/output_Ebeam47_12mm.root");
     PlotAndEff("../data-files_HPGe/output_Ebeam50_12mm.root");
+}
+
+void RunPlotAndEff16mm(){
+    PlotAndEff("../data-files_HPGe/output_Ebeam32_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam35_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam39_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam43_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam47_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam50_16mm.root");
+}
+
+void RunPlotAndEff18mm(){
+    PlotAndEff("../data-files_HPGe/output_Ebeam32_18mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam35_18mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam39_18mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam43_18mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam47_18mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam50_18mm.root");
 }

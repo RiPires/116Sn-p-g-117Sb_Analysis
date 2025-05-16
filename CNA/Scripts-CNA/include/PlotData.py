@@ -94,7 +94,7 @@ def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 def PlotI(t, i, lab):
 
     fig, ax = plt.subplots()
-    ax.plot(t, i,'+-', color ='xkcd:black', label=str(lab))
+    ax.plot(t, i,'+', color ='xkcd:black', label=str(lab))
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)

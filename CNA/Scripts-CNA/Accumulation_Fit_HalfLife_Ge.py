@@ -1,5 +1,6 @@
 ############################################################
-## Script to plot HPGe accumulation at different energies ##
+## Script to perform HPGe accumulation fit, at different  ##
+## energies extracting N0 and decay Half-Life values      ##
 ############################################################
 
 ## -------------------------- ##
@@ -15,14 +16,14 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPG
            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/']
 
-## Define initial guess of (N0, bgRate) for each beam energy
+## Define initial guess of (N0, lambda_min) for each beam energy
 initParamsDict = {
-    'Ebeam=3.2MeV': {"gamma": (1.0e7, 1.), "Ka": (1.0e7, 1.), "Kb": (2.5e7, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)},
-    'Ebeam=3.5MeV': {"gamma": (1.2e7, 1.), "Ka": (1.2e7, 1.), "Kb": (2.5e8, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)}, 
-    'Ebeam=3.9MeV': {"gamma": (3.0e8, 1.), "Ka": (3.0e8, 1.), "Kb": (6.0e8, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)},  
-    'Ebeam=4.3MeV': {"gamma": (5.0e8, 1.), "Ka": (5.0e8, 1.), "Kb": (1.0e8, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)},  
-    'Ebeam=4.7MeV': {"gamma": (1.0e8, 1.), "Ka": (1.0e8, 1.), "Kb": (2.0e8, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)},  
-    'Ebeam=5.0MeV': {"gamma": (2.0e9, 1.), "Ka": (2.0e9, 1.), "Kb": (4.0e9, 1.), "511keV": (1e7, 1.), "861keV": (1e7, 1.), "1004keV": (1e7, 1.)}}
+    'Ebeam=3.2MeV': {"gamma": (1.0e7, 4.126e-3), "Ka": (1.0e7, 4.126e-3), "Kb": (2.5e7, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)},
+    'Ebeam=3.5MeV': {"gamma": (1.2e7, 4.126e-3), "Ka": (1.2e7, 4.126e-3), "Kb": (2.5e8, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)}, 
+    'Ebeam=3.9MeV': {"gamma": (3.0e8, 4.126e-3), "Ka": (3.0e8, 4.126e-3), "Kb": (6.0e8, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)},  
+    'Ebeam=4.3MeV': {"gamma": (5.0e8, 4.126e-3), "Ka": (5.0e8, 4.126e-3), "Kb": (1.0e8, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)},  
+    'Ebeam=4.7MeV': {"gamma": (1.0e8, 4.126e-3), "Ka": (1.0e8, 4.126e-3), "Kb": (2.0e8, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)},  
+    'Ebeam=5.0MeV': {"gamma": (2.0e9, 4.126e-3), "Ka": (2.0e9, 4.126e-3), "Kb": (4.0e9, 4.126e-3), "511keV": (1e7, 4.126e-3), "861keV": (1e7, 4.126e-3), "1004keV": (1e7, 4.126e-3)}}
 
 ## Convoluted efficiency and error values for each beam energy, and radiation type
 efficiency_params = {             
@@ -63,8 +64,8 @@ for files in gePaths:
     accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_gamma, accu_gamma_err, accu_511, accu_511_err, accu_861, accu_861_err, accu_1004, accu_1004_err, accu_time = AccumulateGe_BgRemove(files)
 
     ## Fit the data for Npeak
-    FitNpeakHPGe(Npeak, accu_time, accu_gamma, accu_gamma_err, 
-                        accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_511, accu_511_err, accu_861, accu_861_err, accu_1004, accu_1004_err,
-                        initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
-                        energy_key=energy_key, radType=radType, 
-                        lab=str(files[15:27]+' - '+files[-5:-1]+' @ CNA'))
+    FitNpeakHalfLifeHPGe(NpeakHalfLife, accu_time, accu_gamma, accu_gamma_err, accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, 
+                         accu_511, accu_511_err, accu_861, accu_861_err, accu_1004, accu_1004_err,
+                         initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
+                         energy_key=energy_key, radType=radType, 
+                         lab=str(files[15:27]+' - '+files[-5:-1]+' @ CNA'))

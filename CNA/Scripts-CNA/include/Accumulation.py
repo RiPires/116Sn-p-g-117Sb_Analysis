@@ -5,7 +5,6 @@
 ## ------------------ ##
 import os
 from include.ReadData import *
-from include.Merge import *
 from include.Fits import *
 import numpy as np
 from scipy.integrate import simps
@@ -128,28 +127,28 @@ def AccumulateGe_BgRemove(gePath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(66)
-    roiUp_Ka = int(85)
+    roiDown_Ka = int(62)
+    roiUp_Ka   = int(88)
 
     ## Kb
     roiDown_Kb = int(86)
-    roiUp_Kb = int(96)
+    roiUp_Kb   = int(96)
 
     ## gamma
-    roiDown_g = int(486)
-    roiUp_g = int(501)
+    roiDown_g = int(483)
+    roiUp_g   = int(503)
 
     ## 511 keV
     roiDown_511 = int(1571)
-    roiUp_511 = int(1602)
+    roiUp_511   = int(1602)
 
     ## 861 keV
     roiDown_861 = int(2660)
-    roiUp_861 = int(2684)
+    roiUp_861   = int(2684)
 
     ## 1004 keV
     roiDown_1004 = int(3102)
-    roiUp_1004 = int(3126)
+    roiUp_1004   = int(3126)
 
     ## Loop over Ge data files
     for file in sorted(os.listdir(gePath)):
@@ -157,7 +156,6 @@ def AccumulateGe_BgRemove(gePath):
         ## Get run yield and live time
         y = Ge2ListsBgRm(str(gePath+file))[0]
         live_time = Ge2Lists(str(gePath.replace("BgRemoved_LiveTime/","")+file.replace("_BgRemoved","")))[2]
-        #print(f"live-time = {live_time:.0f} s = {live_time/60:.1f} min")
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -191,10 +189,7 @@ def AccumulateGe_BgRemove(gePath):
 
         ## Increment accumulation time and counter
         accu_t += live_time/60 # minutes
-        #print(f"Acumulation time = {accu_t:.0f} min \n")
         counter += 1
-
-        #print(f"Ratio Ka/Kb yields = {accu_Ka/accu_Kb:.2f}")
 
         ## Save integral at this point
         Accu_Ka.append(accu_Ka)
@@ -293,26 +288,25 @@ def AccumulateSDD_BgRemoved(sddPath):
 
     ## Set empty lists to store accumulation points and time
     Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_t = [0], [0], [0], [0], []
-
     counter = 1
 
     ## Set ROI for each peak, in channel
     ## Ka1,2 lines
-    roiDown_Ka = int(802)
-    roiUp_Ka = int(822)
+    roiDown_Ka = int(797)
+    roiUp_Ka   = int(825)
 
     ## Kb1,3 lines
-    roiDown_Kb = int(911)
-    roiUp_Kb = int(925)
+    roiDown_Kb = int(909)
+    roiUp_Kb   = int(927)
 
     ## Loop over SDD runs
     for file in sorted(os.listdir(sddPath)):
 
         ## Get run yield background removed and run live time
-        y = MCA2ListsBgRm(str(sddPath+file))[0]
+        y, ch = MCA2ListsBgRm(str(sddPath+file))
         live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
 
-        ## Perform Ka accumulation
+        ## Perform Ka accumulation summing channel by channel
         for c in range(roiDown_Ka, roiUp_Ka):
             accu_Ka += y[c]
             accu_Ka_err = np.sqrt(accu_Ka + Accu_Ka[counter-1])
@@ -324,7 +318,6 @@ def AccumulateSDD_BgRemoved(sddPath):
 
         ## Increment time
         accu_t += live_time/60 # minutes
-        #print(f"Accumulation time = {accu_t:.0f} min \n")
         counter += 1
 
         ## Save integral at this point
@@ -334,4 +327,4 @@ def AccumulateSDD_BgRemoved(sddPath):
         Accu_Kb_err.append(accu_Kb_err)
         Accu_t.append(accu_t)
 
-    return Accu_Ka[1:], Accu_Ka_err[1:], Accu_Kb[1:], Accu_Kb_err[1:], Accu_t
+    return Accu_Ka[1:], Accu_Ka_err, Accu_Kb[1:], Accu_Kb_err, Accu_t

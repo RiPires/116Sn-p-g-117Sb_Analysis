@@ -28,9 +28,9 @@ void MyDetectorConstruction::DefineMaterial()
     G4NistManager *nist = G4NistManager::Instance();
     
     //  Elements  //
-    H = nist->FindOrBuildElement("H");
-    C = nist->FindOrBuildElement("C");
-    O = nist->FindOrBuildElement("O");
+    H  = nist->FindOrBuildElement("H");
+    C  = nist->FindOrBuildElement("C");
+    O  = nist->FindOrBuildElement("O");
     Al = nist->FindOrBuildElement("Al");
     Ge = nist->FindOrBuildElement("Ge");
     Sn = nist->FindOrBuildElement("Sn");
@@ -86,14 +86,16 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     solidHole = new G4Tubs("SolidHole", Rin_Hole, Rout_Hole, depth_Hole, 0., 2*pi);
 
     //  Defines the Ge crystal unholed  //
-    solidGe = new G4Tubs("SolidGeBack", 0.*mm, 27.95*mm, 31.85*mm, 0., 2*pi); // 55.9 mm diameter
+    G4double crystalLength = 63.7*mm;
+    G4double crystalDiameter = 55.0*mm;
+    solidGe = new G4Tubs("SolidGeBack", 0.*mm, crystalDiameter/2 crystalLength/2, 0., 2*pi); // 55.9 mm diameter
 
     //  Subtracts inner hole from the Ge crystal  //
     G4VSolid *solidDetector = new G4SubtractionSolid("SolidDetector", solidGe, solidHole, rotation, G4ThreeVector(0., 0., 8.3*mm));
     logicDetector = new G4LogicalVolume(solidDetector, detMat, "LogicDetector");
     physDetector = new G4PVPlacement(0, G4ThreeVector(0., 0., 30.*mm), logicDetector, "PhysDetector", logicWorld, false, 0., true);
     
-    //  Defines internal Al Case  //
+    //  Defines Al Case  //
     G4double Rin_Case = 32.95*mm;
     G4double Rout_Case = 33.75*mm;
     G4double depth_Case = 52.5*mm;

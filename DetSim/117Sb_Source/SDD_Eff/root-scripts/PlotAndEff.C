@@ -47,11 +47,11 @@ void PlotAndEff(const char* filename){
 
      // ROIs for each photopeak area calculation
         // Ka
-        int binMinKa = hist1->FindBin(0.0246);
+        int binMinKa = hist1->FindBin(0.0250);
         int binMaxKa = hist1->FindBin(0.0253);
         // Kb
-        int binMinKb = hist1->FindBin(0.0281);
-        int binMaxKb = hist1->FindBin(0.0288);
+        int binMinKb = hist1->FindBin(0.0283);
+        int binMaxKb = hist1->FindBin(0.0285);
 
     // Calculate the area under each photopeak
         double area_Ka = hist1->Integral(binMinKa, binMaxKa);
@@ -66,7 +66,6 @@ void PlotAndEff(const char* filename){
     cout << "Efficiencies: " << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
-
 }
 
 void RunPlotAndEff_7mm(){
@@ -79,19 +78,37 @@ void RunPlotAndEff_7mm(){
 }
 
 void RunPlotAndEff_9mm(){
-	PlotAndEff("../data-files_SDD/output_Ebeam32_9mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam35_9mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam39_9mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam43_9mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam47_9mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam50_9mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam32_9mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_9mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_9mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_9mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_9mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_9mm_0Al.root");
+}
+
+void RunPlotAndEff_10mm(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_10mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_10mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_10mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_10mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_10mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_10mm.root");
+}
+
+void RunPlotAndEff_11mm(){
+	PlotAndEff("../data-files_SDD/output_Ebeam32_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_11mm.root");
 }
 
 void RunPlotAndEff_12mm(){
-	PlotAndEff("../data-files_SDD/output_Ebeam32_12mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam35_12mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam39_12mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam43_12mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam47_12mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam50_12mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam32_12mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_12mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_12mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_12mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_12mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_12mm_0Al.root");
 }

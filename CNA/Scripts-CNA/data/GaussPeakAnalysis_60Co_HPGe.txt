@@ -1,2 +1,0 @@
-Centroid	Sigma
-3639.15	2.89	0.06

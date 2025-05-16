@@ -35,14 +35,14 @@ Channel = [i+1 for i in range(2048)]
 for dir in SDD_Dir:
 
     Yield_SDD = MergeYield_MCA(dir)
-    output_filename = str(dir[15:27]+"_"+os.listdir(dir)[0][0:18]+"_Merged.txt")
+    """     output_filename = str(dir[15:27]+"_"+os.listdir(dir)[0][0:18]+"_Merged.txt")
     with open(output_filename, 'w') as outfile:
         for value in Yield_SDD:
             outfile.write(f"{value}\n")
-    print(f"Output file: {output_filename}")
+    print(f"Output file: {output_filename}") """
 
     fig, ax = plt.subplots()
-    ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=(output_filename))
+    ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=dir[15:27])
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
