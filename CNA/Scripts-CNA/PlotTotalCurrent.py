@@ -23,10 +23,17 @@ time43, current43 = ReadCurrent(iPath43)
 time47, current47 = ReadCurrent(iPath47)
 time50, current50 = ReadCurrent(iPath50)
 
-## Plot for each activatino
-PlotI(time32, current32, iPath32[15:27])
+times = [time32, time35, time39, time43, time47, time50]
+currents = [current32, current35, current39, current43, current47, current50]
+labs = [iPath32[15:27], iPath35[15:27], iPath39[15:27], iPath43[15:27],iPath47[15:27], iPath50[15:27]]
+
+## Plot for each activation
+""" PlotI(time32, current32, iPath32[15:27])
 PlotI(time35, current35, iPath35[15:27])
 PlotI(time39, current39, iPath39[15:27])
 PlotI(time43, current43, iPath43[15:27])
 PlotI(time47, current47, iPath47[15:27])
-PlotI(time50, current50, iPath50[15:27])
+PlotI(time50, current50, iPath50[15:27]) """
+
+## Plot all activations in same frame
+Plot6I(times, currents, labs)

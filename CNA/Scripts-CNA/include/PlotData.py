@@ -107,6 +107,25 @@ def PlotI(t, i, lab):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
+def Plot6I(t, i, lab):
+
+    colors = ['xkcd:black', 'xkcd:red', 'xkcd:blue', 'xkcd:green', 'xkcd:pink', 'xkcd:yellow']
+    markers = ['1', '2', '3', '+', 'v', '^']
+    fig, ax = plt.subplots()
+    for k in range(len(i)-1, -1, -1):
+        ax.plot(t[k], i[k], markers[k], color=colors[k], label=str(lab[k]))
+    legend = ax.legend(loc="upper left",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Time (sec since 00h00)',fontsize=22)
+    ylabel('Current (nA)', fontsize=22)
+    ylim(0,250)
+    show()
+
+    return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def PlotRBS(ch, y, lab):
 
     fig, ax = plt.subplots()
@@ -122,6 +141,136 @@ def PlotRBS(ch, y, lab):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
+def Plot6RBS(ch, y, lab):
+
+    colors = ['xkcd:black', 'xkcd:red', 'xkcd:blue', 'xkcd:green', 'xkcd:pink', 'xkcd:yellow']
+    markers = ['1-', '2-', '3-', '+-', 'v-', '^-']
+    fig, ax = plt.subplots()
+    # Prepare the list of yields in the same order as labs
+    y_list = [y[key] for key in lab]
+    for k in range(len(y_list)-1, -1, -1):
+        ax.semilogy(ch, y_list[k], markers[k], color=colors[k], label=str(lab[k]))
+    legend = ax.legend(loc="best", ncol=1, shadow=False, fancybox=True, framealpha=0.0, fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Channel', fontsize=22)
+    ylabel('Yield', fontsize=22)
+    show()
+
+    return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE):
+    """
+    Plots the reaction cross-section as a function of beam energy for different radiation types.
+    
+    Parameters:
+    crossSections (dict): Dictionary containing cross-section values for each beam energy and radiation type.
+    """
+                
+    # Define colors and markers for different radiation types
+    colorsHPGe = {"gamma": "xkcd:light green", "Ka": "xkcd:blue violet", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:red orange"}
+    markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
+    colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
+    markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
+    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:red orange"}
+    colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
+    markersSDD = {"Ka": "*", "Kb": "v"}
+    markersSDD_CTN = {"Ka": "<", "Kb": ">"}
+
+    # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
+    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
+
+    # Loop over each radiation type to plot separately
+    labs = {"gamma": "$\\gamma_{158}$", "Ka": "$K_{\\alpha}$", "Kb": "$K_{\\beta}$", "511 keV": "$\\gamma_{511}$", "861 keV": "$\\gamma_{861}$", "1004 keV": "$\\gamma_{1004}$"}
+    fig, ax = plt.subplots()
+    ax.set_yscale("log")
+
+    ## HPGe at CNA data
+    for rad_type in ["Ka", "Kb", "gamma"]:
+        cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
+        hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
+        ax.errorbar(energies, cross_section_values_HPGe,
+                    #xerr=dE,
+                    yerr=hpge_err,
+                    capsize=4,
+                    marker=markersHPGe[rad_type],
+                    linestyle='--', 
+                    linewidth=2,
+                    color=colorsHPGe[rad_type], 
+                    label=labs[rad_type]+" HPGe@CNA")
+        
+    ## SDD at CNA data
+    for rad_type in ["Ka", "Kb"]:
+        cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
+        sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
+        ax.errorbar(energies, cross_section_values_SDD, 
+                    #xerr=dE,
+                    yerr=sdd_err,
+                    capsize=4,
+                    marker=markersSDD[rad_type],
+                    linestyle='-.', 
+                    linewidth=2,
+                    color=colorsSDD[rad_type], 
+                    label=labs[rad_type]+" SDD@CNA")
+    
+    ## BEGe at CTN data
+    """     for rad_type in ["gamma", "Ka", "Kb"]:
+        cross_section_BEGe = [crossSections_BEGe[key][rad_type] for key in crossSections_BEGe.keys()]
+        bege_ctn_err = [crossSections_BEGe_err[key][rad_type] for key in crossSections_BEGe_err.keys()]
+        ax.errorbar([3.215], cross_section_BEGe, 
+                    yerr=bege_ctn_err,
+                    capsize=4,
+                    marker=markersBEGe_CTN[rad_type],
+                    linestyle='', 
+                    linewidth=2,
+                    color=colorsBEGe_CTN[rad_type], 
+                    label=labs[rad_type]+" BEGe@CTN") """
+        
+    ## SDD at CTN data
+    """     for rad_type in ["Ka", "Kb"]:
+        cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
+        sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
+        ax.errorbar([3.215], cross_section_SDD_CTN, 
+                    yerr=sdd_ctn_err,
+                    capsize=4,
+                    marker=markersSDD_CTN[rad_type],
+                    linestyle='', 
+                    linewidth=2,
+                    color=colorsSDD_CTN[rad_type], 
+                    label=labs[rad_type]+" SDD@CTN") """
+
+    ## Organize data labels
+    handles,labels = ax.get_legend_handles_labels()
+
+    #for i in range(len(labels)):
+    #   print(f"{labels[i]} \t\t {i}")
+
+    #handles = [handles[4],  handles[5],  handles[14], 
+    #           handles[2],  handles[3],  handles[1],  
+    #           handles[7],  handles[8],  handles[6], 
+    #           handles[9],  handles[10], handles[13], 
+    #           handles[11], handles[12], handles[0]]
+    
+    #labels = [labels[4],  labels[5],  labels[14], 
+    #           labels[2],  labels[3],  labels[1],  
+    #           labels[7],  labels[8],  labels[6], 
+    #           labels[9],  labels[10], labels[13], 
+    #           labels[11], labels[12], labels[0]]
+    
+    legend = ax.legend(handles, labels, loc="upper left",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
+    tick_params(axis='both', which='major', labelsize=22)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
+    ylabel("Cross-Section [mb]", fontsize=22)
+    #ylim(0, 1e3)
+    title("Relative Method", fontsize=22)
+    show() 
+
+    return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+
 def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE):
     """
     Plots the reaction cross-section as a function of beam energy for different radiation types.
@@ -129,6 +278,36 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     Parameters:
     crossSections (dict): Dictionary containing cross-section values for each beam energy and radiation type.
     """
+
+    # Collect all energies from all dictionaries
+    all_energy_keys = set()
+    for d in [crossSections_HPGe, crossSections_SDD]:
+        all_energy_keys.update(d.keys())
+    # Sort energies numerically
+    def energy_float(key):
+        return float(key.replace("Ebeam=", "").replace("MeV", ""))
+    sorted_keys = sorted(all_energy_keys, key=energy_float)
+    energies = [energy_float(k) for k in sorted_keys]
+
+    means, stds = [], []
+    for key in sorted_keys:
+        vals = []
+        if key in crossSections_HPGe:
+            for rad_type in ["gamma", "Ka", "Kb"]:
+                if rad_type in crossSections_HPGe[key]:
+                    vals.append(crossSections_HPGe[key][rad_type])
+        # SDD
+        if key in crossSections_SDD:
+            for rad_type in ["Ka", "Kb"]:
+                if rad_type in crossSections_SDD[key]:
+                    vals.append(crossSections_SDD[key][rad_type])
+        if vals:
+            means.append(np.mean(vals))
+            stds.append(np.std(vals))
+        else:
+            means.append(np.nan)
+            stds.append(np.nan)
+
     ##                              [ value ,  error ] 
     famiano = {     "Ebeam=2.2MeV": [0.00356, 0.00056],
                     "Ebeam=2.6MeV": [0.0294,  0.0044],
@@ -241,102 +420,48 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                     5.300000E+00,
                     5.400000E+00,
                     5.500000E+00]
-                
-    # Define colors and markers for different radiation types
-    colorsHPGe = {"gamma": "xkcd:aqua", "Ka": "xkcd:blue violet", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:red orange"}
-    markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
-    colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
-    markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
-    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:light magenta"}
-    colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
-    markersSDD = {"Ka": "*", "Kb": "v"}
-    markersSDD_CTN = {"Ka": "<", "Kb": ">"}
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
-    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
     eFamiano = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in famiano.keys()])
     eOzkan = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in ozkan.keys()])
     eXarepe = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in xarepe.keys()])
     eHarissopulos = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in harissopulos.keys()])
 
+    print(f"Averaged cross-sections for {len(means)} energies:")
+    for i, energy in enumerate(energies):
+        if not np.isnan(means[i]):
+            print(f"Ebeam={energy:.1f} MeV: {means[i]:.4f} mb ± {stds[i]:.4f} mb")
+        else:
+            print(f"Ebeam={energy:.1f} MeV: No data available")
     # Loop over each radiation type to plot separately
-    labs = {"gamma": "$\\gamma_{158}$", "Ka": "$K_{\\alpha}$", "Kb": "$K_{\\beta}$", "511 keV": "$\\gamma_{511}$", "861 keV": "$\\gamma_{861}$", "1004 keV": "$\\gamma_{1004}$"}
     fig, ax = plt.subplots()
     ax.set_yscale("log")
 
-    ## HPGe at CNA data
-    for rad_type in ["gamma", "Ka", "Kb"]:
-        cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
-        hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
-        ax.errorbar(energies, cross_section_values_HPGe,
-                    #xerr=dE,
-                    yerr=hpge_err,
-                    capsize=4,
-                    marker=markersHPGe[rad_type],
-                    linestyle='--', 
-                    linewidth=2,
-                    color=colorsHPGe[rad_type], 
-                    label=labs[rad_type]+" HPGe@CNA")
-        
-    ## SDD at CNA data
-    for rad_type in ["Ka", "Kb"]:
-        cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
-        sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
-        ax.errorbar(energies, cross_section_values_SDD, 
-                    #xerr=dE,
-                    yerr=sdd_err,
-                    capsize=4,
-                    marker=markersSDD[rad_type],
-                    linestyle='-.', 
-                    linewidth=2,
-                    color=colorsSDD[rad_type], 
-                    label=labs[rad_type]+" SDD@CNA")
-    
-    ## BEGe at CTN data
-    for rad_type in ["gamma", "Ka", "Kb"]:
-        cross_section_BEGe = [crossSections_BEGe[key][rad_type] for key in crossSections_BEGe.keys()]
-        bege_ctn_err = [crossSections_BEGe_err[key][rad_type] for key in crossSections_BEGe_err.keys()]
-        ax.errorbar([3.215], cross_section_BEGe, 
-                    yerr=bege_ctn_err,
-                    capsize=4,
-                    marker=markersBEGe_CTN[rad_type],
-                    linestyle='', 
-                    linewidth=2,
-                    color=colorsBEGe_CTN[rad_type], 
-                    label=labs[rad_type]+" BEGe@CTN")
-        
-    ## SDD at CTN data
-    for rad_type in ["Ka", "Kb"]:
-        cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
-        sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
-        ax.errorbar([3.215], cross_section_SDD_CTN, 
-                    yerr=sdd_ctn_err,
-                    capsize=4,
-                    marker=markersSDD_CTN[rad_type],
-                    linestyle='', 
-                    linewidth=2,
-                    color=colorsSDD_CTN[rad_type], 
-                    label=labs[rad_type]+" SDD@CTN")
-        
+    ## Experimental mean cross-section
+    ax.errorbar(energies, means, yerr=stds, 
+                capsize=4, marker='o', 
+                linestyle='', color="xkcd:green", 
+                label="Experimental averaged")
+
     ## Famiano data
     cross_sections_Famiano = [famiano[key][0] for key in famiano.keys()]
     famiano_errs = [famiano[key][1] for key in famiano.keys()]
-    #ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
+    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
 
     ## Ozkan data
     cross_sections_Ozkan = [ozkan[key][0] for key in ozkan.keys()]
     ozkan_errs = [ozkan[key][1] for key in ozkan.keys()]
-    #ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, capsize=4, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label='$\\rm{\\"{O}}$zkan 2002')
+    ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, capsize=4, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label='$\\rm{\\"{O}}$zkan 2002')
 
     ## Xarepe data
     cross_sections_Xarepe = [xarepe[key][0] for key in xarepe.keys()]
     xarepe_errs = [xarepe[key][1] for key in xarepe.keys()]
-    #ax.errorbar(eXarepe, cross_sections_Xarepe, yerr=xarepe_errs, capsize=4, marker='*', linestyle='', color="xkcd:browny orange", label="Xarepe 2021")
+    ax.errorbar(eXarepe, cross_sections_Xarepe, yerr=xarepe_errs, capsize=4, marker='*', linestyle='', color="xkcd:browny orange", label="Xarepe 2021")
 
     ## Harissopulos data
     cross_sections_Harissopulos = [harissopulos[key][0] for key in harissopulos.keys()]
     harissopulos_errs = [harissopulos[key][1] for key in harissopulos.keys()]
-    #ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, capsize=4, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
+    ax.errorbar(eHarissopulos, cross_sections_Harissopulos, yerr=harissopulos_errs, capsize=4, marker='1', markersize=10, linestyle='', color="xkcd:pink", label="Harissopulos 2024")
 
     ## Talys data
     ax.plot(talysEnergies, talys, linestyle='-', color="xkcd:black", label="Talys 2.0")
@@ -359,12 +484,12 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     #           labels[9],  labels[10], labels[13], 
     #           labels[11], labels[12], labels[0]]
     
-    legend = ax.legend(handles, labels, loc="best",ncol=5,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
+    legend = ax.legend(handles, labels, loc="upper left",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=16)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
-    xlabel("Energy (MeV)", fontsize=22)
-    ylabel("Cross-Section (mb)", fontsize=22)
-    ylim(0, 1e3)
+    xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
+    ylabel("Cross-Section [mb]", fontsize=22)
+    #ylim(0, 1e2)
     title("Relative Method", fontsize=22)
     show() 
 

@@ -38,6 +38,7 @@ dE = np.array([0.046, 0.043, 0.038, 0.035, 0.042, 0.042])
 
 ruth_factor = (zBeam * zTarget * eCharge / (16 * np.pi * epsilon0))**2 * 1e31
 ruthCrossSection = ruth_factor / (energies * 1e6 * np.sin(scattAngRad / 2)**2)**2
+print(ruthCrossSection)
 ruthCrossSection_CTN = ruth_factor / ((3.215 * 1e6 * np.sin(scattAng_CTN_Rad / 2)**2)**2)
 
 ruthCrossSection_err = np.sqrt((2 * ruthCrossSection * np.cos(scattAngRad / 2) / np.sin(scattAngRad / 2) * scattAngRad_err)**2 +
@@ -171,4 +172,5 @@ for rad_type, N_D in N_D_irr_SDD_CTN.items():
 print(" -------------------------\n -------------------------\n")
 
 ## Plot the experimental data alongside different author's results
+#PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)
 PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)
