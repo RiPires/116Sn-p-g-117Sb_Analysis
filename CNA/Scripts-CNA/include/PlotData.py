@@ -75,15 +75,17 @@ def PlotBothRateLogy(x, y1, y2, lab1, lab2):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 
+    energies = [(x[i]*0.3225-0.149) for i in range(len(x))]
     fig, ax = plt.subplots()
-    ax.plot(x, y1, '^-', color='k', label=lab1)
-    ax.plot(x, y2, '*-', color='b', label=lab2)
-    ax.plot(x, y3, '+-', color='r', label=lab3)
+    ax.set_yscale('log')
+    ax.plot(energies, y1, '^-', color='k', label=lab1)
+    ax.plot(energies, y2, '*-', color='b', label=lab2)
+    ax.plot(energies, y3, '+-', color='r', label=lab3)
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Channel',fontsize=22)
-    ylabel('Rate ($s^{-1}$)', fontsize=22)
+    xlabel('Energy [keV]',fontsize=22)
+    ylabel('Count Rate ($\\rm{s}^{\\rm{-1}}$)', fontsize=22)
     show()
     
 

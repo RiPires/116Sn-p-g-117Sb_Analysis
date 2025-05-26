@@ -155,7 +155,7 @@ def AccumulateGe_BgRemove(gePath):
 
         ## Get run yield and live time
         y = Ge2ListsBgRm(str(gePath+file))[0]
-        live_time = Ge2Lists(str(gePath.replace("BgRemoved_LiveTime/","")+file.replace("_BgRemoved","")))[2]
+        #live_time = Ge2Lists(str(gePath.replace("BgRemoved_LiveTime/","")+file.replace("_BgRemoved","")))[2]
 
         ## Add Ka counts
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -188,7 +188,7 @@ def AccumulateGe_BgRemove(gePath):
             accu_1004_err = np.sqrt(accu_1004 + Accu_1004[counter-1])
 
         ## Increment accumulation time and counter
-        accu_t += live_time/60 # minutes
+        accu_t += 15. # minutes
         counter += 1
 
         ## Save integral at this point
@@ -304,7 +304,7 @@ def AccumulateSDD_BgRemoved(sddPath):
 
         ## Get run yield background removed and run live time
         y, ch = MCA2ListsBgRm(str(sddPath+file))
-        live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
+        #live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
 
         ## Perform Ka accumulation summing channel by channel
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -317,7 +317,7 @@ def AccumulateSDD_BgRemoved(sddPath):
             accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
 
         ## Increment time
-        accu_t += live_time/60 # minutes
+        accu_t += 30 # minutes
         counter += 1
 
         ## Save integral at this point

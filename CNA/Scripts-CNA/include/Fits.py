@@ -342,7 +342,7 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
                             (lambda_decay*N01004*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[5][0])**2)
     
     ## Print results
-    print("******************************"+len(lab)*"*")
+    """     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | bgRate = ({bgRateGamma:.2f} +- {bgRateGamma_err:.2f}) counts/min")
@@ -353,6 +353,23 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     print(f"1004 keV line: \t Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e} | bgRate = ({bgRate1004:.2f} +- {bgRate1004_err:.2f}) counts/min")
     print(f"gamma/Ka = {(NdirrGamma/NdirrKa):.2f} | gamma/Kb = {(NdirrGamma/NdirrKb):.2f} | Ka/Kb = {(NdirrKa/NdirrKb):.2f}")
     print()
+    """
+    ## Create dictionary for results
+    N_D_irr_SDD = {
+        energy_key: {
+            "Gamma": NdirrGamma,
+            "Ka": NdirrKa,
+            "Kb": NdirrKb,
+            "511 keV": Ndirr511,
+            "861 keV": Ndirr861,
+            "1004 keV": Ndirr1004
+        }
+    }
+
+    ## Print dictionary
+    for key, value in N_D_irr_SDD.items():
+        print(f'    "{key}": {{"Gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
+
 
     ## Fited function for plotting
     fittedGamma = Npeak(time, *poptGamma)
@@ -380,9 +397,9 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel("Time (minutes)", fontsize=22)
+    xlabel("Acquisition Time [minutes]", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
-    title("Accumulation Fit Npeak: "+lab, fontsize=24)
+    title("Accumulation Fit: "+lab, fontsize=24)
     show()
 
     return
@@ -653,9 +670,9 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel("Time (minutes)", fontsize=22)
+    xlabel("Acquisition Time [minutes]", fontsize=22)
     ylabel("Accumulated Yield", fontsize=22)
-    title("Accumulation Fit Npeak: "+lab, fontsize=24)
+    title("Accumulation Fit: "+lab, fontsize=24)
     show()
 
     return

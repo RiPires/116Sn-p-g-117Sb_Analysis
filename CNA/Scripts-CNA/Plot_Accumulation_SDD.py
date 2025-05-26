@@ -8,12 +8,12 @@ from include.Fits import *
 ## -------------------------- ##
 
 ## Paths for different beam energy decay run files
-sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/',
-            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/',
-            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/',
-            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/',
-            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/',
-            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved_LiveTime/SDD/']
+sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/SDD/',
+            '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved/SDD/']
 
 ## Define initial guess of (N0, bgRate) for each beam energy
 initParamsDict = {

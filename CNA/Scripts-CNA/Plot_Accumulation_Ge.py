@@ -8,12 +8,12 @@ from include.Fits import *
 ## -------------------------- ##
 
 ## Paths for different activation beam energies
-gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
-           '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
-           '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
-           '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
-           '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/',
-           '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved_LiveTime/HPGe/']
+gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
+           '../Activations/Ebeam=3.5MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
+           '../Activations/Ebeam=3.9MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
+           '../Activations/Ebeam=4.3MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
+           '../Activations/Ebeam=4.7MeV/2_Decay/DataFiles_BgRemoved/HPGe/',
+           '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_BgRemoved/HPGe/']
 
 ## Define initial guess of (N0, bgRate) for each beam energy
 initParamsDict = {

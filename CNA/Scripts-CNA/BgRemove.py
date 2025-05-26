@@ -35,6 +35,8 @@ def RemoveBg(dataFile):
         ## Get background merged yield and time
         mergeBgYield, bgTime = Merge(bgPath, 'ge')
 
+        bgTime = 35*1800 + 777 ## seconds: 35 runs of 30 minutes each + 777 seconds for the last run
+
     elif "SDD" in dataFile:
 
         ## Set SDD channels
@@ -49,6 +51,8 @@ def RemoveBg(dataFile):
         ## Get background merged yield and time
         mergeBgYield, bgTime = Merge(bgPath, 'sdd')
 
+        bgTime = 35*1800 + 777 ## seconds: 35 runs of 30 minutes each + 777 seconds for the last run
+
     #print(f"Time = {bgTime:.0f}")
         
     ## Converts run yield into count rate (in s^-1)
@@ -61,15 +65,15 @@ def RemoveBg(dataFile):
     runRateBgRem = [(runRate[i] - bgRate[i]) for i in range(len(runRate))]
 
     ## Set labels
-    lab = dataFile[-63:-51] + ': ' + dataFile[-26:-4]
+    lab = dataFile[-63:-51] + ': ' + dataFile[-12:-4]
     bgLab = 'Background Rate'
     rateLab = lab +'_BG removed'
 
     ## Plot both run data, bg rate and run data with bg removed 
-    #Plot3RateLogy(ch, runRate, bgRate, runRateBgRem, lab, bgLab, rateLab)
+    Plot3RateLogy(ch, runRate, bgRate, runRateBgRem, lab, bgLab, rateLab)
 
     ## Save run rate with background removed values to file 
-    with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
+    """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
         counts = 0
         for rate in runRateBgRem:
             if rate <= 0:
@@ -77,7 +81,7 @@ def RemoveBg(dataFile):
             elif rate > 0:
                 counts = int(rate * acquiTime)      ## convert count rate back to counts
                 outFile.write(f"{counts:.0f}\n")
-    outFile.close()
+    outFile.close() """
 
     return
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
@@ -103,10 +107,10 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
 
  
 ## For each path, remove background for every data file
-for path in gePaths:
+""" for path in gePaths:
     for file in sorted(os.listdir(path)):
         RemoveBg(str(path+file))
-
+ """
 ## For specific data file
-#filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_084.mca'
-#RemoveBg(filePath)
+filePath = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/116Sn-C3_Decay_HPGe-001.mca'
+RemoveBg(filePath)
