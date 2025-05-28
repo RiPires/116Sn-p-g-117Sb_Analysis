@@ -152,7 +152,7 @@ def ReadCurrent(iPath):
     current = []
     aux = []
 
-    for File in os.listdir(iPath):
+    for File in sorted(os.listdir(iPath)):
 
         with open(str(iPath+File), 'r') as file:
             reader = csv.reader(file, delimiter='\n', skipinitialspace=True)
@@ -163,6 +163,32 @@ def ReadCurrent(iPath):
         for i in range(len(aux)):
             time.append(float(conv_time_float(aux[i][0])))
             current.append(float(aux[i][2]))
+    
+    return time, current
+
+#######################################################
+#######################################################
+def ReadCurrentActivation(iPath, irradStart):
+
+    time = []
+    current = []
+    aux = []
+
+    for File in sorted(os.listdir(iPath)):
+
+        with open(str(iPath+File), 'r') as file:
+            reader = csv.reader(file, delimiter='\n', skipinitialspace=True)
+            data = list(reader)
+
+        for i in range(len(data)):
+            aux.append(data[i][0].split())
+        for i in range(len(aux)):
+            if conv_time_float(aux[i][0]) >= conv_time_float(irradStart):
+                time.append(float(time2FLoatIrrad(aux[i][0], irradStart)))
+                if int(aux[i][2]) > 200:
+                    current.append(0.0)
+                else:
+                    current.append(float(aux[i][2]))
     
     return time, current
 

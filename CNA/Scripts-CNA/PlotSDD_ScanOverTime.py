@@ -27,13 +27,13 @@ def PlotAll():
         nr_colors = len(os.listdir(path))
         colors = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
                 for i in range(nr_colors)]
-        markers = itertools.cycle((".", ",", "o", "v", "^", "<", ">", "1", "2", 
+        markers = itertools.cycle(("1", "2", "3", ".", ",", "o", "v", "^", "<", ">", "1", "2", 
                 "3", "4", "8", "s", "p", "*", "h", "+","x", "d"))
         counter = 0
 
         fig, ax= plt.subplots()
         #ax.set_yscale("log")
-        for file in sorted(os.listdir(path)):
+        for file in list(sorted(os.listdir(path))[i] for i in [0, 10, 40] ):
             y = MCA2Lists(path+file)[0]
             ax.plot(ch, y, linestyle=":", marker=next(markers), color =colors[counter], label=file.replace(".mca","").replace("116Sn-C3_Decay_SDD","Run"))
             counter+=1

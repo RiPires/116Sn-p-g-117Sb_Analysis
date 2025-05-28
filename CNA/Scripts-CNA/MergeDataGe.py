@@ -49,12 +49,13 @@ for dir in geDir:
 
     ### Plot
     fig, ax1 = plt.subplots()
-    ax1.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=(output_filename))
+    ax1.semilogy(energy, Yield_Ge,'+-', color ='xkcd:black', label=(output_filename[:5]+' =  '+
+                                                                     output_filename[6:9]+' MeV - HPGe'))
     legend = ax1.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
     xlabel('Energy (keV)',fontsize=22)
     xlim(left=0.)
-    ylabel('Total yield', fontsize=22)
+    ylabel('Merged yield', fontsize=22)
     show()
     ###########################################

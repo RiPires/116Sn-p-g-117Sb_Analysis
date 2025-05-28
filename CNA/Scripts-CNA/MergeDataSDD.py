@@ -31,6 +31,7 @@ SDD_Dir = ["../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_SDD/",
            "../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/"]
 
 Channel = [i+1 for i in range(2048)]
+energies = [(c*0.031059-0.004137) for c in Channel] # keV
 
 for dir in SDD_Dir:
 
@@ -42,12 +43,12 @@ for dir in SDD_Dir:
     print(f"Output file: {output_filename}") """
 
     fig, ax = plt.subplots()
-    ax.plot(Channel, Yield_SDD,'+-', color ='xkcd:black', label=dir[15:27])
+    ax.plot(energies, Yield_SDD,'+-', color ='xkcd:black', label=dir[15:27])
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Channel',fontsize=22)
+    xlabel('Energy [keV]',fontsize=22)
     ylabel('Total Yield', fontsize=22)
-    xlim(0, 1000)
+    xlim(0, 30)
     show()
     ###########################################

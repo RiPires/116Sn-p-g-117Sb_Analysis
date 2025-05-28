@@ -97,12 +97,12 @@ def PlotI(t, i, lab):
 
     fig, ax = plt.subplots()
     ax.plot(t, i,'+', color ='xkcd:black', label=str(lab))
-    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Time (sec since 00h00)',fontsize=22)
-    ylabel('Current (nA)', fontsize=22)
-    ylim(0,200)
+    xlabel('Irradiation time [s]',fontsize=22)
+    ylabel('Beam Current [nA]', fontsize=22)
+    #ylim(0,200)
     show()
 
     return '-------------------'
@@ -116,11 +116,11 @@ def Plot6I(t, i, lab):
     fig, ax = plt.subplots()
     for k in range(len(i)-1, -1, -1):
         ax.plot(t[k], i[k], markers[k], color=colors[k], label=str(lab[k]))
-    legend = ax.legend(loc="upper left",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Time (sec since 00h00)',fontsize=22)
-    ylabel('Current (nA)', fontsize=22)
+    xlabel('Irradiation Time [s]',fontsize=22)
+    ylabel('Beam Current [nA]', fontsize=22)
     ylim(0,250)
     show()
 
@@ -294,16 +294,27 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     means, stds = [], []
     for key in sorted_keys:
         vals = []
+        errs = []
+        # HPGe
         if key in crossSections_HPGe:
             for rad_type in ["gamma", "Ka", "Kb"]:
                 if rad_type in crossSections_HPGe[key]:
                     vals.append(crossSections_HPGe[key][rad_type])
+                    errs.append(crossSections_HPGe_err[key][rad_type])
         # SDD
         if key in crossSections_SDD:
             for rad_type in ["Ka", "Kb"]:
                 if rad_type in crossSections_SDD[key]:
                     vals.append(crossSections_SDD[key][rad_type])
-        if vals:
+                    errs.append(crossSections_SDD_err[key][rad_type])
+        # Weighted average
+        if vals and errs and all(e > 0 for e in errs):
+            weights = [1/(e**2) for e in errs]
+            mean = np.average(vals, weights=weights)
+            std = np.sqrt(1/np.sum(weights))
+            means.append(mean)
+            stds.append(std)
+        elif vals:
             means.append(np.mean(vals))
             stds.append(np.std(vals))
         else:
