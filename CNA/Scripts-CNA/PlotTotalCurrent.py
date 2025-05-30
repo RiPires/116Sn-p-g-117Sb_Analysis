@@ -5,6 +5,7 @@
 ## -------------------------- ##
 from include.PlotData import *
 from include.ReadData import *
+import numpy as np
 ## -------------------------- ##
 
 ## Paths for each activation energy
@@ -23,20 +24,30 @@ irradStart43 = '10:25:44'
 irradStart47 = '10:33:18'
 irradStart50 = '10:37:00'
 
+## Irradiation end time for each activation
+irradEnd32 = '17:28:00'
+irradEnd35 = '16:45:00'
+irradEnd39 = '16:43:00'
+irradEnd43 = '16:27:00'
+irradEnd47 = '16:20:00'
+irradEnd50 = '16:21:00' 
+
 ## Time and current lists during the activation  
-time32, current32 = ReadCurrentActivation(iPath32, irradStart32)
-time35, current35 = ReadCurrentActivation(iPath35, irradStart35)
-time39, current39 = ReadCurrentActivation(iPath39, irradStart39)
-time43, current43 = ReadCurrentActivation(iPath43, irradStart43)
-time47, current47 = ReadCurrentActivation(iPath47, irradStart47)
-time50, current50 = ReadCurrentActivation(iPath50, irradStart50)
+time32, current32 = ReadCurrentActivation(iPath32, irradStart32, irradEnd32)
+time35, current35 = ReadCurrentActivation(iPath35, irradStart35, irradEnd35)
+time39, current39 = ReadCurrentActivation(iPath39, irradStart39, irradEnd39)
+time43, current43 = ReadCurrentActivation(iPath43, irradStart43, irradEnd43)
+time47, current47 = ReadCurrentActivation(iPath47, irradStart47, irradEnd47)
+time50, current50 = ReadCurrentActivation(iPath50, irradStart50, irradEnd50)
 
 times = [time32, time35, time39, time43, time47, time50]
 currents = [current32, current35, current39, current43, current47, current50]
 labs = [iPath32[15:27], iPath35[15:27], iPath39[15:27], iPath43[15:27],iPath47[15:27], iPath50[15:27]]
 
+print(np.sum(current32))
+
 ## Calculate mean current during the activation, for each beam energy
-averageI32 = sum(current32) / len(current32)
+averageI32 = np.sum(current32) / len(current32)
 stdI32 = (sum((x - averageI32) ** 2 for x in current32) / len(current32)) ** 0.5
 averageI35 = sum(current35) / len(current35)
 stdI35 = (sum((x - averageI35) ** 2 for x in current35) / len(current35)) ** 0.5

@@ -172,11 +172,11 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     """
                 
     # Define colors and markers for different radiation types
-    colorsHPGe = {"gamma": "xkcd:light green", "Ka": "xkcd:blue violet", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:red orange"}
+    colorsHPGe = {"gamma": "xkcd:light green", "Ka": "xkcd:blue", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:light orange"}
     markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
     colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
     markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
-    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:red orange"}
+    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:pink"}
     colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
     markersSDD = {"Ka": "*", "Kb": "v"}
     markersSDD_CTN = {"Ka": "<", "Kb": ">"}
@@ -190,7 +190,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     ax.set_yscale("log")
 
     ## HPGe at CNA data
-    for rad_type in ["Ka", "Kb", "gamma"]:
+    for rad_type in ["Ka", "Kb", "gamma", "511 keV", "861 keV", "1004 keV"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
         ax.errorbar(energies, cross_section_values_HPGe,
@@ -261,7 +261,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     #           labels[9],  labels[10], labels[13], 
     #           labels[11], labels[12], labels[0]]
     
-    legend = ax.legend(handles, labels, loc="upper left",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
+    legend = ax.legend(handles, labels, loc="upper left",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)

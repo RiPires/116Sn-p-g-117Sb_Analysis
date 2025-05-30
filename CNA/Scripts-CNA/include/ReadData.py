@@ -168,7 +168,7 @@ def ReadCurrent(iPath):
 
 #######################################################
 #######################################################
-def ReadCurrentActivation(iPath, irradStart):
+def ReadCurrentActivation(iPath, irradStart, irradEnd):
 
     time = []
     current = []
@@ -183,10 +183,11 @@ def ReadCurrentActivation(iPath, irradStart):
         for i in range(len(data)):
             aux.append(data[i][0].split())
         for i in range(len(aux)):
-            if conv_time_float(aux[i][0]) >= conv_time_float(irradStart):
+            if (conv_time_float(aux[i][0]) >= conv_time_float(irradStart)) and (conv_time_float(aux[i][0]) <= conv_time_float(irradEnd)):
+                # Convert time to float since irradiation start
                 time.append(float(time2FLoatIrrad(aux[i][0], irradStart)))
                 if int(aux[i][2]) > 200:
-                    current.append(0.0)
+                    current.append(float(aux[i-1][2])) ## When current jumps due to rubber change, use previous value
                 else:
                     current.append(float(aux[i][2]))
     
