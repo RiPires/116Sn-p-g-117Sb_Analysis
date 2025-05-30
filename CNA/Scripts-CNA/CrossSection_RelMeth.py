@@ -70,21 +70,21 @@ N_D_irr_HPGe_err = {
 
 ## Parameters for the detector at mean position of (12+9)/2 mm
 N_D_irr_SDD = {
-    "Ebeam=3.2MeV": {"Ka": 2.494e+06, "Kb": 2.098e+06},
-    "Ebeam=3.5MeV": {"Ka": 1.012e+07, "Kb": 9.456e+06},
-    "Ebeam=3.9MeV": {"Ka": 2.546e+07, "Kb": 2.518e+07},
-    "Ebeam=4.3MeV": {"Ka": 5.126e+07, "Kb": 5.509e+07},
-    "Ebeam=4.7MeV": {"Ka": 1.026e+08, "Kb": 1.072e+08},
-    "Ebeam=5.0MeV": {"Ka": 2.166e+08, "Kb": 2.264e+08}}
+    "Ebeam=3.2MeV": {"Ka": 2.498e+06, "Kb": 2.114e+06, "L": 2.305e+06},
+    "Ebeam=3.5MeV": {"Ka": 9.607e+06, "Kb": 8.936e+06, "L": 9.154e+06},
+    "Ebeam=3.9MeV": {"Ka": 2.546e+07, "Kb": 2.523e+07, "L": 2.441e+07},
+    "Ebeam=4.3MeV": {"Ka": 5.124e+07, "Kb": 5.505e+07, "L": 5.160e+07},
+    "Ebeam=4.7MeV": {"Ka": 1.026e+08, "Kb": 1.073e+08, "L": 1.020e+08},
+    "Ebeam=5.0MeV": {"Ka": 2.165e+08, "Kb": 2.263e+08, "L": 2.161e+08}}
 
 ## Error values of N_Dirr from the fit of SDD data 
 N_D_irr_SDD_err = {
-    "Ebeam=3.2MeV": {"Ka": 2e5, "Kb": 3e5},
-    "Ebeam=3.5MeV": {"Ka": 8e5, "Kb": 1e6},
-    "Ebeam=3.9MeV": {"Ka": 2e6, "Kb": 2e6},
-    "Ebeam=4.3MeV": {"Ka": 4e6, "Kb": 7e6},
-    "Ebeam=4.7MeV": {"Ka": 8e6, "Kb": 7e6},
-    "Ebeam=5.0MeV": {"Ka": 2e7, "Kb": 2e7}}
+    "Ebeam=3.2MeV": {"Ka": 2e5, "Kb": 3e5, "L": 2e5},
+    "Ebeam=3.5MeV": {"Ka": 8e5, "Kb": 1e6, "L": 2e5},
+    "Ebeam=3.9MeV": {"Ka": 2e6, "Kb": 2e6, "L": 2e5},
+    "Ebeam=4.3MeV": {"Ka": 4e6, "Kb": 7e6, "L": 2e5},
+    "Ebeam=4.7MeV": {"Ka": 8e6, "Kb": 7e6, "L": 2e5},
+    "Ebeam=5.0MeV": {"Ka": 2e7, "Kb": 2e7, "L": 2e5}}
 
 ## Parameters for the activation at CTN
 N_D_irr_BEGe_CTN = {"gamma": 8.429e5, "Ka": 8.728e5, "Kb": 8.419e5}

@@ -284,10 +284,10 @@ def AccumulateSDD_BgRemoved(sddPath):
     yield for Ka, Kb, and gamma lines, and time
     """
     ## Set accumulation and time as zero
-    accu_Ka, accu_Kb, accu_t = 0., 0., 0.
+    accu_Ka, accu_Kb, accu_L, accu_t = 0., 0., 0., 0.
 
     ## Set empty lists to store accumulation points and time
-    Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_t = [0], [0], [0], [0], []
+    Accu_Ka, Accu_Ka_err, Accu_Kb, Accu_Kb_err, Accu_L, Accu_L_err, Accu_t = [0], [0], [0], [0], [0], [0], []
     counter = 1
 
     ## Set ROI for each peak, in channel
@@ -299,12 +299,15 @@ def AccumulateSDD_BgRemoved(sddPath):
     roiDown_Kb = int(909)
     roiUp_Kb   = int(927)
 
+    ## L- lines
+    roiDown_L = int(105)
+    roiUp_L = int(135)
+
     ## Loop over SDD runs
     for file in sorted(os.listdir(sddPath)):
 
         ## Get run yield background removed and run live time
-        y, ch = MCA2ListsBgRm(str(sddPath+file))
-        #live_time = MCA2Lists(str(sddPath+file).replace("DataFiles_BgRemoved_LiveTime/SDD/","DataFiles_SDD/").replace("_BgRemoved.mca",".mca"))[2]
+        y = MCA2ListsBgRm(str(sddPath+file))[0]
 
         ## Perform Ka accumulation summing channel by channel
         for c in range(roiDown_Ka, roiUp_Ka):
@@ -316,6 +319,11 @@ def AccumulateSDD_BgRemoved(sddPath):
             accu_Kb += y[c]
             accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1]) 
 
+        ## Perform L-lines accumulation
+        for c in range(roiDown_L, roiUp_L):
+            accu_L += y[c]
+            accu_L_err = np.sqrt(accu_L + Accu_L[counter-1])
+
         ## Increment time
         accu_t += 30 # minutes
         counter += 1
@@ -325,6 +333,8 @@ def AccumulateSDD_BgRemoved(sddPath):
         Accu_Ka_err.append(accu_Ka_err)
         Accu_Kb.append(accu_Kb)
         Accu_Kb_err.append(accu_Kb_err)
+        Accu_L.append(accu_L)
+        Accu_L_err.append(accu_L_err)
         Accu_t.append(accu_t)
 
-    return Accu_Ka[1:], Accu_Ka_err, Accu_Kb[1:], Accu_Kb_err, Accu_t
+    return Accu_Ka[1:], Accu_Ka_err, Accu_Kb[1:], Accu_Kb_err, Accu_L[1:], Accu_L_err, Accu_t

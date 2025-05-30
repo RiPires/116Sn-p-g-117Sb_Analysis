@@ -46,6 +46,9 @@ void PlotAndEff(const char* filename){
 
 
      // ROIs for each photopeak area calculation
+        // L- lines
+        int binMinL = hist1->FindBin(0.003044);
+        int binMaxL = hist1->FindBin(0.004381);
         // Ka
         int binMinKa = hist1->FindBin(0.0250);
         int binMaxKa = hist1->FindBin(0.0253);
@@ -54,16 +57,19 @@ void PlotAndEff(const char* filename){
         int binMaxKb = hist1->FindBin(0.0285);
 
     // Calculate the area under each photopeak
+        double area_L = hist1->Integral(binMinL, binMaxL);
         double area_Ka = hist1->Integral(binMinKa, binMaxKa);
         double area_Kb = hist1->Integral(binMinKb, binMaxKb);
 
     // Calculate the detetcor efficiency for each peak energy
-        double eff_Gamma, eff_Ka, eff_Kb, nTot;
+        double eff_L, eff_Ka, eff_Kb, nTot;
         nTot = 1e7;
+        eff_L = area_L/nTot;
         eff_Ka = area_Ka/nTot;
         eff_Kb = area_Kb/nTot;
 
     cout << "Efficiencies: " << endl;
+    cout << "L- = \t\t" << eff_L << endl;
     cout << "Ka = \t\t" << eff_Ka << endl;
     cout << "Kb = \t\t" << eff_Kb << endl;
 }

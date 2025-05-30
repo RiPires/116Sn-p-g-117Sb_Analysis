@@ -582,7 +582,7 @@ def FitNpeakHalfLifeHPGe(func, time, countsGamma, errGamma, countsKa, errKa, cou
 ## Funtion to fit accumulation curve to experimental data, extracting total nr. of radioactive nuclei at ##
 ## the end of the irradiation (N_Dirr) for the SDD detector                                              ##
 ## ***************************************************************************************************** ##
-def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, t_trans, lab, energy_key, radType):
+def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, init, efficiency, t_trans, lab, energy_key, radType):
     """
     INPUTS:
         - func: fucntion to fit;
@@ -599,6 +599,7 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     time     = np.array(time)
     countsKa = np.array(countsKa)
     countsKb = np.array(countsKb)
+    countsL = np.array(countsL)
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p),
@@ -607,6 +608,9 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p), 
                                time, countsKb, p0=init[radType[1]][0:2], sigma=errKb[1:], absolute_sigma=True)
     
+    poptL, pcovL = curve_fit(lambda t, *p: Npeak(t, *p), 
+                            time, countsL, p0=init[radType[2]][0:2], sigma=errL[1:], absolute_sigma=True)
+    
     ## Get fit parameters
     # Ka line
     N0Ka, N0Ka_err         = poptKa[0], np.sqrt(np.diag(pcovKa))[0] 
@@ -614,6 +618,9 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     # Kb line
     N0Kb, N0Kb_err         = poptKb[0], np.sqrt(np.diag(pcovKb))[0]
     bgRateKb, bgRateKb_err = poptKb[1], np.sqrt(np.diag(pcovKb))[1] 
+    # L- lines
+    N0L, N0L_err           = poptL[0], np.sqrt(np.diag(pcovL))[0]
+    bgRateL, bgRateL_err   = poptL[1], np.sqrt(np.diag(pcovL))[1] 
 
     ## Constants
     halfLifeMin         = 2.8 * 60  # Decay half-life (minutes)
@@ -634,6 +641,12 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
                           (N0Kb*np.exp(lambda_decay*t_trans)*efficiency[1][1]/efficiency[1][0]**2)**2 + 
                           (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[1][0])**2 + 
                           (lambda_decay*N0Kb*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[1][0])**2)
+    
+    NdirrL     = N0L/(efficiency[2][0] * np.exp(-lambda_decay*t_trans))
+    NdirrL_err = np.sqrt((np.exp(lambda_decay*t_trans)*N0L_err/efficiency[2][0])**2 + 
+                          (N0L*np.exp(lambda_decay*t_trans)*efficiency[2][1]/efficiency[2][0]**2)**2 + 
+                          (t_trans*N0L*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[2][0])**2 + 
+                          (lambda_decay*N0L*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
 
     """     ## Print results
     print("******************************"+len(lab)*"*")
@@ -641,6 +654,7 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
     print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.2f}")
     print() """
 
@@ -648,17 +662,19 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     N_D_irr_SDD = {
         energy_key: {
             "Ka": NdirrKa,
-            "Kb": NdirrKb
+            "Kb": NdirrKb,
+            "L-": NdirrL
         }
     }
 
     ## Print dictionary
     for key, value in N_D_irr_SDD.items():
-        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}}},')
+        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L-": {value["L-"]:.3e}}},')
 
     ## Fit function for plotting
     fittedKa = Npeak(time, *poptKa)
     fittedKb = Npeak(time, *poptKb)
+    fittedL  = Npeak(time, *poptL)
 
     # Plot the results
     fig, ax = plt.subplots()
@@ -667,6 +683,8 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, init, efficiency, 
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
     ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")
     ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
+    ax.errorbar(time, countsL, yerr=errL[1:],fmt='>', color="xkcd:orange", label=f"L-")
+    ax.semilogy(time, fittedL, '-', color="xkcd:light orange", label="Fit - L-")
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)

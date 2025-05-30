@@ -176,21 +176,21 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
     colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
     markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
-    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:pink"}
+    colorsSDD = {"Ka": "xkcd:sky", "Kb": "xkcd:pink", "L": "xkcd:vomit"}
     colorsSDD_CTN = {"Ka": "xkcd:ultramarine blue", "Kb": "xkcd:electric green"}
-    markersSDD = {"Ka": "*", "Kb": "v"}
+    markersSDD = {"Ka": "*", "Kb": "v", "L": "<"}
     markersSDD_CTN = {"Ka": "<", "Kb": ">"}
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
     energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
 
     # Loop over each radiation type to plot separately
-    labs = {"gamma": "$\\gamma_{158}$", "Ka": "$K_{\\alpha}$", "Kb": "$K_{\\beta}$", "511 keV": "$\\gamma_{511}$", "861 keV": "$\\gamma_{861}$", "1004 keV": "$\\gamma_{1004}$"}
+    labs = {"gamma": "$\\gamma_{158}$", "Ka": "$K_{\\alpha}$", "Kb": "$K_{\\beta}$", "L": "$L_{\\alpha,\\beta}$", "511 keV": "$\\gamma_{511}$", "861 keV": "$\\gamma_{861}$", "1004 keV": "$\\gamma_{1004}$"}
     fig, ax = plt.subplots()
     ax.set_yscale("log")
 
     ## HPGe at CNA data
-    for rad_type in ["Ka", "Kb", "gamma", "511 keV", "861 keV", "1004 keV"]:
+    for rad_type in ["Ka", "Kb", "gamma"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
         ax.errorbar(energies, cross_section_values_HPGe,
@@ -204,7 +204,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
                     label=labs[rad_type]+" HPGe@CNA")
         
     ## SDD at CNA data
-    for rad_type in ["Ka", "Kb"]:
+    for rad_type in ["Ka", "Kb", "L"]:
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
         sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
         ax.errorbar(energies, cross_section_values_SDD, 
@@ -261,7 +261,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     #           labels[9],  labels[10], labels[13], 
     #           labels[11], labels[12], labels[0]]
     
-    legend = ax.legend(handles, labels, loc="upper left",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
+    legend = ax.legend(handles, labels, loc="upper left",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
