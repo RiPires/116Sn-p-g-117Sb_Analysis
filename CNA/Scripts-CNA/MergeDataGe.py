@@ -37,19 +37,22 @@ geDir = ["../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/",
 
 Channel = np.array([(i+1) for i in range(4096)])
 energy = Channel*0.3225 - 0.4556 # keV
+mergedYields = []
+labels = []
 for dir in geDir:
 
     Yield_Ge = MergeYieldGe(dir)
+    mergedYields.append(Yield_Ge)
     output_filename = str(dir[15:27]+"_"+os.listdir(dir)[0][0:19]+"_BgRemoved_Merged.txt")
+    labels.append(output_filename[:5] + ' = ' + output_filename[6:9] + ' MeV - HPGe')
     """with open(output_filename, 'w') as outfile:
         for value in Yield_Ge:
             outfile.write(f"{value}\n")
     print(f"Output file: {output_filename}") """
 
-
     ### Plot
-    fig, ax1 = plt.subplots()
-    ax1.semilogy(energy, Yield_Ge,'+-', color ='xkcd:black', label=(output_filename[:5]+' =  '+
+    """     fig, ax1 = plt.subplots()
+    ax1.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=(output_filename[:5]+' =  '+
                                                                      output_filename[6:9]+' MeV - HPGe'))
     legend = ax1.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
@@ -57,5 +60,17 @@ for dir in geDir:
     xlabel('Energy (keV)',fontsize=22)
     xlim(left=0.)
     ylabel('Merged yield', fontsize=22)
-    show()
-    ###########################################
+    show() """
+
+colors = ["xkcd:blue", "xkcd:green", "xkcd:orange", "xkcd:red", "xkcd:purple", "xkcd:brown"]
+markers = ['1', '2', '3', '4', '8', 's']
+fig, ax1 = plt.subplots()
+for i, Yield_Ge in enumerate(mergedYields):
+    ax1.semilogy(Channel, Yield_Ge, markers[i]+'-', color=colors[i], label=labels[i])
+legend = ax1.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+legend.get_frame().set_facecolor('#DAEBF2')
+tick_params(axis='both', which='major', labelsize=22)
+xlabel('Channel',fontsize=22)
+xlim(left=0.)
+ylabel('Merged yield', fontsize=22)
+show()

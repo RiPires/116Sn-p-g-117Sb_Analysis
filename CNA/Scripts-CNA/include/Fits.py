@@ -368,7 +368,7 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
 
     ## Print dictionary
     for key, value in N_D_irr_SDD.items():
-        print(f'    "{key}": {{"Gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
+        print(f'    "{key}": {{"gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
 
 
     ## Fited function for plotting
@@ -648,17 +648,17 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
                           (t_trans*N0L*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[2][0])**2 + 
                           (lambda_decay*N0L*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
 
-    """     ## Print results
-    print("******************************"+len(lab)*"*")
+    ## Print results
+    """     print("******************************"+len(lab)*"*")
     print(f"* Accumulation fit results: {lab} *")
     print("******************************"+len(lab)*"*")
     print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
     print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
     print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
     print(f"Ka/Kb ratio = \t {(NdirrKa/NdirrKb):.2f}")
-    print() """
-
-    ## Create dictionary for results
+    print()
+    """
+    ## Create dictionaries for results
     N_D_irr_SDD = {
         energy_key: {
             "Ka": NdirrKa,
@@ -667,9 +667,21 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
         }
     }
 
-    ## Print dictionary
+    N_D_irr_SDD_err = {
+        energy_key: {
+            "Ka": NdirrKa_err,
+            "Kb": NdirrKb_err,
+            "L-": NdirrL_err
+        }
+    }
+
+    ## Print dictionaries
+    #  Nominal values
     for key, value in N_D_irr_SDD.items():
-        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L-": {value["L-"]:.3e}}},')
+        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L": {value["L-"]:.3e}}},')
+    #  Errors
+    #for key, value in N_D_irr_SDD_err.items():
+    #    print(f'    "{key}": {{"Ka": {value["Ka"]:.0e}, "Kb": {value["Kb"]:.0e}, "L": {value["L-"]:.0e}}},')
 
     ## Fit function for plotting
     fittedKa = Npeak(time, *poptKa)
@@ -679,12 +691,12 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
     # Plot the results
     fig, ax = plt.subplots()
     ax.set_yscale("log")
-    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
-    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
-    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")
-    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
-    ax.errorbar(time, countsL, yerr=errL[1:],fmt='>', color="xkcd:orange", label=f"L-")
-    ax.semilogy(time, fittedL, '-', color="xkcd:light orange", label="Fit - L-")
+    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label="$K_{\\alpha_{1,2,3}}$")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - $K_{\\alpha_{1,2,3}}$")
+    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label="$K_{\\beta_{1,3}}$")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - $K_{\\beta_{1,3}}$")
+    ax.errorbar(time, countsL, yerr=errL[1:],fmt='>', color="xkcd:orange", label="$L_{\\alpha,\\beta}$")
+    ax.semilogy(time, fittedL, '-', color="xkcd:light orange", label="Fit - $L_{\\alpha,\\beta}$")
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)

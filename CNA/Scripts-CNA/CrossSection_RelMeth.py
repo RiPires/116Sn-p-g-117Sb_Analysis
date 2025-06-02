@@ -52,12 +52,12 @@ ruthCrossSection_CTN_err = np.sqrt((2 * ruthCrossSection_CTN * np.cos(scattAng_C
 # The number of radioactive nuclei at the end of the irradiation, from the Npeak fit, 
 # for each beam energy, and each radiation type
 N_D_irr_HPGe = {
-    "Ebeam=3.2MeV": {"gamma": 2.886e6, "Ka": 2.907e6, "Kb": 2.908e6, "511 keV": 3.162e6, "861 keV": 1.990e6, "1004 keV": 1.471e6},
-    "Ebeam=3.5MeV": {"gamma": 1.156e7, "Ka": 1.151e7, "Kb": 1.167e7, "511 keV": 1.209e7, "861 keV": 9.367e6, "1004 keV": 9.896e6},
-    "Ebeam=3.9MeV": {"gamma": 2.640e7, "Ka": 2.612e7, "Kb": 2.662e7, "511 keV": 3.168e7, "861 keV": 2.126e7, "1004 keV": 1.877e7},
-    "Ebeam=4.3MeV": {"gamma": 5.156e7, "Ka": 5.095e7, "Kb": 5.174e7, "511 keV": 6.151e7, "861 keV": 4.807e7, "1004 keV": 4.559e7},
-    "Ebeam=4.7MeV": {"gamma": 9.539e7, "Ka": 9.351e7, "Kb": 9.537e7, "511 keV": 1.256e8, "861 keV": 8.266e7, "1004 keV": 8.243e7},
-    "Ebeam=5.0MeV": {"gamma": 1.934e8, "Ka": 1.847e8, "Kb": 1.923e8, "511 keV": 2.668e8, "861 keV": 1.787e8, "1004 keV": 1.712e8}}
+    "Ebeam=3.2MeV": {"gamma": 2.793e+06, "Ka": 2.813e+06, "Kb": 2.816e+06,"511 keV": 3.060e+06, "861 keV": 1.874e+06, "1004 keV": 1.383e+06},
+    "Ebeam=3.5MeV": {"gamma": 1.115e+07, "Ka": 1.110e+07, "Kb": 1.126e+07,"511 keV": 1.165e+07, "861 keV": 8.931e+06, "1004 keV": 9.326e+06},
+    "Ebeam=3.9MeV": {"gamma": 2.541e+07, "Ka": 2.513e+07, "Kb": 2.562e+07,"511 keV": 3.044e+07, "861 keV": 2.040e+07, "1004 keV": 1.808e+07},
+    "Ebeam=4.3MeV": {"gamma": 4.933e+07, "Ka": 4.875e+07, "Kb": 4.950e+07,"511 keV": 5.857e+07, "861 keV": 4.567e+07, "1004 keV": 4.347e+07},
+    "Ebeam=4.7MeV": {"gamma": 9.364e+07, "Ka": 9.178e+07, "Kb": 9.361e+07,"511 keV": 1.231e+08, "861 keV": 8.056e+07, "1004 keV": 8.023e+07},
+    "Ebeam=5.0MeV": {"gamma": 1.849e+08, "Ka": 1.765e+08, "Kb": 1.839e+08,"511 keV": 2.545e+08, "861 keV": 1.691e+08, "1004 keV": 1.628e+08}}
 
 ## Error values of N_Dirr from the fit of HPGe data
 N_D_irr_HPGe_err = {
@@ -71,7 +71,7 @@ N_D_irr_HPGe_err = {
 ## Parameters for the detector at mean position of (12+9)/2 mm
 N_D_irr_SDD = {
     "Ebeam=3.2MeV": {"Ka": 2.498e+06, "Kb": 2.114e+06, "L": 2.305e+06},
-    "Ebeam=3.5MeV": {"Ka": 9.607e+06, "Kb": 8.936e+06, "L": 9.154e+06},
+    "Ebeam=3.5MeV": {"Ka": 1.013e+07, "Kb": 9.592e+06, "L": 9.669e+06},
     "Ebeam=3.9MeV": {"Ka": 2.546e+07, "Kb": 2.523e+07, "L": 2.441e+07},
     "Ebeam=4.3MeV": {"Ka": 5.124e+07, "Kb": 5.505e+07, "L": 5.160e+07},
     "Ebeam=4.7MeV": {"Ka": 1.026e+08, "Kb": 1.073e+08, "L": 1.020e+08},
@@ -79,12 +79,12 @@ N_D_irr_SDD = {
 
 ## Error values of N_Dirr from the fit of SDD data 
 N_D_irr_SDD_err = {
-    "Ebeam=3.2MeV": {"Ka": 2e5, "Kb": 3e5, "L": 2e5},
-    "Ebeam=3.5MeV": {"Ka": 8e5, "Kb": 1e6, "L": 2e5},
-    "Ebeam=3.9MeV": {"Ka": 2e6, "Kb": 2e6, "L": 2e5},
-    "Ebeam=4.3MeV": {"Ka": 4e6, "Kb": 7e6, "L": 2e5},
-    "Ebeam=4.7MeV": {"Ka": 8e6, "Kb": 7e6, "L": 2e5},
-    "Ebeam=5.0MeV": {"Ka": 2e7, "Kb": 2e7, "L": 2e5}}
+    "Ebeam=3.2MeV": {"Ka": 1e+05, "Kb": 2e+05, "L": 5e+05},
+    "Ebeam=3.5MeV": {"Ka": 1e+06, "Kb": 9e+05, "L": 2e+06},
+    "Ebeam=3.9MeV": {"Ka": 3e+06, "Kb": 3e+06, "L": 4e+06},
+    "Ebeam=4.3MeV": {"Ka": 6e+06, "Kb": 5e+06, "L": 1e+07},
+    "Ebeam=4.7MeV": {"Ka": 1e+07, "Kb": 1e+07, "L": 2e+07},
+    "Ebeam=5.0MeV": {"Ka": 2e+07, "Kb": 2e+07, "L": 4e+07}}
 
 ## Parameters for the activation at CTN
 N_D_irr_BEGe_CTN = {"gamma": 8.429e5, "Ka": 8.728e5, "Kb": 8.419e5}

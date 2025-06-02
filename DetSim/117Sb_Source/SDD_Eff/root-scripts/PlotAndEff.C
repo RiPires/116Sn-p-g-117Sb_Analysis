@@ -4,6 +4,7 @@
 #include "TH2.h"
 #include <cmath>
 #include "TF1.h"
+#include <iomanip>
 using namespace std;
 
 void PlotAndEff(const char* filename){
@@ -27,13 +28,13 @@ void PlotAndEff(const char* filename){
      ////////////////////////////////////////////////////
      // Create a canvas for plotting deposited energy  //
      ////////////////////////////////////////////////////
-     TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
+     //TCanvas* canvas = new TCanvas("canvas", "Energy Scoring", 800, 600);
      // Create a histogram
      TH1D* hist1 = new TH1D("hist", "Ge energy scoring", nrCh, intercept, nrCh*slope);
      // Project the variable into the histogram
      ScoringTTRee->Project("hist", "Scoring.Edep");
      // Set the histogram style and labels
-     hist1->SetLineColor(kBlue);
+     /*hist1->SetLineColor(kBlue);
      hist1->SetLineWidth(2);
      hist1->GetXaxis()->SetTitle("Energy (MeV)");
      hist1->GetYaxis()->SetTitle("Counts");
@@ -42,7 +43,7 @@ void PlotAndEff(const char* filename){
      // Display the canvas
      canvas->SetLogy();
      canvas->Draw();
-     gPad->Update();
+     gPad->Update();*/
 
 
      // ROIs for each photopeak area calculation
@@ -68,10 +69,8 @@ void PlotAndEff(const char* filename){
         eff_Ka = area_Ka/nTot;
         eff_Kb = area_Kb/nTot;
 
-    cout << "Efficiencies: " << endl;
-    cout << "L- = \t\t" << eff_L << endl;
-    cout << "Ka = \t\t" << eff_Ka << endl;
-    cout << "Kb = \t\t" << eff_Kb << endl;
+    cout << std::scientific << std::setprecision(3);
+    cout << "[" << eff_Ka << ", " << eff_Kb << ", " << eff_L << "]," << endl;
 }
 
 void RunPlotAndEff_7mm(){
@@ -93,21 +92,23 @@ void RunPlotAndEff_9mm(){
 }
 
 void RunPlotAndEff_10mm(){
-	PlotAndEff("../data-files_SDD/output_Ebeam32_10mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam35_10mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam39_10mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam43_10mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam47_10mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam50_10mm.root");
+    cout << "Efficiencies: " << endl;
+    cout << "[\t Ka, \t Kb, \t L-]" << endl;
+	PlotAndEff("../data-files_SDD/output_Ebeam32_10mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_10mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_10mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_10mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_10mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_10mm_0Al.root");
 }
 
 void RunPlotAndEff_11mm(){
-	PlotAndEff("../data-files_SDD/output_Ebeam32_11mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam35_11mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam39_11mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam43_11mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam47_11mm.root");
-	PlotAndEff("../data-files_SDD/output_Ebeam50_11mm.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam32_11mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam35_11mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam39_11mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam43_11mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam47_11mm_0Al.root");
+	PlotAndEff("../data-files_SDD/output_Ebeam50_11mm_0Al.root");
 }
 
 void RunPlotAndEff_12mm(){

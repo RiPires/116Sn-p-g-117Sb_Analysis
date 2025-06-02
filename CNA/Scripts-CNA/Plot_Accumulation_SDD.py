@@ -25,7 +25,7 @@ initParamsDict = {
     'Ebeam=5.0MeV': {"Ka": (2.0e7, 1.), "Kb": (4.0e7, 1.), "L-": (4.0e7, 1.)}}
 
 ## Convoluted efficiency for and uncetainty for each energy
-## Parameters for the detector at mean position of (12+9)/2 mm  ## VERIFICAR POSIÇÕES E VALORES !!!
+## Parameters for the detector at mean position of (11+10)/2 mm  ## VERIFICAR POSIÇÕES E VALORES !!!
 efficiency_params = {
     'Ebeam=3.2MeV': {'Ka': (1.884e-03, 5e-04), 'Kb': (2.345e-04, 5e-05), 'L-': (6.626e-04, 2e-04)},
     'Ebeam=3.5MeV': {'Ka': (1.870e-03, 4e-04), 'Kb': (2.320e-04, 5e-05), 'L-': (6.602e-04, 2e-04)},
