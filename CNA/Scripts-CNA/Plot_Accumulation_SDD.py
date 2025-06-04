@@ -19,7 +19,7 @@ sddPaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/SDD/',
 initParamsDict = {
     'Ebeam=3.2MeV': {"Ka": (1.0e6, 1.), "Kb": (2.5e6, 1.), "L-": (1.0e6, 1.)},  
     'Ebeam=3.5MeV': {"Ka": (1.2e6, 1.), "Kb": (2.5e6, 1.), "L-": (2.0e6, 1.)},  
-    'Ebeam=3.9MeV': {"Ka": (3.0e6, 1.), "Kb": (6.0e6, 1), "L-": (5.0e6, 1.)}, 
+    'Ebeam=3.9MeV': {"Ka": (3.0e6, 1.), "Kb": (6.0e6, 1.), "L-": (5.0e6, 1.)}, 
     'Ebeam=4.3MeV': {"Ka": (5.0e6, 1.), "Kb": (1.0e7, 1.), "L-": (1.0e7, 1.)},  
     'Ebeam=4.7MeV': {"Ka": (1.0e7, 1.), "Kb": (2.0e7, 1.), "L-": (2.0e7, 1.)},  
     'Ebeam=5.0MeV': {"Ka": (2.0e7, 1.), "Kb": (4.0e7, 1.), "L-": (4.0e7, 1.)}}
@@ -63,9 +63,16 @@ for files in sddPaths:
     ## Extract accumulation data from the run files
     accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_L, accu_L_err, accu_time = AccumulateSDD_BgRemoved(files)
 
-    ## Fit the data to the Npeak curve
+    ## Fit the data to the Npeak curve with linear trend
     FitNpeakSDD(Npeak,  accu_time, accu_Ka, accu_Ka_err, 
                         accu_Kb, accu_Kb_err, accu_L, accu_L_err,
                         initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
                         energy_key=energy_key, radType=radType, 
                         lab=str(files[15:27]+' - '+files[-4:-1]+' @ CNA'))
+    
+"""     ## Fit the data to the Npeak curve without linear trend
+    FitNpeakNoLinSDD(NpeakNoLin,  accu_time, accu_Ka, accu_Ka_err, 
+                        accu_Kb, accu_Kb_err, accu_L, accu_L_err,
+                        initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
+                        energy_key=energy_key, radType=radType, 
+                        lab=str(files[15:27]+' - '+files[-4:-1]+' @ CNA')) """
