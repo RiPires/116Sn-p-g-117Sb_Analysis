@@ -10,7 +10,7 @@ from include.Fits import *
 ## -------------------------- ##
 
 ## Path for BEGe decay data files
-gePath = '../2_Decay/DataFilesGe/Decay/' 
+gePath = '../2_Decay/DataFilesGe/BgRemoved/' 
 
 ## Define initial guess for N0 and bgRate
 ##                [[gamma]    , [ Ka  ]    , [ Kb  ]] 

@@ -143,6 +143,28 @@ def PlotRBS(ch, y, lab):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
+def PlotRBSSim(chExp, yExp, chSim, ySim, lab):
+
+    maxExp = max(yExp)
+    maxSim = max(ySim)
+
+    yExpNorm = [(y/maxExp) for y in yExp]
+    ySimNorm = [(y/maxSim) for y in ySim]
+
+    fig, ax = plt.subplots()
+    ax.semilogy(chExp, yExpNorm,'+-', color ='xkcd:black', label=str(lab))
+    ax.semilogy(chSim, ySimNorm, '-', color='xkcd:light red', label='SimNRA')
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Energy [keV]',fontsize=22)
+    ylabel('Normalized Yield', fontsize=22)
+    show()
+
+    return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
 def Plot6RBS(ch, y, lab):
 
     colors = ['xkcd:black', 'xkcd:red', 'xkcd:blue', 'xkcd:green', 'xkcd:pink', 'xkcd:yellow']
@@ -172,7 +194,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     """
                 
     # Define colors and markers for different radiation types
-    colorsHPGe = {"gamma": "xkcd:light green", "Ka": "xkcd:blue", "Kb": "xkcd:light red", "511 keV": "xkcd:purple", "861 keV": "xkcd:mustard", "1004 keV": "xkcd:light orange"}
+    colorsHPGe = {"gamma": "xkcd:grass green", "Ka": "xkcd:blue", "Kb": "xkcd:light red", "511 keV": "xkcd:clay", "861 keV": "xkcd:pale orange", "1004 keV": "xkcd:mustard"}
     markersHPGe = {"gamma": "s", "Ka": "o", "Kb": "^", "511 keV": "+", "861 keV": "P", "1004 keV": "X"}
     colorsBEGe_CTN = {"gamma": "xkcd:cyan", "Ka": "xkcd:sky blue", "Kb": "xkcd:pale green"}
     markersBEGe_CTN = {"gamma": "d", "Ka": "p", "Kb": "P"}
@@ -182,7 +204,10 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     markersSDD_CTN = {"Ka": "<", "Kb": ">"}
 
     # Extract energy values (convert keys like "Ebeam=3.2MeV" to float values)
-    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])
+    energies = sorted([float(key.replace("Ebeam=", "").replace("MeV", "")) for key in crossSections_HPGe.keys()])  
+    
+    ## Nominal energies in the middle of the target
+    nominalEnergies = [(energies[i] - dE[i]) for i in range(len(energies))]
 
     # Loop over each radiation type to plot separately
     labs = {"gamma": "$\\gamma_{158}$", "Ka": "$K_{\\alpha}$", "Kb": "$K_{\\beta}$", "L": "$L_{\\alpha,\\beta}$", "511 keV": "$\\gamma_{511}$", "861 keV": "$\\gamma_{861}$", "1004 keV": "$\\gamma_{1004}$"}
@@ -190,16 +215,16 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     ax.set_yscale("log")
 
     ## HPGe at CNA data
-    for rad_type in ["Ka", "Kb", "gamma"]:
+    for rad_type in ["Ka", "Kb", "gamma", "511 keV", "861 keV", "1004 keV"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
-        ax.errorbar(energies, cross_section_values_HPGe,
-                    #xerr=dE,
+        ax.errorbar(nominalEnergies, cross_section_values_HPGe,
+                    xerr=dE,
                     yerr=hpge_err,
                     capsize=4,
                     marker=markersHPGe[rad_type],
                     linestyle='--', 
-                    linewidth=2,
+                    linewidth=1,
                     color=colorsHPGe[rad_type], 
                     label=labs[rad_type]+" HPGe@CNA")
         
@@ -207,13 +232,13 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     for rad_type in ["Ka", "Kb", "L"]:
         cross_section_values_SDD = [crossSections_SDD[key][rad_type] for key in crossSections_SDD.keys()]
         sdd_err = [crossSections_SDD_err[key][rad_type] for key in crossSections_SDD_err.keys()]
-        ax.errorbar(energies, cross_section_values_SDD, 
-                    #xerr=dE,
+        ax.errorbar(nominalEnergies, cross_section_values_SDD, 
+                    xerr=dE,
                     yerr=sdd_err,
                     capsize=4,
                     marker=markersSDD[rad_type],
                     linestyle='-.', 
-                    linewidth=2,
+                    linewidth=1,
                     color=colorsSDD[rad_type], 
                     label=labs[rad_type]+" SDD@CNA")
     
@@ -261,12 +286,12 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     #           labels[9],  labels[10], labels[13], 
     #           labels[11], labels[12], labels[0]]
     
-    legend = ax.legend(handles, labels, loc="upper left",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
+    legend = ax.legend(handles, labels, loc="upper left",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=14)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
     ylabel("Cross-Section [mb]", fontsize=22)
-    #ylim(0, 1e3)
+    ylim(0, 5e1)
     title("Relative Method", fontsize=22)
     show() 
 
@@ -291,32 +316,32 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     sorted_keys = sorted(all_energy_keys, key=energy_float)
     energies = [energy_float(k) for k in sorted_keys]
 
+    ## Nominal energies in the middle of the Sn targets
+    nominalEnergies = [(energies[i] - dE[i]) for i in range(len(energies))]
+
     means, stds = [], []
     for key in sorted_keys:
         vals = []
         errs = []
         # HPGe
         if key in crossSections_HPGe:
-            for rad_type in ["gamma", "Ka", "Kb"]:
+            for rad_type in ["gamma", "Ka", "Kb", "511 keV", "861 keV", "1004 keV"]:
                 if rad_type in crossSections_HPGe[key]:
                     vals.append(crossSections_HPGe[key][rad_type])
                     errs.append(crossSections_HPGe_err[key][rad_type])
         # SDD
         if key in crossSections_SDD:
-            for rad_type in ["Ka", "Kb"]:
+            for rad_type in ["Ka", "Kb", "L"]:
                 if rad_type in crossSections_SDD[key]:
                     vals.append(crossSections_SDD[key][rad_type])
                     errs.append(crossSections_SDD_err[key][rad_type])
-        # Weighted average
-        if vals and errs and all(e > 0 for e in errs):
-            weights = [1/(e**2) for e in errs]
-            mean = np.average(vals, weights=weights)
-            std = np.sqrt(1/np.sum(weights))
+        
+        # Compute average
+        if vals:
+            mean = np.mean(vals)
+            std = np.std(vals)
             means.append(mean)
             stds.append(std)
-        elif vals:
-            means.append(np.mean(vals))
-            stds.append(np.std(vals))
         else:
             means.append(np.nan)
             stds.append(np.nan)
@@ -451,7 +476,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     ax.set_yscale("log")
 
     ## Experimental mean cross-section
-    ax.errorbar(energies, means, yerr=stds, 
+    ax.errorbar(nominalEnergies, means, xerr=dE, yerr=stds, 
                 capsize=4, marker='o', 
                 linestyle='', color="xkcd:green", 
                 label="Experimental averaged")
@@ -502,7 +527,7 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
     ylabel("Cross-Section [mb]", fontsize=22)
-    #ylim(0, 1e2)
+    ylim(0, 1.e3)
     title("Relative Method", fontsize=22)
     show() 
 

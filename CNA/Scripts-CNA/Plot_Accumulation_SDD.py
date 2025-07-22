@@ -27,12 +27,12 @@ initParamsDict = {
 ## Convoluted efficiency for and uncetainty for each energy
 ## Parameters for the detector at mean position of (11+10)/2 mm  ## VERIFICAR POSIÇÕES E VALORES !!!
 efficiency_params = {
-    'Ebeam=3.2MeV': {'Ka': (1.884e-03, 5e-04), 'Kb': (2.345e-04, 5e-05), 'L-': (6.626e-04, 2e-04)},
-    'Ebeam=3.5MeV': {'Ka': (1.870e-03, 4e-04), 'Kb': (2.320e-04, 5e-05), 'L-': (6.602e-04, 2e-04)},
-    'Ebeam=3.9MeV': {'Ka': (1.863e-03, 5e-04), 'Kb': (2.357e-04, 6e-05), 'L-': (6.628e-04, 2e-04)},
-    'Ebeam=4.3MeV': {'Ka': (1.883e-03, 5e-04), 'Kb': (2.295e-04, 5e-05), 'L-': (6.614e-04, 2e-04)},
-    'Ebeam=4.7MeV': {'Ka': (1.882e-03, 5e-04), 'Kb': (2.336e-04, 5e-05), 'L-': (6.452e-04, 2e-04)},
-    'Ebeam=5.0MeV': {'Ka': (1.857e-03, 5e-04), 'Kb': (2.317e-04, 6e-05), 'L-': (6.377e-04, 2e-04)}}
+    'Ebeam=3.2MeV': {'Ka': (1.873e-03, 5e-04), 'Kb': (2.317e-04, 6e-05), 'L-': (6.065e-04, 2e-04)},
+    'Ebeam=3.5MeV': {'Ka': (1.874e-03, 5e-04), 'Kb': (2.315e-04, 5e-05), 'L-': (6.109e-04, 2e-04)},
+    'Ebeam=3.9MeV': {'Ka': (1.877e-03, 5e-04), 'Kb': (2.335e-04, 6e-05), 'L-': (6.145e-04, 2e-04)},
+    'Ebeam=4.3MeV': {'Ka': (1.877e-03, 5e-04), 'Kb': (2.322e-04, 6e-05), 'L-': (6.094e-04, 2e-04)},
+    'Ebeam=4.7MeV': {'Ka': (1.875e-03, 5e-04), 'Kb': (2.329e-04, 6e-05), 'L-': (5.937e-04, 2e-04)},
+    'Ebeam=5.0MeV': {'Ka': (1.871e-03, 5e-04), 'Kb': (2.327e-04, 6e-05), 'L-': (5.799e-04, 1e-04)}}
 
 ## Transportation time (in minutes) for each activation energy
 t_transMin_key ={'Ebeam=3.2MeV': 28,

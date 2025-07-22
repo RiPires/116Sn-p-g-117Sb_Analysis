@@ -68,3 +68,9 @@ for files in gePaths:
                         initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
                         energy_key=energy_key, radType=radType, 
                         lab=str(files[15:27]+' - '+files[-5:-1]+' @ CNA'))
+    
+"""     FitNpeakNoLinHPGe(NpeakNoLin, accu_time, accu_gamma, accu_gamma_err, 
+                    accu_Ka, accu_Ka_err, accu_Kb, accu_Kb_err, accu_511, accu_511_err, accu_861, accu_861_err, accu_1004, accu_1004_err,
+                    initParamsNpeak, efficiency=epsilonD, t_trans=t_transMin,
+                    energy_key=energy_key, radType=radType, 
+                    lab=str(files[15:27]+' - '+files[-5:-1]+' @ CNA')) """

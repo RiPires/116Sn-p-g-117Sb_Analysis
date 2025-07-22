@@ -212,3 +212,21 @@ def Material2List(File):
         stopPower.append(float(aux[i][1])*density) # MeV/cm
     
     return energies, stopPower
+
+def ReadSimNRA(File):
+    
+    with open(File, 'r') as file:
+        reader = csv.reader(file, delimiter='\n', skipinitialspace=True)
+        data = list(reader)
+    
+    channel, simulated, aux = [], [], []
+
+    for i in range(1, len(data)):
+        aux.append(data[i][0].split('\t'))
+
+    for i in range(len(aux)):
+        channel.append(float(i+1))
+        simulated.append(float(aux[i][1]))
+    print(simulated)
+    
+    return simulated, channel

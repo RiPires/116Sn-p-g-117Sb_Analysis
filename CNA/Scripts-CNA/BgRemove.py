@@ -18,6 +18,7 @@ def RemoveBg(dataFile):
     INPUTS: 
         - dataFile (str): path for data file; 
     """
+
     print('Removing background from file: ', dataFile)
 
     ## Check detector HPGe or SDD from file name
@@ -27,7 +28,8 @@ def RemoveBg(dataFile):
         ch = [(i+1) for i in range(4096)]
 
         ## Get run yield and acquisition live time   
-        runYield, _, acquiTime = Ge2Lists(dataFile)
+        runYield, _, __ = Ge2Lists(dataFile)
+        acquiTime = 15 * 60 # seconds = 15 minutes
 
         ## Background runs path
         bgPath = '../Calibrations/HPGe/Background/'
@@ -43,7 +45,8 @@ def RemoveBg(dataFile):
         ch = [(i+1) for i in range(2048)]
 
         ## Get run yield and acquisiton live time
-        runYield, _, acquiTime = MCA2Lists(dataFile)
+        runYield, _, __ = MCA2Lists(dataFile)
+        acquiTime = 30 * 60 # seconds = 30 minutes
 
         ## Background runs path
         bgPath = '../Calibrations/SDD/Background/'
@@ -70,7 +73,7 @@ def RemoveBg(dataFile):
     rateLab = lab +'_BG removed'
 
     ## Plot both run data, bg rate and run data with bg removed 
-    Plot3RateLogy(ch, runRate, bgRate, runRateBgRem, lab, bgLab, rateLab)
+    #Plot3RateLogy(ch, runRate, bgRate, runRateBgRem, lab, bgLab, rateLab)
 
     ## Save run rate with background removed values to file 
     """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
@@ -83,8 +86,9 @@ def RemoveBg(dataFile):
                 outFile.write(f"{counts:.0f}\n")
     outFile.close() """
 
-    return
+    return runRateBgRem, ch
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
+
 
 ##  ***********************************************************  ##
 ##               Perform background removal here                 ##
@@ -107,10 +111,28 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
 
  
 ## For each path, remove background for every data file
-""" for path in gePaths:
+for path in gePaths:
+
+    ## Prepare list to store removed background data
+    bgRmYield = np.array([0. for i in range(4096)])
     for file in sorted(os.listdir(path)):
-        RemoveBg(str(path+file))
- """
+        bgRmRun, ch = RemoveBg(str(path+file))
+        bgRmRun = np.array(bgRmRun)
+        bgRmYield += bgRmRun
+    print()
+
+    fig, ax = plt.subplots()
+    energy = np.array(ch)*0.3225 - 0.4556 # keV
+    ax.semilogy(ch, bgRmYield, '+-', color='k', label='Bg Removed')
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Energy [keV]',fontsize=22)
+    xlim(left=0.)
+    ylabel('CPS', fontsize=22)
+    show()
+
+ 
 ## For specific data file
 filePath = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/116Sn-C3_Decay_HPGe-001.mca'
 RemoveBg(filePath)

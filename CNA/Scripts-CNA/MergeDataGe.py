@@ -1,6 +1,8 @@
 #RiP
 ####################################
 from include.ReadData import *
+from include.Merge import *
+from include.PlotData import *
 import matplotlib.pyplot as plt
 from matplotlib.pylab import *
 import os
@@ -50,8 +52,33 @@ for dir in geDir:
             outfile.write(f"{value}\n")
     print(f"Output file: {output_filename}") """
 
-    ### Plot
-    """     fig, ax1 = plt.subplots()
+    ## Check background
+    ## Background runs path
+    bgPath = '../Calibrations/HPGe/Background/'
+    ## Get background merged yield and time
+    mergeBgYield, _ = Merge(bgPath, 'ge')
+    bgTime = 35*1800 + 777 ## seconds: 35 runs of 30 minutes each + 777 seconds for the last run
+
+    ## Converts run yield into count rate (in s^-1)
+    nrRuns = len(os.listdir(dir))
+    acquiTime = 15 * 60 * nrRuns # seconds = 15 minutes
+    runRate = [Yield_Ge[i]/acquiTime for i in range(len(Yield_Ge))]
+    ## Converts background yield into background count rate (in s^-1)
+    bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
+    ## Remove background rate from run data 
+    runRateBgRem = [(runRate[i] - bgRate[i]) for i in range(len(runRate))]
+
+    ## Set labels
+    lab = dir[21:24] + ' MeV'
+    bgLab = 'Background Rate'
+    rateLab = lab +'_BG removed'
+
+    ## Plot both run data, bg rate and run data with bg removed 
+    Plot3RateLogy(Channel, runRate, bgRate, runRateBgRem, lab, bgLab, rateLab)
+
+
+    """     ### Plot
+    fig, ax1 = plt.subplots()
     ax1.semilogy(Channel, Yield_Ge,'+-', color ='xkcd:black', label=(output_filename[:5]+' =  '+
                                                                      output_filename[6:9]+' MeV - HPGe'))
     legend = ax1.legend(loc="best",ncol=2, shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)

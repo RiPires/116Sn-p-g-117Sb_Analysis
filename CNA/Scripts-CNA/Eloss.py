@@ -50,10 +50,19 @@ def EnergyLoss(Ebeam, thickness_nm):
     return
 
 
-# Example usage
+## Beam energies and Sn target thicknesses
 Ebeam = [3.2, 3.5, 3.9, 4.3, 4.7, 5.0]  # MeV
 thickness_nm = [1368., 1353., 1283., 1226., 1585., 1640.]  # nanometers
+halfThick_nm = [th / 2 for th in thickness_nm]  # half thicknesses
 
+## Check energy loss in the full thickness of the Sn target
+print(f"Energy lost in the full thickness of the Sn target:")
 print('Ebeam (MeV) \t Thickness (nm) \t Eloss (keV)\n')
 for i in range(len(Ebeam)):
     EnergyLoss(Ebeam[i], thickness_nm[i])
+
+## Check energy lost in half-thickness
+print(f"Energy loss in !! Half-Thickness !! of Sn target:")
+print('Ebeam (MeV) \t Thickness (nm) \t Eloss (keV)\n')
+for i in range(len(Ebeam)):
+    EnergyLoss(Ebeam[i], halfThick_nm[i])

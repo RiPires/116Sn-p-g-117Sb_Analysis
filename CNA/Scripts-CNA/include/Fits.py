@@ -381,20 +381,24 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
                             (lambda_decay*N01004*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[5][0])**2)
     
     ## Print results
-    """     print("******************************"+len(lab)*"*")
-    print(f"* Accumulation fit results: {lab} *")
-    print("******************************"+len(lab)*"*")
-    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | bgRate = ({bgRateGamma:.2f} +- {bgRateGamma_err:.2f}) counts/min")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
-    print(f"511 keV line: \t Ndirr = {Ndirr511:.3e} +- {Ndirr511_err:.0e} | bgRate = ({bgRate511:.2f} +- {bgRate511_err:.2f}) counts/min")
-    print(f"861 keV line: \t Ndirr = {Ndirr861:.3e} +- {Ndirr861_err:.0e} | bgRate = ({bgRate861:.2f} +- {bgRate861_err:.2f}) counts/min")
-    print(f"1004 keV line: \t Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e} | bgRate = ({bgRate1004:.2f} +- {bgRate1004_err:.2f}) counts/min")
-    print(f"gamma/Ka = {(NdirrGamma/NdirrKa):.2f} | gamma/Kb = {(NdirrGamma/NdirrKb):.2f} | Ka/Kb = {(NdirrKa/NdirrKb):.2f}")
-    print()
-    """
-    ## Create dictionary for results
-    N_D_irr_SDD = {
+    #print("******************************"+len(lab)*"*")
+    #print(f"* Accumulation fit results: {lab} *")
+    #print("******************************"+len(lab)*"*")
+    #print(f"Gamma line: \t N0 = {N0Gamma:.3e} +- {N0Gamma_err:.0e} | Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e} | bgRate = ({bgRateGamma:.2f} +- {bgRateGamma_err:.2f}) counts/min")
+    #print(f"Ka line: \t N0 = {N0Ka:.3e} +- {N0Ka_err:.0e} | Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
+    #print(f"Kb line: \t N0 = {N0Kb:.3e} +- {N0Kb_err:.0e} | Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    #print(f"511 keV line: \t N0 = {N0511:.3e} +- {N0511_err:.0e} | Ndirr = {Ndirr511:.3e} +- {Ndirr511_err:.0e} | bgRate = ({bgRate511:.2f} +- {bgRate511_err:.2f}) counts/min")
+    #print(f"861 keV line: \t N0 = {N0861:.3e} +- {N0861_err:.0e} | Ndirr = {Ndirr861:.3e} +- {Ndirr861_err:.0e} | bgRate = ({bgRate861:.2f} +- {bgRate861_err:.2f}) counts/min")
+    #print(f"1004 keV line: \t N0 = {N01004:.3e} +- {N01004_err:.0e} | Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e} | bgRate = ({bgRate1004:.2f} +- {bgRate1004_err:.2f}) counts/min")
+    #print(f"Ndirr: \t gamma/Ka = {(NdirrGamma/NdirrKa):.3f} | gamma/Kb = {(NdirrGamma/NdirrKb):.3f} | Ka/Kb = {(NdirrKa/NdirrKb):.3f}")
+    #print(f"N0: \t gamma/Ka = {(N0Gamma/N0Ka):.3f} +- {(np.sqrt((N0Gamma_err/N0Ka))**2 + (N0Gamma*N0Ka_err/N0Ka**2)**2):.3f} | gamma/Kb = {(N0Gamma/N0Kb):.3f} +- {(np.sqrt((N0Gamma_err/N0Kb))**2 + (N0Gamma*N0Kb_err/N0Kb**2)**2):.3f}  | Ka/Kb = {(N0Ka/N0Kb):.3f} +- {(np.sqrt((N0Ka_err/N0Kb))**2 + (N0Ka*N0Kb_err/N0Kb**2)**2):.3f}")
+    #print(f"Eff: \t gamma/Ka = {(efficiency[0][0]/efficiency[1][0]):.3f} | gamma/Kb = {(efficiency[0][0]/efficiency[2][0]):.3f} | Ka/Kb = {(efficiency[1][0]/efficiency[2][0]):.3f}")
+    #print(f"N0/Eff: \t Gamma = {(N0Gamma/efficiency[0][0]):.3e} | Ka = {(N0Ka/efficiency[1][0]):.3e} | Kb = {(N0Kb/efficiency[2][0]):.3e}")
+    #print(f"N0: \t Ka = {N0Ka:.3e} | Kb = {N0Kb:.3e}")
+    #print()
+    
+    ## Create dictionary for results and errors
+    N_D_irr_HPGe = {
         energy_key: {
             "Gamma": NdirrGamma,
             "Ka": NdirrKa,
@@ -405,10 +409,24 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
         }
     }
 
-    ## Print dictionary
-    for key, value in N_D_irr_SDD.items():
-        print(f'    "{key}": {{"gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
+    N_D_irr_HPGe_err = {
+        energy_key: {
+            "Gamma": NdirrGamma_err,
+            "Ka": NdirrKa_err,
+            "Kb": NdirrKb_err,
+            "511 keV": Ndirr511_err,
+            "861 keV": Ndirr861_err,
+            "1004 keV": Ndirr1004_err
+        }
+    }
 
+    ## Print dictionaries
+    ## Nominal values
+    for key, value in N_D_irr_HPGe.items():
+        print(f'    "{key}": {{"gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
+    #  Errors
+    #for key, value in N_D_irr_HPGe_err.items():
+    #    print(f'    "{key}": {{"gamma": {value["Gamma"]:.0e}, "Ka": {value["Ka"]:.0e}, "Kb": {value["Kb"]:.0e},"511 keV": {value["511 keV"]:.0e}, "861 keV": {value["861 keV"]:.0e}, "1004 keV": {value["1004 keV"]:.0e}}},')
 
     ## Fited function for plotting
     fittedGamma = Npeak(time, *poptGamma)
@@ -421,12 +439,180 @@ def FitNpeakHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     # Plot the results
     fig, ax = plt.subplots()
     ax.set_yscale("log")
-    #ax.errorbar(time, counts1004, yerr=err1004[1:], fmt='+', color='xkcd:red orange', label="1004 keV")
-    #ax.semilogy(time, fitted1004, '-', color='xkcd:coral', label="Fit - 1004 keV")
-    #ax.errorbar(time, counts861, yerr=err861[1:], fmt='+', color='xkcd:orange', label="861 keV")
-    #ax.semilogy(time, fitted861, '-', color='xkcd:tan', label="Fit - 861 keV")
-    #ax.errorbar(time, counts511, yerr=err511[1:], fmt='+', color='xkcd:purple', label="511 keV")
-    #ax.semilogy(time, fitted511, '-', color='xkcd:lavender', label="Fit -511 keV")
+    ax.errorbar(time, counts1004, yerr=err1004[1:], fmt='+', color='xkcd:red orange', label="$\\gamma$ - 1004 keV")
+    ax.semilogy(time, fitted1004, '-', color='xkcd:coral', label="Fit - 1004 keV")
+    ax.errorbar(time, counts861, yerr=err861[1:], fmt='+', color='xkcd:orange', label="$\\gamma$ - 861 keV")
+    ax.semilogy(time, fitted861, '-', color='xkcd:tan', label="Fit - 861 keV")
+    ax.errorbar(time, counts511, yerr=err511[1:], fmt='+', color='xkcd:purple', label="$\\gamma$ - 511 keV")
+    ax.semilogy(time, fitted511, '-', color='xkcd:lavender', label="Fit - 511 keV")
+    ax.errorbar(time, countsGamma, yerr=errGamma[1:], fmt='*', color="xkcd:sky blue", label=f"158 keV")
+    ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - 158 keV")
+    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label="$K_{\\alpha_{1,2,3}}$")
+    ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - $K_{\\alpha_{1,2,3}}$")
+    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label="$K_{\\beta_{1,2,3}}$")
+    ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - $K_{\\beta_{1,2,3}}$")
+    legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel("Acquisition Time [minutes]", fontsize=22)
+    ylabel("Accumulated Yield", fontsize=22)
+    title("Accumulation Fit: "+lab, fontsize=24)
+    show()
+
+    return
+
+## ***************************************************************************************************** ##
+## Funtion to fit accumulation curve to experimental data, extracting total nr. of radioactive nuclei at ##
+## the end of the irradiation (N_Dirr) for the HPGe detector                                             ##
+## ***************************************************************************************************** ##
+def FitNpeakNoLinHPGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, errKb, counts511, err511, counts861, err861, counts1004, err1004, init, efficiency, t_trans, lab, energy_key, radType):
+    """
+    INPUTS:
+        - func: fucntion to fit;
+        - time: acquisition time, the x-axis variable;
+        - countsGamma: accumulation yield in counts, the y-axis variable, for the gamma line;
+        - countsKa: accumulation yield in counts, the y-axis variable, for the Ka line;
+        - countsKb: accumulation yield in counts, the y-axis variable, for the Kb line;
+        - init: initial gusses for the fit parameters (N_Dirr, radType);
+        - lab: a label to use for plotting;
+    OUTPUTS:
+    """
+
+    ## Convert input arrays into numpy arrays
+    time        = np.array(time)
+    countsGamma = np.array(countsGamma)
+    countsKa    = np.array(countsKa)
+    countsKb    = np.array(countsKb)
+    counts511   = np.array(counts511)
+    counts861   = np.array(counts861)
+    counts1004  = np.array(counts1004)
+
+    ## Fit the data, passing radType explicitly
+    # Gamma line
+    poptGamma, pcovGamma    = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, countsGamma, p0=init[radType[0]][0:1], sigma=errGamma[1:], absolute_sigma=True)
+    # Ka line
+    poptKa, pcovKa          = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, countsKa, p0=init[radType[1]][0:1], sigma=errKa[1:], absolute_sigma=True)
+    # Kb line
+    poptKb, pcovKb          = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, countsKb, p0=init[radType[2]][0:1], sigma=errKb[1:], absolute_sigma=True)
+    # 511 keV line
+    popt511, pcov511        = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, counts511, p0=init[radType[3]][0:1], sigma=err511[1:], absolute_sigma=True)
+    # 861 keV line
+    popt861, pcov861        = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, counts861, p0=init[radType[4]][0:1], sigma=err861[1:], absolute_sigma=True)
+    # 1004 keV line
+    popt1004, pcov1004      = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
+                                        time, counts1004, p0=init[radType[5]][0:1], sigma=err1004[1:], absolute_sigma=True)
+
+    ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
+    # Gamma line
+    N0Gamma, N0Gamma_err            = poptGamma[0], np.sqrt(np.diag(pcovGamma))[0]
+    # Ka line 
+    N0Ka, N0Ka_err                  = poptKa[0],    np.sqrt(np.diag(pcovKa))[0]
+    # Kb line   
+    N0Kb, N0Kb_err                  = poptKb[0],    np.sqrt(np.diag(pcovKb))[0]  
+    # 511 keV line   
+    N0511, N0511_err                = popt511[0],   np.sqrt(np.diag(pcov511))[0]  
+    # 861 keV line   
+    N0861, N0861_err                = popt861[0],   np.sqrt(np.diag(pcov861))[0]  
+    # 1004 keV line   
+    N01004, N01004_err              = popt1004[0],   np.sqrt(np.diag(pcov1004))[0]  
+
+    ## Constants
+    halfLifeMin         = 2.8 * 60  # Decay half-life (minutes)
+    halfLife_min_err    = 0.01*60 # minutes
+    lambda_decay        = np.log(2) / halfLifeMin  # Decay constant
+    lambda_decay_err    = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
+    t_trans_err         = 1. # minute
+
+    ## Calculate N_Dirr and error propagation
+    ## Gamma line
+    NdirrGamma      = N0Gamma/(efficiency[0][0] * np.exp(-lambda_decay*t_trans))
+    NdirrGamma_err  = np.sqrt((np.exp(lambda_decay*t_trans)*N0Gamma_err/efficiency[0][0])**2 + 
+                            (N0Gamma*np.exp(lambda_decay*t_trans)*efficiency[0][1]/efficiency[0][0]**2)**2 + 
+                            (t_trans*N0Gamma*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[0][0])**2 + 
+                            (lambda_decay*N0Gamma*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[0][0])**2)
+    ## Ka line
+    NdirrKa         = N0Ka/(efficiency[1][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKa_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0Ka_err/efficiency[1][0])**2 + 
+                            (N0Ka*np.exp(lambda_decay*t_trans)*efficiency[1][1]/efficiency[1][0]**2)**2 + 
+                            (t_trans*N0Ka*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[1][0])**2 + 
+                            (lambda_decay*N0Ka*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[1][0])**2)
+    ## Kb line
+    NdirrKb         = N0Kb/(efficiency[2][0] * np.exp(-lambda_decay*t_trans))
+    NdirrKb_err     = np.sqrt((np.exp(lambda_decay*t_trans)*N0Kb_err/efficiency[2][0])**2 + 
+                            (N0Kb*np.exp(lambda_decay*t_trans)*efficiency[2][1]/efficiency[2][0]**2)**2 + 
+                            (t_trans*N0Kb*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[2][0])**2 + 
+                            (lambda_decay*N0Kb*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
+    ## 511 keV line
+    Ndirr511        = N0511/(efficiency[3][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr511_err    = np.sqrt((np.exp(lambda_decay*t_trans)*N0511_err/efficiency[3][0])**2 + 
+                            (N0511*np.exp(lambda_decay*t_trans)*efficiency[3][1]/efficiency[3][0]**2)**2 + 
+                            (t_trans*N0511*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[3][0])**2 + 
+                            (lambda_decay*N0511*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[3][0])**2)
+    ## 861 keV line
+    Ndirr861        = N0861/(efficiency[4][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr861_err    = np.sqrt((np.exp(lambda_decay*t_trans)*N0861_err/efficiency[4][0])**2 + 
+                            (N0861*np.exp(lambda_decay*t_trans)*efficiency[4][1]/efficiency[4][0]**2)**2 + 
+                            (t_trans*N0861*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[4][0])**2 + 
+                            (lambda_decay*N0861*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[4][0])**2)
+    ## 1004 keV line
+    Ndirr1004       = N01004/(efficiency[5][0] * np.exp(-lambda_decay*t_trans))
+    Ndirr1004_err   = np.sqrt((np.exp(lambda_decay*t_trans)*N01004_err/efficiency[5][0])**2 + 
+                            (N01004*np.exp(lambda_decay*t_trans)*efficiency[5][1]/efficiency[5][0]**2)**2 + 
+                            (t_trans*N01004*np.exp(lambda_decay*t_trans)*lambda_decay_err/efficiency[5][0])**2 + 
+                            (lambda_decay*N01004*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[5][0])**2)
+
+    ## Print results
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Gamma line: \t Ndirr = {NdirrGamma:.3e} +- {NdirrGamma_err:.0e}")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e}")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e}")
+    print(f"511 keV line: \t Ndirr = {Ndirr511:.3e} +- {Ndirr511_err:.0e}")
+    print(f"861 keV line: \t Ndirr = {Ndirr861:.3e} +- {Ndirr861_err:.0e}")
+    print(f"1004 keV line: \t Ndirr = {Ndirr1004:.3e} +- {Ndirr1004_err:.0e}")
+    print(f"gamma/Ka = {(NdirrGamma/NdirrKa):.2f} | gamma/Kb = {(NdirrGamma/NdirrKb):.2f} | Ka/Kb = {(NdirrKa/NdirrKb):.2f}")
+    print()
+
+    ## Create dictionary for results
+    N_D_irr_HPGe = {
+        energy_key: {
+            "Gamma": NdirrGamma,
+            "Ka": NdirrKa,
+            "Kb": NdirrKb,
+            "511 keV": Ndirr511,
+            "861 keV": Ndirr861,
+            "1004 keV": Ndirr1004
+        }
+    }
+
+    ## Print dictionary
+    #for key, value in N_D_irr_HPGe.items():
+    #    print(f'    "{key}": {{"gamma": {value["Gamma"]:.3e}, "Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e},"511 keV": {value["511 keV"]:.3e}, "861 keV": {value["861 keV"]:.3e}, "1004 keV": {value["1004 keV"]:.3e}}},')
+
+
+    ## Fited function for plotting
+    fittedGamma = NpeakNoLin(time, *poptGamma)
+    fittedKa    = NpeakNoLin(time, *poptKa)
+    fittedKb    = NpeakNoLin(time, *poptKb)
+    fitted511   = NpeakNoLin(time, *popt511)
+    fitted861   = NpeakNoLin(time, *popt861)
+    fitted1004  = NpeakNoLin(time, *popt1004)
+
+    # Plot the results
+    fig, ax = plt.subplots()
+    ax.set_yscale("log")
+    ax.errorbar(time, counts1004, yerr=err1004[1:], fmt='+', color='xkcd:red orange', label="1004 keV")
+    ax.semilogy(time, fitted1004, '-', color='xkcd:coral', label="Fit - 1004 keV")
+    ax.errorbar(time, counts861, yerr=err861[1:], fmt='+', color='xkcd:orange', label="861 keV")
+    ax.semilogy(time, fitted861, '-', color='xkcd:tan', label="Fit - 861 keV")
+    ax.errorbar(time, counts511, yerr=err511[1:], fmt='+', color='xkcd:purple', label="511 keV")
+    ax.semilogy(time, fitted511, '-', color='xkcd:lavender', label="Fit -511 keV")
     ax.errorbar(time, countsGamma, yerr=errGamma[1:], fmt='*', color="xkcd:sky blue", label=f"Gamma")
     ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
     ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
@@ -688,14 +874,18 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
                           (lambda_decay*N0L*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
 
     ## Print results
-    print("******************************"+len(lab)*"*")
-    print(f"* Accumulation fit results: {lab} *")
-    print("******************************"+len(lab)*"*")
-    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
-    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
-    print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
-    print(f"Ka/Kb ratio = {(NdirrKa/NdirrKb):.2f} | Ka/L ratio = {(NdirrKa/NdirrL):.2f} | Kb/L ratio = {(NdirrKb/NdirrL):.2f}")
-    print()
+    #print("******************************"+len(lab)*"*")
+    #print(f"* Accumulation fit results: {lab} *")
+    #print("******************************"+len(lab)*"*")
+    #print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
+    #print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    #print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
+    #print(f"Ndirr: \t Ka/Kb ratio = {(NdirrKa/NdirrKb):.2f} | Ka/L ratio = {(NdirrKa/NdirrL):.2f} | Kb/L ratio = {(NdirrKb/NdirrL):.2f}")
+    #print(f"N0: \t Ka/Kb ratio = {(N0Ka/N0Kb):.2f} | Ka/L ratio = {(N0Ka/N0L):.2f} | Kb/L ratio = {(N0Kb/N0L):.2f}")
+    #print(f"Eff: \t Ka/Kb ratio = {(efficiency[0][0]/efficiency[1][0]):.2f} | Ka/L ratio = {(efficiency[0][0]/efficiency[2][0]):.2f} | Kb/L ratio = {(efficiency[1][0]/efficiency[2][0]):.2f}")
+    #print(f"N0/Eff: \t Ka = {(N0Ka/efficiency[0][0]):.3e} | Kb = {(N0Kb/efficiency[1][0]):.3e} | L = {(N0L/efficiency[2][0]):.3e}")
+    #print(f"N0: \t Ka = {N0Ka:.3e} | Kb = {N0Kb:.3e}")
+    #print()
     
     ## Create dictionaries for results
     N_D_irr_SDD = {
@@ -716,11 +906,11 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
 
     ## Print dictionaries
     #  Nominal values
-    #for key, value in N_D_irr_SDD.items():
-    #    print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L": {value["L-"]:.3e}}},')
+    for key, value in N_D_irr_SDD.items():
+        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L": {value["L-"]:.3e}}},')
     #  Errors
     #for key, value in N_D_irr_SDD_err.items():
-    #    print(f'    "{key}": {{"Ka": {value["Ka"]:.0e}, "Kb": {value["Kb"]:.0e}, "L": {value["L-"]:.0e}}},')
+    #    print(f'    "{key}": {{"Ka": {value["Ka"]:.1e}, "Kb": {value["Kb"]:.1e}, "L": {value["L-"]:.1e}}},')
 
     ## Fit function for plotting
     fittedKa = Npeak(time, *poptKa)
@@ -771,13 +961,13 @@ def FitNpeakNoLinSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL
 
     ## Fit the data, passing radType explicitly    
     poptKa, pcovKa = curve_fit(lambda t, *p: NpeakNoLin(t, *p),
-                               time, countsKa, p0=init[radType[0]][0:2], sigma=errKa[1:], absolute_sigma=True)
+                               time, countsKa, p0=init[radType[0]][0:1], sigma=errKa[1:], absolute_sigma=True)
     
     poptKb, pcovKb = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
-                               time, countsKb, p0=init[radType[1]][0:2], sigma=errKb[1:], absolute_sigma=True)
+                               time, countsKb, p0=init[radType[1]][0:1], sigma=errKb[1:], absolute_sigma=True)
     
     poptL, pcovL = curve_fit(lambda t, *p: NpeakNoLin(t, *p), 
-                            time, countsL, p0=init[radType[2]][0:2], sigma=errL[1:], absolute_sigma=True)
+                            time, countsL, p0=init[radType[2]][0:1], sigma=errL[1:], absolute_sigma=True)
     
     ## Get fit parameters
     # Ka line
