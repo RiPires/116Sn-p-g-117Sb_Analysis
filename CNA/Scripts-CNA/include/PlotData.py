@@ -481,15 +481,15 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
                 linestyle='', color="xkcd:green", 
                 label="Experimental averaged")
 
-    ## Famiano data
-    cross_sections_Famiano = [famiano[key][0] for key in famiano.keys()]
-    famiano_errs = [famiano[key][1] for key in famiano.keys()]
-    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
-
     ## Ozkan data
     cross_sections_Ozkan = [ozkan[key][0] for key in ozkan.keys()]
     ozkan_errs = [ozkan[key][1] for key in ozkan.keys()]
     ax.errorbar(eOzkan, cross_sections_Ozkan, yerr=ozkan_errs, capsize=4, marker='3', markersize=10, linestyle='', color="xkcd:lilac", label='$\\rm{\\"{O}}$zkan 2002')
+    
+    ## Famiano data
+    cross_sections_Famiano = [famiano[key][0] for key in famiano.keys()]
+    famiano_errs = [famiano[key][1] for key in famiano.keys()]
+    ax.errorbar(eFamiano, cross_sections_Famiano, yerr=famiano_errs, capsize=4, marker='2', markersize=10, linestyle='', color="xkcd:magenta", label="Famiano 2008")
 
     ## Xarepe data
     cross_sections_Xarepe = [xarepe[key][0] for key in xarepe.keys()]
@@ -522,12 +522,12 @@ def PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_S
     #           labels[9],  labels[10], labels[13], 
     #           labels[11], labels[12], labels[0]]
     
-    legend = ax.legend(handles, labels, loc="upper left",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=16)
+    legend = ax.legend(handles, labels, loc="bottom right",ncol=3,shadow=False,fancybox=True,framealpha = 0.0,fontsize=16)
     tick_params(axis='both', which='major', labelsize=22)
     legend.get_frame().set_facecolor('#DAEBF2')
     xlabel("$E_{\\rm{beam}}$ [MeV]", fontsize=22)
     ylabel("Cross-Section [mb]", fontsize=22)
-    ylim(0, 1.e3)
+    ylim(1.e-4, 1.e2)
     title("Relative Method", fontsize=22)
     show() 
 

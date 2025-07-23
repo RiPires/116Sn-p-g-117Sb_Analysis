@@ -56,3 +56,4 @@ for label in beam_labels:
     kb_val, kb_err = efficiency_params[label]['Kb']
     l_val, l_err = efficiency_params[label]['L-']
     print(f"    '{label}': {{'Ka': ({ka_val:.3e}, {ka_err:.0e}), 'Kb': ({kb_val:.3e}, {kb_err:.0e}), 'L-': ({l_val:.3e}, {l_err:.0e})}},")
+    print(f" Ka/Kb = {(ka_val/kb_val):.3f}")
