@@ -105,6 +105,7 @@ def ReadActivationRBS(File, det):
             aux.append(data[i][0].split())
     elif det == 3:
         for i in range(1026, 1026+8192):
+            print("HERE")
             aux.append(data[i][0].split())
     elif det == 4:
         for i in range(9219, len(data)-1):

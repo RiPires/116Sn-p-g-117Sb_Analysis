@@ -7,16 +7,19 @@
 import os
 from include.ReadData import ReadActivationRBS  
 from include.PlotData import PlotRBS
+import numpy as np
+from include.Merge import Merge
 ## ------------------------------------------- ##
 
 ## Path for the RBS files during irradiation
 rbsPath = "../1_Irradiation/DataFiles/Activation/RBS/"
 
 ## Lower and Upper Region of Interest limits
-rois = [505, 535]
+rois = [510, 530]
 
 ## Initialize total integral
 peakIntegral = 0.
+integratedYield = np.array([])
 
 ## Loop over each run
 for file in sorted(os.listdir(rbsPath)):
@@ -34,6 +37,12 @@ for file in sorted(os.listdir(rbsPath)):
     peakIntegral += integralValue
 
     ## Print the integration result
-    print(f"Run integral: {integralValue:.2e} \n")
+    print(f"Run integral: {integralValue:.3e} \n")
 
-print(f"Np = {peakIntegral:.2e}")
+
+print(f"Np = {peakIntegral:.3e}")
+
+## Merge online Ge data
+mergedGeYield = Merge("../2_Decay/DataFilesGe/Decay/", "onlineGe")
+channel = [i+1 for i in range(8192)]
+PlotRBS(channel, mergedGeYield, "Merged online Ge data")

@@ -32,16 +32,6 @@ def RemoveBg(dataFile):
         bgYield = Ge2Lists(bgFile)[0]
         ## Background acquisition time
         bgTime = 64 * 60 + 9 # s = 1h 4m 9s
-        
-    elif "SDD" in dataFile:
-        dataYield, _, acquiTime = MCA2Lists(dataFile)
-        ## Background runs path
-        bgPath = '../Calibrations/SDD/Background/'
-        ## Merge background yield
-        mergeBgYield = Merge(bgPath, 'sdd')
-        ## Background acquisition time
-        bgTime = 45954 ## seconds
-        acquiTime = 15 * 60 # s = 15 minutes
     
     ## Converts data counts to count rate (in s^-1)
     dataRate = [dataYield[i]/acquiTime for i in range(len(dataYield))]
@@ -67,9 +57,9 @@ def RemoveBg(dataFile):
 
     ## Save calibration rate with background removed values to file 
     with open(dataFile.replace(".TXT","_BgRemoved.TXT"), 'w') as outFile:
-        counts = 0
         outFile.write(dataFile+"BackgroundRemoved \n")
         for rate in calibRateBgRem:
+            counts = 0
             if rate <= 0:
                 outFile.write(f"{counts:.0f}\n")
             elif rate > 0:

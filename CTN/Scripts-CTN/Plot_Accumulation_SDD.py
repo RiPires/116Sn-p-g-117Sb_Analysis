@@ -17,9 +17,9 @@ sddPath = "../2_Decay/DataFilesSDD/Decay/"
 initParams = [[1.0e6, 1], [1.0e6, 1]]
 
 ## Convoluted efficiencies
-## Parameters for the detector at mean position of (9+7)/2 mm
+## Parameters for the detector at mean position of (11+9)/2 mm
 ##                  [[Ka            ], [Kb            ]] 
-efficiency_params = [[1.865e-3, 5e-4], [2.472e-4, 6e-5]]
+efficiency_params = [[9.413e-4, 1e-4], [1.194e-4, 2e-4]]
 
 ## Transportation time
 t_transMin = 15. # minutes

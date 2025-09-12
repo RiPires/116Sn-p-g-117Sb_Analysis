@@ -44,17 +44,16 @@ void PlotAndEff(const char* filename){
      canvas->Draw();
      gPad->Update();
 
-
      // ROIs for each photopeak area calculation
         // gamma 158 keV
-        int binMinGamma = hist1->FindBin(0.1580);
-        int binMaxGamma = hist1->FindBin(0.1591);
+        int binMinGamma = hist1->FindBin(0.15853);
+        int binMaxGamma = hist1->FindBin(0.15887);
         // Ka
-        int binMinKa = hist1->FindBin(0.0242);
-        int binMaxKa = hist1->FindBin(0.0254);
+        int binMinKa = hist1->FindBin(0.0247);
+        int binMaxKa = hist1->FindBin(0.02546);
         // Kb
-        int binMinKb = hist1->FindBin(0.0275);
-        int binMaxKb = hist1->FindBin(0.0296);
+        int binMinKb = hist1->FindBin(0.02833);
+        int binMaxKb = hist1->FindBin(0.0293);
 
     // Calculate the area under each photopeak
         double area_Gamma = hist1->Integral(binMinGamma, binMaxGamma);

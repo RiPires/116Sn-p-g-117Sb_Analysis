@@ -23,6 +23,8 @@ def Merge(dir, det):
         nrCh = int(1024)
     elif det == 'sdd':
         nrCh = int(2048)
+    elif det == 'onlineGe':
+        nrCh = int(8192)
     else:
         print('Detector not recognized')
     
@@ -35,6 +37,8 @@ def Merge(dir, det):
             y = Ge2Lists(str(dir+file))[0]
         elif det == 'sdd':
             y = MCA2Lists(str(dir+file))[0]
+        elif det == 'onlineGe':
+            y = ReadActivationRBS(str(dir+file), 3)[1]
         mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
 
     return mergeYield

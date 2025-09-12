@@ -86,11 +86,11 @@ N_D_irr_SDD_err = {
     "Ebeam=5.0MeV": {"Ka": 6e+07, "Kb": 6e+07, "L": 4e+07}}
 
 ## Parameters for the activation at CTN
-N_D_irr_BEGe_CTN = {"gamma": 9.364e5, "Ka": 7.843e5, "Kb": 7.546e5}
-N_D_irr_BEGe_CTN_err = {"gamma": 3e4, "Ka": 3e4, "Kb": 3e4}
+N_D_irr_BEGe_CTN = {"gamma": 1.016e6, "Ka": 9.620e5, "Kb": 1.044e6}
+N_D_irr_BEGe_CTN_err = {"gamma": 4e4, "Ka": 3e4, "Kb": 4e4}
 
-N_D_irr_SDD_CTN = {"Ka": 1.089e6, "Kb": 1.126e6}
-N_D_irr_SDD_CTN_err = {"Ka": 3e5, "Kb": 3e5}
+N_D_irr_SDD_CTN = {"Ka": 2.137e6, "Kb": 2.159e6}
+N_D_irr_SDD_CTN_err = {"Ka": 2e5, "Kb": 4e5}
 
 ## _________________________ Parameters _________________________ ##
 epsilon_p = 4.409e-4
@@ -99,12 +99,12 @@ epsilon_p_CTN = 2.91e-4  # CHECK THIS VALUE
 t_irr_min = {"Ebeam=3.2MeV": 358, "Ebeam=3.5MeV": 365, "Ebeam=3.9MeV": 360,
               "Ebeam=4.3MeV": 361, "Ebeam=4.7MeV": 347, "Ebeam=5.0MeV": 344}
 t_irr_err = 1.
-t_irr_CTN, t_irr_CTN_err = 5 * 60 + 9, 1
+t_irr_CTN, t_irr_CTN_err = 5 * 60 + 9 - 7, 10 # minutes
 
 N_p = {"Ebeam=3.2MeV": 8.40e7, "Ebeam=3.5MeV": 1.03e8, "Ebeam=3.9MeV": 5.89e7,
        "Ebeam=4.3MeV": 4.87e7, "Ebeam=4.7MeV": 2.64e7, "Ebeam=5.0MeV": 2.64e7}
 
-N_p_CTN = 2.75e7
+N_p_CTN = 2.527e7
 
 ## _________________________ Cross-Section Calculation _________________________ ##
 
@@ -172,4 +172,4 @@ print(" -------------------------\n -------------------------\n")
 
 ## Plot the experimental data alongside different author's results
 PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)
-PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)
+#PlotCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections_SDD, crossSections_SDD_err, crossSections_BEGe, crossSections_BEGe_err, crossSections_SDD_CTN, crossSections_SDD_CTN_err, dE)

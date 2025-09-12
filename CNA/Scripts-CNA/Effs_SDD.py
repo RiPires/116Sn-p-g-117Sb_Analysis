@@ -7,7 +7,7 @@ import numpy as np
 ## ---------------- ##
 
 ##  Efficiencies from simulation
-          # [   Ka   ,    Kb    , L- lines] 
+           # [   Ka    ,    Kb    , L- lines ] 
 effs_9mm  = [[2.335e-03, 2.883e-04, 7.638e-04],
              [2.334e-03, 2.863e-04, 7.713e-04],
              [2.345e-03, 2.937e-04, 7.712e-04],

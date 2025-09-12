@@ -75,16 +75,34 @@ def PlotBothRateLogy(x, y1, y2, lab1, lab2):
 # ::::::::::::::::::::::::::::::::::::::::::::::: #
 def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 
-    energies = [(x[i]*0.3225-0.149) for i in range(len(x))]
     fig, ax = plt.subplots()
-    ax.set_yscale('log')
-    ax.plot(energies, y1, '^-', color='k', label=lab1)
-    ax.plot(energies, y2, '*-', color='b', label=lab2)
-    ax.plot(energies, y3, '+-', color='r', label=lab3)
+    #ax.set_yscale('log')
+    ax.plot(x, y1, '^-', color='k', label=lab1)
+    ax.plot(x, y2, '*-', color='b', label=lab2)
+    ax.plot(x, y3, '+-', color='r', label=lab3)
     legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
-    xlabel('Energy [keV]',fontsize=22)
+    xlabel('Channel',fontsize=22)
+    ylabel('Count Rate ($\\rm{s}^{\\rm{-1}}$)', fontsize=22)
+    show()
+    
+
+    return '-------------------'
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+
+# ::::::::::::::::::::::::::::::::::::::::::::::: #
+def Plot4RateLogy(x, y1, y2, y3, y4, lab1, lab2, lab3, lab4):
+    fig, ax = plt.subplots()
+    ax.set_yscale('log')
+    ax.plot(x, y1, '^-', color='k', label=lab1)
+    ax.plot(x, y2, '*-', color='b', label=lab2)
+    ax.plot(x, y3, '+-', color='r', label=lab3)
+    ax.plot(x, y4, 's-', color='g', label=lab4)
+    legend = ax.legend(loc="best",ncol=1,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
+    legend.get_frame().set_facecolor('#DAEBF2')
+    tick_params(axis='both', which='major', labelsize=22)
+    xlabel('Channel',fontsize=22)
     ylabel('Count Rate ($\\rm{s}^{\\rm{-1}}$)', fontsize=22)
     show()
     
@@ -215,7 +233,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
     ax.set_yscale("log")
 
     ## HPGe at CNA data
-    for rad_type in ["Ka", "Kb", "gamma", "511 keV", "861 keV", "1004 keV"]:
+    for rad_type in ["Ka", "Kb", "gamma"]:
         cross_section_values_HPGe = [crossSections_HPGe[key][rad_type] for key in crossSections_HPGe.keys()]
         hpge_err = [crossSections_HPGe_err[key][rad_type] for key in crossSections_HPGe_err.keys()]
         ax.errorbar(nominalEnergies, cross_section_values_HPGe,
@@ -243,7 +261,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
                     label=labs[rad_type]+" SDD@CNA")
     
     ## BEGe at CTN data
-    """     for rad_type in ["gamma", "Ka", "Kb"]:
+    for rad_type in ["gamma", "Ka", "Kb"]:
         cross_section_BEGe = [crossSections_BEGe[key][rad_type] for key in crossSections_BEGe.keys()]
         bege_ctn_err = [crossSections_BEGe_err[key][rad_type] for key in crossSections_BEGe_err.keys()]
         ax.errorbar([3.215], cross_section_BEGe, 
@@ -253,10 +271,10 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
                     linestyle='', 
                     linewidth=2,
                     color=colorsBEGe_CTN[rad_type], 
-                    label=labs[rad_type]+" BEGe@CTN") """
+                    label=labs[rad_type]+" BEGe@CTN")
         
     ## SDD at CTN data
-    """     for rad_type in ["Ka", "Kb"]:
+    for rad_type in ["Ka", "Kb"]:
         cross_section_SDD_CTN = [crossSections_SDD_CTN[key][rad_type] for key in crossSections_SDD_CTN.keys()]
         sdd_ctn_err = [crossSections_SDD_CTN_err[key][rad_type] for key in crossSections_SDD_CTN_err.keys()]
         ax.errorbar([3.215], cross_section_SDD_CTN, 
@@ -266,7 +284,7 @@ def PlotMyCrossSection(crossSections_HPGe, crossSections_HPGe_err, crossSections
                     linestyle='', 
                     linewidth=2,
                     color=colorsSDD_CTN[rad_type], 
-                    label=labs[rad_type]+" SDD@CTN") """
+                    label=labs[rad_type]+" SDD@CTN")
 
     ## Organize data labels
     handles,labels = ax.get_legend_handles_labels()

@@ -79,7 +79,9 @@ def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
     legend.get_frame().set_facecolor('#DAEBF2')
     tick_params(axis='both', which='major', labelsize=22)
     xlabel('Channel',fontsize=22)
+    xlim(25, 200)
     ylabel('Rate ($s^{-1}$)', fontsize=22)
+    ylim(1e-2)
     show()
     
     return '-------------------'

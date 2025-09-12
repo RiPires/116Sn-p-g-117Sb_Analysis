@@ -119,3 +119,37 @@ void RunPlotAndEff_12mm(){
 	PlotAndEff("../data-files_SDD/output_Ebeam47_12mm_0Al.root");
 	PlotAndEff("../data-files_SDD/output_Ebeam50_12mm_0Al.root");
 }
+
+void RunPlotAndEff_9mm_8(){
+    cout << "Efficiencies: " << endl;
+    cout << "[\t Ka, \t Kb, \t L-]" << endl;
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam32_9mm_1e8_WithAl_AEL-Sn.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam35_9mm_1e8_WithAl_AEL-Sn.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam39_9mm_1e8_WithAl_AEL-Sn.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam43_9mm_1e8_WithAl_AEL-Sn.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam47_9mm_1e8_WithAl_AEL-Sn.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam50_9mm_1e8_WithAl_AEL-Sn.root");
+}
+
+
+void RunPlotAndEff_10mm_8(){
+    cout << "Efficiencies: " << endl;
+    cout << "[\t Ka, \t Kb, \t L-]" << endl;
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam32_10mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam35_10mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam39_10mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam43_10mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam47_10mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam50_10mm.root");
+}
+
+void RunPlotAndEff_12mm_8(){
+    cout << "Efficiencies: " << endl;
+    cout << "[\t Ka, \t Kb, \t L-]" << endl;
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam32_12mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam35_12mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam39_12mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam43_12mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam47_12mm.root");
+	PlotAndEff("../data-files_SDD/output_SDD_Ebeam50_12mm.root");
+}

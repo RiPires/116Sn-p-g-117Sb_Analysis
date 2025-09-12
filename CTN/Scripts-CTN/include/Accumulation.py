@@ -157,7 +157,7 @@ def AccumulateGe_BgRemove(gePath):
         Accu_511.append(accu_511)
         Accu_t.append(accu_t)
 
-    return Accu_Ka[1:], Accu_Ka_err, Accu_Kb[1:], Accu_Kb_err, Accu_g[1:], Accu_g_err, Accu_511, Accu_t
+    return Accu_Ka[1:], Accu_Ka_err[1:], Accu_Kb[1:], Accu_Kb_err[1:], Accu_g[1:], Accu_g_err[1:], Accu_511, Accu_t
 
 #######################################################################
 #######################################################################
@@ -183,12 +183,12 @@ def AccumulateSDD(sddPath):
 
     ## Set ROI for each peak, in channel
     ## Ka
-    roiDown_Ka = int(793)
-    roiUp_Ka = int(830)
+    roiDown_Ka = int(796)
+    roiUp_Ka = int(824)
 
     ## Kb
-    roiDown_Kb = int(906)
-    roiUp_Kb = int(927)
+    roiDown_Kb = int(910)
+    roiUp_Kb = int(925)
 
     Accu_Ka_err, Accu_Kb_err = [0], [0]
     counter = 1
@@ -197,7 +197,7 @@ def AccumulateSDD(sddPath):
     for file in sorted(os.listdir(sddPath)):
 
         y = MCA2Lists(str(sddPath+file))[0]
-        live_time = MCA2Lists(str(sddPath+file))[2]
+        #live_time = MCA2Lists(str(sddPath+file))[2]
         #print(f"Live-time = {live_time:.0f} s = {live_time/60:.1f} min")
 
         ## Add Ka counts
@@ -211,7 +211,7 @@ def AccumulateSDD(sddPath):
             accu_Kb_err = np.sqrt(accu_Kb + Accu_Kb[counter-1])
 
         ## Increment accumulation time and counter
-        accu_t += live_time/60 # minutes
+        accu_t += 900/60 # minutes
         #print(f"Accumulation time = {accu_t:.0f} min \n")
         counter += 1
 

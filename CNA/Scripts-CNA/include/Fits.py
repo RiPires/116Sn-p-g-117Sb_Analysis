@@ -35,7 +35,6 @@ def nGaussian(x, *params):
 
 ## Fits function "func" to experimental data x and y, within certain regions of interest 
 def FitData(func, x, y, init, lab, roid, roiu):
-    
     """
     Uses scipy curve_fit to perform fit of a fucntion "func" to experimental data 
     x and y, given initial guesses "init", in the regions of interest limited 
@@ -874,18 +873,18 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
                           (lambda_decay*N0L*np.exp(lambda_decay*t_trans)*t_trans_err/efficiency[2][0])**2)
 
     ## Print results
-    #print("******************************"+len(lab)*"*")
-    #print(f"* Accumulation fit results: {lab} *")
-    #print("******************************"+len(lab)*"*")
-    #print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
-    #print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
-    #print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
+    print("******************************"+len(lab)*"*")
+    print(f"* Accumulation fit results: {lab} *")
+    print("******************************"+len(lab)*"*")
+    print(f"Ka line: \t Ndirr = {NdirrKa:.3e} +- {NdirrKa_err:.0e} | bgRate = ({bgRateKa:.2f} +- {bgRateKa_err:.2f}) counts/min")
+    print(f"Kb line: \t Ndirr = {NdirrKb:.3e} +- {NdirrKb_err:.0e} | bgRate = ({bgRateKb:.2f} +- {bgRateKb_err:.2f}) counts/min")
+    print(f"L lines: \t Ndirr = {NdirrL:.3e} +- {NdirrL_err:.0e} | bgRate = ({bgRateL:.2f} +- {bgRateL_err:.2f}) counts/min")
     #print(f"Ndirr: \t Ka/Kb ratio = {(NdirrKa/NdirrKb):.2f} | Ka/L ratio = {(NdirrKa/NdirrL):.2f} | Kb/L ratio = {(NdirrKb/NdirrL):.2f}")
     #print(f"N0: \t Ka/Kb ratio = {(N0Ka/N0Kb):.2f} | Ka/L ratio = {(N0Ka/N0L):.2f} | Kb/L ratio = {(N0Kb/N0L):.2f}")
     #print(f"Eff: \t Ka/Kb ratio = {(efficiency[0][0]/efficiency[1][0]):.2f} | Ka/L ratio = {(efficiency[0][0]/efficiency[2][0]):.2f} | Kb/L ratio = {(efficiency[1][0]/efficiency[2][0]):.2f}")
     #print(f"N0/Eff: \t Ka = {(N0Ka/efficiency[0][0]):.3e} | Kb = {(N0Kb/efficiency[1][0]):.3e} | L = {(N0L/efficiency[2][0]):.3e}")
     #print(f"N0: \t Ka = {N0Ka:.3e} | Kb = {N0Kb:.3e}")
-    #print()
+    print()
     
     ## Create dictionaries for results
     N_D_irr_SDD = {
@@ -906,8 +905,8 @@ def FitNpeakSDD(func, time, countsKa, errKa, countsKb, errKb, countsL, errL, ini
 
     ## Print dictionaries
     #  Nominal values
-    for key, value in N_D_irr_SDD.items():
-        print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L": {value["L-"]:.3e}}},')
+    #for key, value in N_D_irr_SDD.items():
+    #    print(f'    "{key}": {{"Ka": {value["Ka"]:.3e}, "Kb": {value["Kb"]:.3e}, "L": {value["L-"]:.3e}}},')
     #  Errors
     #for key, value in N_D_irr_SDD_err.items():
     #    print(f'    "{key}": {{"Ka": {value["Ka"]:.1e}, "Kb": {value["Kb"]:.1e}, "L": {value["L-"]:.1e}}},')

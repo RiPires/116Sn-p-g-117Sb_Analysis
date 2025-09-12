@@ -14,13 +14,13 @@ gePath = '../2_Decay/DataFilesGe/BgRemoved/'
 
 ## Define initial guess for N0 and bgRate
 ##                [[gamma]    , [ Ka  ]    , [ Kb  ]] 
-initParamsNpeak = [[9.0e5, 1.], [8.0e5, 1.], [2.0e5, 1.]]
+initParamsNpeak = [[9.0e5, 10.], [8.0e5, 1.], [2.0e5, 1.]]
 
-## Efficiency and emission probabilities
-efficiency_params = [[8.385e-2, 3.11e-3], [8.964e-2, 3.09e-3], [1.997e-2, 7.5e-4]]
+## Convoluted efficiencies nominal value  and uncertainty
+efficiency_params = [[6.996e-2, 2.53e-3], [7.474e-2, 2.64e-3], [1.656e-2, 5.6e-4]]
 
 ## Transportation time
-t_transMin = 22. #minutes
+t_transMin = 23. #minutes
 
 radType = ["gamma", "Ka", "Kb"]
 

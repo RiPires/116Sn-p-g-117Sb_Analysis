@@ -30,21 +30,21 @@ def Merge(dir, det):
     
     ## Set up array of zeros for merge yield depending on the detector
     mergeYield = [0 for _ in range(nrCh)]
-    totTime_sec = 0.
+    totLiveTime_sec = 0.
 
     ## Loop over the data files and merge yield
     for file in sorted(os.listdir(dir)):
 
         if det == 'ge':
-            y, _, runTime = Ge2Lists(str(dir+file))
+            y, _, liveTime = Ge2Lists(str(dir+file))
 
         elif det == 'sdd':
-            y, _, runTime = MCA2Lists(str(dir+file))
+            y, _, liveTime = MCA2Lists(str(dir+file))
 
         mergeYield = [mergeYield[i] + y[i] for i in range(len(y))]
-        totTime_sec += runTime # seconds
+        totLiveTime_sec += liveTime # seconds
 
-    return mergeYield, totTime_sec
+    return mergeYield, totLiveTime_sec
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
 
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #

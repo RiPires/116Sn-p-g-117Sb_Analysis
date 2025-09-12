@@ -37,12 +37,13 @@ void Plot(const char* filename){
      // Display the canvas
      canvas->SetLogy();
      canvas->Draw();
+     canvas->SaveAs("test_Ge_Scoring.root");
      gPad->Update();
 
      ////////////////////////////////////////////////////
      // Create a canvas for plotting energy deposits  //
      ////////////////////////////////////////////////////
-     TCanvas* canvasEdep = new TCanvas("canvasEdep", "Energy Deposits", 800, 600);
+     /*TCanvas* canvasEdep = new TCanvas("canvasEdep", "Energy Deposits", 800, 600);
      // Create a histogram
      TH1D* histEdep = new TH1D("histEdep", "Ge energy deposits", 4096, 0, 1.320);
      // Project the variable into the histogram
@@ -57,12 +58,12 @@ void Plot(const char* filename){
      // Display the canvas
      canvasEdep->SetLogy();
      canvasEdep->Draw();
-     gPad->Update();
+     gPad->Update();*/
 
     ////////////////////////////////////////////////
     // Access the Hits position tree in the file  //
     ////////////////////////////////////////////////
-    TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
+    /*TTree *StepsTTree = (TTree*)InputTFile->Get("Position");
 
     //////////////////////////////////////////////////
     // Create a canvas for plotting hit z position  //
@@ -113,5 +114,5 @@ void Plot(const char* filename){
     hist4->Draw("COLZ");
     // Display the canvas
     canvas4->Draw();
-    gPad->Update();
+    gPad->Update();*/
 }   

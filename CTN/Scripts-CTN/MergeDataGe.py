@@ -16,4 +16,4 @@ Yield_Ge = Merge(geDir,"ge")
 
 ### Plot
 lab = 'Ge data merged'
-Plot(Channel, Yield_Ge, lab)
+PlotLogy(Channel, Yield_Ge, lab)

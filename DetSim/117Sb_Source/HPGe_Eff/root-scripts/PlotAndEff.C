@@ -110,12 +110,12 @@ void RunPlotAndEff12mm(){
 }
 
 void RunPlotAndEff16mm(){
-    PlotAndEff("../data-files_HPGe/output_Ebeam32_16mm.root");
-    PlotAndEff("../data-files_HPGe/output_Ebeam35_16mm.root");
-    PlotAndEff("../data-files_HPGe/output_Ebeam39_16mm.root");
-    PlotAndEff("../data-files_HPGe/output_Ebeam43_16mm.root");
-    PlotAndEff("../data-files_HPGe/output_Ebeam47_16mm.root");
-    PlotAndEff("../data-files_HPGe/output_Ebeam50_16mm.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam32_16mm_8.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam35_16mm_8.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam39_16mm_8.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam43_16mm_8.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam47_16mm_8.root");
+    PlotAndEff("../data-files_HPGe/output_Ebeam50_16mm_8.root");
 }
 
 void RunPlotAndEff18mm(){

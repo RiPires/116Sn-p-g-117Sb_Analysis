@@ -154,13 +154,13 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
 
     ## Fit the data, passing radType explicitly
     poptGamma, pcovGamma = curve_fit(lambda t, *p: Npeak(t, *p), 
-                                     time, countsGamma, p0=init[0][0:2])
+                                     time, countsGamma, p0=init[0][0:2], sigma=errGamma, absolute_sigma=True)
     
     poptKa, pcovKa = curve_fit(lambda t, *p: Npeak(t, *p), 
-                               time, countsKa, p0=init[1][0:2])
+                               time, countsKa, p0=init[1][0:2], sigma=errKa, absolute_sigma=True)
     
     poptKb, pcovKb = curve_fit(lambda t, *p: Npeak(t, *p), 
-                               time, countsKb, p0=init[2][0:2])
+                               time, countsKb, p0=init[2][0:2], sigma=errKb, absolute_sigma=True)
     
     ## Get fit parameters and std_dev = sqrt(variance) = sqrt(diag(cov))
     # Gamma line
@@ -179,6 +179,7 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     lambda_decay = np.log(2) / halfLifeMin  # Decay constant
     lambda_decay_err = np.log(2) * halfLife_min_err / halfLifeMin**2  # in min^-1
     t_trans_err = 1.
+    t_trans += 7. # minutes = 22
 
     ## Calculate N_Dirr and error propagation
     ## Gamma line
@@ -218,11 +219,11 @@ def FitNpeakBEGe(func, time, countsGamma, errGamma, countsKa, errKa, countsKb, e
     # Plot the results
     fig, ax = plt.subplots()
     ax.set_yscale("log")
-    ax.errorbar(time, countsGamma, yerr=errGamma[1:], fmt='*', color="xkcd:sky blue", label=f"Gamma")
+    ax.errorbar(time, countsGamma, yerr=errGamma, fmt='*', color="xkcd:sky blue", label=f"Gamma")
     ax.semilogy(time, fittedGamma, '-', color="xkcd:blue", label="Fit - Gamma")
-    ax.errorbar(time, countsKa, yerr=errKa[1:], fmt='^', color="xkcd:turquoise", label=f"Ka")
+    ax.errorbar(time, countsKa, yerr=errKa, fmt='^', color="xkcd:turquoise", label=f"Ka")
     ax.semilogy(time, fittedKa, '-', color="xkcd:green", label="Fit - Ka")
-    ax.errorbar(time, countsKb, yerr=errKb[1:],fmt='v', color="xkcd:salmon", label=f"Kb")
+    ax.errorbar(time, countsKb, yerr=errKb,fmt='v', color="xkcd:salmon", label=f"Kb")
     ax.semilogy(time, fittedKb, '-', color="xkcd:magenta", label="Fit - Kb")
     legend = ax.legend(loc="best",ncol=2,shadow=False,fancybox=True,framealpha = 0.0,fontsize=20)
     legend.get_frame().set_facecolor('#DAEBF2')

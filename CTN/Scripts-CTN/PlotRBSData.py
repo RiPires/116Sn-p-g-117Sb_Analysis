@@ -18,5 +18,6 @@ path = '../1_Irradiation/DataFiles/Activation/RBS/'
 for file in sorted(os.listdir(path)):
     
     #Data1_x, Data1_y = ReadActivationRBS(path+file, 1) ## Detector MOV E
-    Data3_x, Data3_y = ReadActivationRBS(path+file, 4) ## Detector MOV D
+    Data3_x, Data3_y = ReadActivationRBS(path+file, 3) ## Chamber HPGe detector
+    #Data4_x, Data4_y = ReadActivationRBS(path+file, 4) ## Detector MOV D
     PlotRBS(Data3_x, Data3_y, str(file).replace('.mpa',''))
