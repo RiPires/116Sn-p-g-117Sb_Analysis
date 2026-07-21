@@ -76,7 +76,7 @@ def PlotBothRateLogy(x, y1, y2, lab1, lab2):
 def Plot3RateLogy(x, y1, y2, y3, lab1, lab2, lab3):
 
     fig, ax = plt.subplots()
-    #ax.set_yscale('log')
+    ax.set_yscale('log')
     ax.plot(x, y1, '^-', color='k', label=lab1)
     ax.plot(x, y2, '*-', color='b', label=lab2)
     ax.plot(x, y3, '+-', color='r', label=lab3)

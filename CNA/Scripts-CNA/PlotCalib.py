@@ -15,14 +15,14 @@ y, ch = Ge2Lists(calibHPGeFile)
 PlotLogy(ch, y, calibHPGeFile.replace('../Calibrations/HPGe/CalibrationRuns_PosExp/','')) """
 
 ## HPGe detector path
-calibPathHPGe = '../Calibrations/HPGe/CalibrationRuns_PosExp/BgRemoved/'
+calibPathHPGe = '../Calibrations/HPGe/CalibrationRuns_PosExp/'
 ## Loop over HPGe calibration runs
 for file in os.listdir(calibPathHPGe):
 
     if (str(file) == "BgRemoved"):
         pass
     else:            
-        y, ch = Ge2ListsBgRm(str(calibPathHPGe+file))
+        y, ch, _ = Ge2Lists(str(calibPathHPGe+file))
         energies = [(ch[i]*0.322526-0.45563) for i in range(len(ch))]
         PlotLogy(energies, y, str(file).replace('.mca', ''))
 

@@ -28,5 +28,7 @@ def PlotBgRemoved(File):
 
 ## Decay runs
 path = '../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_BgRemoved/HPGe/'
+## Calibration runs
+path = '../Calibrations/HPGe/CalibrationRuns_PosExp/BgRemoved/'
 for file in sorted(os.listdir(path)):
     PlotBgRemoved(str(path+file))

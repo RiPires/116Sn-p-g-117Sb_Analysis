@@ -76,11 +76,11 @@ def RemoveBg(dataFile):
     ## Set labels
     lab = dataFile[-63:-51] + ': ' + dataFile[-12:-4]
     bgLab = 'Background Rate'
-    bgDTLab = 'Background Rate (Dead Time Corrected)'
+    bgDTLab = 'Bg subtracted'
     rateLab = lab +'_BG removed'
 
     ## Plot both run data, bg rate and run data with bg removed 
-    Plot3RateLogy(ch, runRate, runRateBgRem, runRateBgRemDT, lab, bgLab, bgDTLab)
+    Plot3RateLogy(ch, runRate, bgRateDTcorrect, runRateBgRemDT, lab, bgLab, bgDTLab)
 
     ## Save run rate with background removed values to file 
     """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
@@ -141,5 +141,8 @@ gePaths = ['../Activations/Ebeam=3.2MeV/2_Decay/DataFiles_HPGe/',
 
  
 ## For specific data file
-filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_004.mca'
-RemoveBg(filePath)
+#filePath = '../Activations/Ebeam=5.0MeV/2_Decay/DataFiles_SDD/116Sn-D5_Decay_SDD_004.mca'
+filePath = '../Calibrations/HPGe/CalibrationRuns_PosExp/'
+for file in sorted(os.listdir(filePath)):
+    if str(file).endswith('.mca'):
+        RemoveBg(filePath + file)
