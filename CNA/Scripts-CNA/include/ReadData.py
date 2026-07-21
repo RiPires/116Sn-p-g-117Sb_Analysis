@@ -36,7 +36,7 @@ def MCA2Lists(File):
     time = float(aux[7][2]) # seconds
     
     for i in range(12, len(aux)):
-        ch.append(float(i)) ## axes in channel
+        ch.append(float(i-12)) ## axes in channel
         y.append(float(aux[i][0]))
 
     return y, ch, time
@@ -92,7 +92,7 @@ def Ge2Lists(File):
     time = float(aux[7][2])
 
     for i in range(14, len(aux)):
-        ch.append(float(i)) ## axes in channel
+        ch.append(float(i-14)) ## axes in channel
         y.append(float(aux[i][0]))
 
     return y, ch, time

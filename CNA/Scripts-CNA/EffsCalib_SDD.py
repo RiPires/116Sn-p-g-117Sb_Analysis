@@ -1,5 +1,5 @@
 ################################### RiP #######################################
-## Script to calculate HPGe detection efficiencies from the calibration runs ##
+## Script to calculate SDD detection efficiencies from the calibration runs ##
 ###############################################################################
 
 ## ---------------------------- ##
@@ -11,18 +11,17 @@ from include.ReadData import *
 
 ## Dictionary difining each source energies
 source_energies = {
-    '133Ba': [81, 276.4, 302.85, 356.01, 383.85], # keV
-    '152Eu': [121.78, 244.70, 344.28, 411.12, 443.96, 778.90, 867.38, 964.08, 1085.87, 1112.08], # keV
-    '137Cs': [661.66], # keV
-    '60Co': [1173.23]} # keV
+    '133Ba': [4.285, 4.619, 4.936, 30.625, 30.974, 34.964, 35.822], # keV
+    '152Eu': [5.633, 6.205, 6.587, 7.178, 39.522, 40.117, 45.370, 46.578],
+    '137Cs': [],
+    '60Co':  [] } # keV
+
+
 
 ## Dictionary defining each source number of decays and uncertainty
 source_decays = {
     '133Ba': [3.3183e6, 0.001e6], 
-    '152Eu': [3.2807e6, 0.010e6],
-    '137Cs': [3.7408e6, 0.010e6],
-    '60Co':  [2.7419e6, 0.001e6]
-}
+    '152Eu': [3.2807e6, 0.010e6]}
 
 ## Number of channels to sum on each side of the selected peak
 channel_window = 5
@@ -30,21 +29,21 @@ channel_window = 5
 ## Dictionary to store calculated efficiencies and uncertainties by distance, source and energy
 efficiencies = {}
 
-## HPGe detector path
-calibPathHPGe = '../Calibrations/HPGe/CalibrationRuns_PosExp/'
-## Loop over HPGe calibration runs 
-for file in os.listdir(calibPathHPGe):
+## SDD detector path
+calibPathSDD = '../Calibrations/SDD/CalibrationRuns_PosExp/'
+## Loop over SDD calibration runs 
+for file in os.listdir(calibPathSDD):
     if str(file).endswith('.mca'):
         name_no_ext = os.path.splitext(file)[0]
         parts = name_no_ext.split('_')
         source_name = parts[1] if len(parts) > 1 else None
-        distance = next((part for part in parts if part in ['8mm', '50mm', '100mm']), None)
+        distance = next((part for part in parts if part in ['2mm', '16mm']), None)
 
         if source_name is None or distance is None:
             continue
 
-        y, ch, _ = Ge2Lists(str(calibPathHPGe + file))
-        energies = [(ch[i]*0.322526-0.45563) for i in range(len(ch))]
+        y, ch, _ = MCA2Lists(str(calibPathSDD + file))
+        energies = [(ch[i]*0.031059-0.004137) for i in range(len(ch))]
 
         # Create nested dictionaries for this distance and source if needed
         if distance not in efficiencies:
@@ -59,6 +58,7 @@ for file in os.listdir(calibPathHPGe):
             start = max(0, idx - channel_window)
             end = min(len(y), idx + channel_window + 1)
             counts = np.sum(y[start:end])
+            print(distance,'\t', energy,'\t',counts)
             decay_value = source_decays[source_name][0]
             decay_uncertainty = source_decays[source_name][1]
             efficiency = counts / decay_value
@@ -71,7 +71,7 @@ for file in os.listdir(calibPathHPGe):
             }
 
 # Define the distances to plot and print
-plot_distances = ['8mm', '50mm', '100mm']
+plot_distances = ['2mm', '16mm']
 
 # Print efficiencies and energies for each distance as a dictionary
 for distance in plot_distances:
@@ -84,7 +84,7 @@ for distance in plot_distances:
             distance_dict[float(energy)] = float(data['efficiency'])
 
     formatted_dict = {energy: f'{value:.3e}' for energy, value in distance_dict.items()}
-    print(f'{distance}: {formatted_dict}')
+    #print(f'{distance}: {formatted_dict}')
 
 # Plot one efficiency curve per distance
 plt.figure(figsize=(8, 5))
@@ -111,7 +111,7 @@ for distance in plot_distances:
             x_array[order],
             y_array[order],
             yerr=yerr_array[order],
-            fmt='.',
+            fmt='.-',
             capsize=3,
             elinewidth=1.2,
             label=distance
@@ -119,7 +119,7 @@ for distance in plot_distances:
 
 plt.xlabel('Energy (keV)')
 plt.ylabel('Efficiency')
-plt.title('HPGe efficiency curves for different source-detector distances')
+plt.title('SDD efficiency curves for different source-detector distances')
 plt.grid(True, alpha=0.3)
 plt.legend()
 plt.tight_layout()

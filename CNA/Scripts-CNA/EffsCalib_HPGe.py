@@ -111,7 +111,7 @@ for distance in plot_distances:
             x_array[order],
             y_array[order],
             yerr=yerr_array[order],
-            fmt='.',
+            fmt='.-',
             capsize=3,
             elinewidth=1.2,
             label=distance
