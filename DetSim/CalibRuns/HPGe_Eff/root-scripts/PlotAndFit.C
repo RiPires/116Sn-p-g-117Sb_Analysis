@@ -51,7 +51,7 @@ double PlotAndFit(const char* filename, double fitMin, double fitMax){
     // Calculate det efficiency at this energy
     double detEff, nTot;
     nTot = 1000000.;
-    detEff = area/nTot * 100 * 2; // % x2 because only half of the primary gammas face the detector
+    detEff = area/nTot * 100; // % x2 because only half of the primary gammas face the detector
     cout << "Detector efficiency = " << detEff << " %" << endl;
 
     return detEff;

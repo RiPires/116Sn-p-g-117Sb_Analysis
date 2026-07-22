@@ -29,15 +29,18 @@ void PlotAll(int index) {
     }
 
     // Efficiency spectrum
-    TCanvas* effCanvas = new TCanvas("effCanvas", "Absolute Efficiency", 800, 600);
+    TCanvas* effCanvas = new TCanvas("effCanvas", "Absolute Efficiency HPGe @ 50 mm", 800, 600);
     effCanvas->cd(); // set as current canvas
     auto detEffGraph = new TGraph();
     for (int i = 0; i < index; i++){
         detEffGraph->AddPoint((i*5+5)/1000., detEffs[i]);
     }
-    detEffGraph->SetTitle("Absolute Efficiency");
+    detEffGraph->SetTitle("Absolute Efficiency HPGe @ 50 mm");
     detEffGraph->GetXaxis()->SetTitle("Energy (MeV)");
     detEffGraph->GetYaxis()->SetTitle("Efficiency (%)");
     detEffGraph->Draw("AL*");
     effCanvas->Draw();
+
+    effCanvas->SaveAs("AbsoluteEfficiency_HPGe_50mm.pdf");
+    effCanvas->SaveAs("AbsoluteEfficiency_HPGe_50mm.root");
 }

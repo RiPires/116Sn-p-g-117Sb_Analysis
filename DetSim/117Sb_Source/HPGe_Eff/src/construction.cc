@@ -88,7 +88,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //  Defines the Ge crystal unholed  //
     G4double crystalLength = 63.7*mm;
     G4double crystalDiameter = 55.0*mm;
-    solidGe = new G4Tubs("SolidGeBack", 0.*mm, crystalDiameter/2 crystalLength/2, 0., 2*pi); // 55.9 mm diameter
+    solidGe = new G4Tubs("SolidGeBack", 0.*mm, crystalDiameter/2, crystalLength/2, 0., 2*pi); // 55.9 mm diameter
 
     //  Subtracts inner hole from the Ge crystal  //
     G4VSolid *solidDetector = new G4SubtractionSolid("SolidDetector", solidGe, solidHole, rotation, G4ThreeVector(0., 0., 8.3*mm));

@@ -123,7 +123,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
         histExp->SetBinContent(histExp->FindBin(energy), dataValues[i]/expMaxYield);  // ROOT histograms are 1-indexed
     }
     
-    /*// Create a canvas to plot both histograms
+    // Create a canvas to plot both histograms
     TCanvas* canvas = new TCanvas("canvas", "Exp vs Sim SDD Calib", 1200, 900);
 
     histRes->SetLineColor(kBlue);
@@ -142,7 +142,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     // Histogram legend
     auto legend = new TLegend(0.6,0.7,0.9,0.9);
     //legend->AddEntry(hist, "Simulated Raw");
-    legend->AddEntry(histRes, "Simulated Resolution corrected");
+    legend->AddEntry(histRes, "Simulated");
     legend->AddEntry(histExp, "Experimental");
     legend->Draw();
 
@@ -153,7 +153,7 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     string s = lab+"_Normalized.root";
     const char *figName = s.c_str();
     canvas->SaveAs(figName);
-    gPad->Update();*/
+    gPad->Update();
 
     //
     // Calculate Sim to Exp peak area ratio
@@ -235,11 +235,20 @@ void PlotBothNorm(const char *simFilename, const char *expFilename) {
     cout << "## ------------------------------------- ##\n" << endl;
 }
 
-void Run(){
+void Run_18mm(){
     PlotBothNorm("../data-files_HPGe/output_Ebeam32_18mm.root", "../data-files_HPGe/Ebeam=3.2MeV_116Sn-C3_Decay_HPGe_BgRemoved_Merged.txt");
     PlotBothNorm("../data-files_HPGe/output_Ebeam39_18mm.root", "../data-files_HPGe/Ebeam=3.9MeV_116Sn-D4_Decay_HPGe_BgRemoved_Merged.txt");
     PlotBothNorm("../data-files_HPGe/output_Ebeam43_18mm.root", "../data-files_HPGe/Ebeam=4.3MeV_116Sn-G1_Decay_HPGe_BgRemoved_Merged.txt");
     PlotBothNorm("../data-files_HPGe/output_Ebeam47_18mm.root", "../data-files_HPGe/Ebeam=4.7MeV_116Sn-D8_Decay_HPGe_BgRemoved_Merged.txt");
     PlotBothNorm("../data-files_HPGe/output_Ebeam50_18mm.root", "../data-files_HPGe/Ebeam=5.0MeV_116Sn-D5_Decay_HPGe_BgRemoved_Merged.txt");
+
+}
+
+void Run_16mm(){
+    PlotBothNorm("../data-files_HPGe/output_Ebeam32_16mm.root", "../data-files_HPGe/Ebeam=3.2MeV_116Sn-C3_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam39_16mm.root", "../data-files_HPGe/Ebeam=3.9MeV_116Sn-D4_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam43_16mm.root", "../data-files_HPGe/Ebeam=4.3MeV_116Sn-G1_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam47_16mm.root", "../data-files_HPGe/Ebeam=4.7MeV_116Sn-D8_Decay_HPGe_BgRemoved_Merged.txt");
+    PlotBothNorm("../data-files_HPGe/output_Ebeam50_16mm.root", "../data-files_HPGe/Ebeam=5.0MeV_116Sn-D5_Decay_HPGe_BgRemoved_Merged.txt");
 
 }

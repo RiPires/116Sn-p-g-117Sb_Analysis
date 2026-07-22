@@ -130,6 +130,7 @@ void MyDetectorConstruction::SetSourcePosition(G4double position)
 
     // Update the GPS source position (via the General Particle Source)
     G4UImanager::GetUIpointer()->ApplyCommand("/gps/pos/centre 0. 0. " + std::to_string(sourcePosition) + " mm");
+    G4cout << "Source position updated to: " << sourcePosition / mm << " mm" << G4endl;
 
     // Update Mylar position based on the source position (75 um behind)
     if (physMylarSource) {
