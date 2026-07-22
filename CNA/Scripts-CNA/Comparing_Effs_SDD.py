@@ -1,5 +1,7 @@
 #################################################################
 ## Script to determine SDD mean efficiencies and uncertainties ##
+## comparing efficiency results from the simulations using     ##
+## target ticknesses determined via different methods          ## 
 #################################################################
 
 ## ---------------- ##

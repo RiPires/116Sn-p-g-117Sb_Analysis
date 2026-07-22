@@ -25,7 +25,7 @@ source_decays = {
 }
 
 ## Number of channels to sum on each side of the selected peak
-channel_window = 5
+channel_window = 8
 
 ## Dictionary to store calculated efficiencies and uncertainties by distance, source and energy
 efficiencies = {}
@@ -66,8 +66,8 @@ for file in os.listdir(calibPathHPGe):
             decay_error = efficiency * (decay_uncertainty / decay_value)
             error = np.sqrt(counting_error**2 + decay_error**2)
             efficiencies[distance][source_name][energy] = {
-                'efficiency': efficiency,
-                'error': error
+                'efficiency': efficiency*100, # Convert to percentage
+                'error': error*100
             }
 
 # Define the distances to plot and print
@@ -118,7 +118,7 @@ for distance in plot_distances:
         )
 
 plt.xlabel('Energy (keV)')
-plt.ylabel('Efficiency')
+plt.ylabel('Efficiency (%)')
 plt.title('HPGe efficiency curves for different source-detector distances')
 plt.grid(True, alpha=0.3)
 plt.legend()
