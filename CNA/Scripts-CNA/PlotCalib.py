@@ -14,10 +14,10 @@ from include.ReadData import *
 y, ch = Ge2Lists(calibHPGeFile)
 PlotLogy(ch, y, calibHPGeFile.replace('../Calibrations/HPGe/CalibrationRuns_PosExp/','')) """
 
-""" ## HPGe detector path
+## HPGe detector path
 calibPathHPGe = '../Calibrations/HPGe/CalibrationRuns_PosExp/'
 ## Loop over HPGe calibration runs
-for file in os.listdir(calibPathHPGe):
+for file in sort(os.listdir(calibPathHPGe)):
 
     if (str(file) == "BgRemoved"):
         pass
@@ -25,10 +25,11 @@ for file in os.listdir(calibPathHPGe):
         y, ch, _ = Ge2Lists(str(calibPathHPGe+file))
         energies = [(ch[i]*0.322526-0.45563) for i in range(len(ch))]
         PlotLogy(energies, y, str(file).replace('.mca', ''))
- """
-## SDD detector path
+
+""" ## SDD detector path
 calibPathSDD = '../Calibrations/SDD/CalibrationRuns_PosExp/'
 ## Loop over SDD calibration runs
 for file in os.listdir(calibPathSDD):
     y, ch, _ = MCA2Lists(str(calibPathSDD+file))
     Plot(ch, y, str(file).replace('.mca', ''))
+ """

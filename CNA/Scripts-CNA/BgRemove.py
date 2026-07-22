@@ -13,7 +13,7 @@ from include.Merge import *
 def RemoveBg(dataFile):
     """
     Function that removes the background rate of an input dataFile, using the
-    Backgroud measurement data. Writes out a new file with background removed.
+    Background measurement data. Writes out a new file with background removed.
 
     INPUTS: 
         - dataFile (str): path for data file; 
@@ -29,7 +29,8 @@ def RemoveBg(dataFile):
 
         ## Get run yield and acquisition live time   
         runYield, _, liveTime = Ge2Lists(dataFile)
-        acquiTime = 15 * 60 # seconds = 15 minutes
+        #acquiTime = 15 * 60 # seconds = 15 minutes
+        acquiTime = liveTime # seconds
 
         ## Background runs path
         bgPath = '../Calibrations/HPGe/Background/'
@@ -46,7 +47,8 @@ def RemoveBg(dataFile):
 
         ## Get run yield and acquisiton live time
         runYield, _, liveTime = MCA2Lists(dataFile)
-        acquiTime = 30 * 60 # seconds = 30 minutes
+        #acquiTime = 30 * 60 # seconds = 30 minutes
+        acquiTime = liveTime # seconds
 
         ## Background runs path
         bgPath = '../Calibrations/SDD/Background/'
@@ -66,7 +68,7 @@ def RemoveBg(dataFile):
     runRate = [runYield[i]/acquiTime for i in range(len(runYield))]
 
     ## Converts background yield into background count rate (in s^-1)
-    bgRate = [mergeBgYield[i]/bgTime*(1-0.2794) for i in range(len(mergeBgYield))] # /(1 - 0.2794) is to correct for the dead time of 27.94%
+    bgRate = [mergeBgYield[i]/bgTime for i in range(len(mergeBgYield))]
     bgRateDTcorrect = [mergeBgYield[i]/bgTime*1.2794 for i in range(len(mergeBgYield))] # *1.2794 is to correct for the dead time of 27.94%
 
     ## Remove background rate from run data 
@@ -74,16 +76,17 @@ def RemoveBg(dataFile):
     runRateBgRemDT = [(runRate[i] - bgRateDTcorrect[i]) for i in range(len(runRate))]
 
     ## Set labels
-    lab = dataFile[-63:-51] + ': ' + dataFile[-12:-4]
+    #lab = dataFile[-63:-51] + ': ' + dataFile[-12:-4] ## for 117Sb files
+    lab = dataFile[-25:-4]  ## for calibration files
     bgLab = 'Background Rate'
     bgDTLab = 'Bg subtracted'
     rateLab = lab +'_BG removed'
 
     ## Plot both run data, bg rate and run data with bg removed 
-    Plot3RateLogy(ch, runRate, bgRateDTcorrect, runRateBgRemDT, lab, bgLab, bgDTLab)
+    #Plot3RateLogy(ch, runRate, bgRateDTcorrect, runRateBgRemDT, lab, bgLab, bgDTLab)
 
     ## Save run rate with background removed values to file 
-    """     with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
+    with open(dataFile.replace(".mca","_BgRemoved.mca"), 'w') as outFile:
         counts = 0
         for rate in runRateBgRem:
             if rate <= 0:
@@ -91,7 +94,9 @@ def RemoveBg(dataFile):
             elif rate > 0:
                 counts = int(rate * acquiTime)      ## convert count rate back to counts
                 outFile.write(f"{counts:.0f}\n")
-    outFile.close() """
+    outFile.close()
+
+    print("File saved as: ", dataFile.replace(".mca","_BgRemoved.mca \n"))
 
     return runRateBgRem, ch
 # ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: #
